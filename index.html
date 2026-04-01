@@ -250,15 +250,13 @@ textarea.form-input{resize:none;}
     <div class="ai-card" id="home-ai-card">
       <div class="card-title">AI 植物評估 · 今日</div>
       <div class="ai-row">
-        <div id="home-badge"><span class="badge badge-great">🌿 極好</span></div>
-        <div class="ai-desc" id="home-ai-desc">葉色鮮綠飽滿，整體狀態優異。建議繼續保持目前的照顧習慣！</div>
+        <div id="home-badge"><span class="badge badge-ok" style="background:#f0f0ec;color:var(--text3);">尚無評估</span></div>
+        <div class="ai-desc" id="home-ai-desc">新增第一筆日記並拍照，AI 就會自動評估你的植物狀況！</div>
       </div>
       <div class="ai-actions">
         <div class="ai-action-title">AI 建議</div>
         <div class="ai-action-list" id="home-ai-actions">
-          <span class="ai-action-chip">✓ 今日無需澆水</span>
-          <span class="ai-action-chip">💡 3天後可施肥</span>
-          <span class="ai-action-chip">⚠️ 注意葉尖輕微泛黃</span>
+          <span class="ai-action-chip">📸 先拍一張植物照片吧</span>
         </div>
       </div>
     </div>
@@ -355,7 +353,7 @@ textarea.form-input{resize:none;}
       <div class="pu-icon">📷</div>
       <div class="pu-text">點擊拍照或從相簿選取</div>
     </div>
-    <input type="file" accept="image/*" capture="environment" id="photo-input" style="display:none" onchange="handlePhoto(event)">
+    <input type="file" accept="image/*" id="photo-input" style="display:none" onchange="handlePhoto(event)">
 
     <div id="ai-loading-wrap" style="display:none">
       <div class="card-title" style="margin-bottom:6px">AI 分析照片中</div>
@@ -414,44 +412,48 @@ textarea.form-input{resize:none;}
 
 <script>
 // ── STATE ──
-const STORE = {
-  get: k => { try { return JSON.parse(localStorage.getItem(k)) } catch(e) { return null } },
-  set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
-};
+function storageGet(k) { try { return JSON.parse(localStorage.getItem(k)) } catch(e) { return null } }
+function storageSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e) { return false; } }
 
-let plants = STORE.get('zrs_plants') || [];
-let entries = STORE.get('zrs_entries') || [];
-let care = STORE.get('zrs_care') || {};
-let streak = STORE.get('zrs_streak') || 1;
-let selEmoji = '🌱';
+let plants  = storageGet('zrs_plants')  || [];
+let entries = storageGet('zrs_entries') || [];
+let care    = storageGet('zrs_care')    || {};
+let streak  = storageGet('zrs_streak')  || 0;
+let selEmoji  = '🌱';
 let photoData = null;
-let aiResult = null;
-let modalCare = {water:false,fert:false,trim:false};
+let aiResult  = null;
+let modalCare = {water:false, fert:false, trim:false};
 
+// 儲存時照片單獨存，避免超過 localStorage 限制
 function saveAll() {
-  STORE.set('zrs_plants', plants);
-  STORE.set('zrs_entries', entries);
-  STORE.set('zrs_care', care);
-  STORE.set('zrs_streak', streak);
+  // 儲存不含照片的 entries（照片另外存）
+  const entriesNoPhoto = entries.map(e => ({...e, photo: e.photo ? '__photo_'+e.id : null}));
+  storageSet('zrs_plants', plants);
+  storageSet('zrs_entries', entriesNoPhoto);
+  storageSet('zrs_care', care);
+  storageSet('zrs_streak', streak);
+  // 照片單獨存
+  entries.forEach(e => {
+    if (e.photo && e.photo.startsWith('data:')) {
+      try { localStorage.setItem('zrs_photo_'+e.id, e.photo); } catch(err) { console.warn('照片儲存空間不足'); }
+    }
+  });
 }
 
-// Seed demo if empty
-if (plants.length === 0) {
-  plants = [
-    {id:1, name:'小翠', type:'薄荷', emoji:'🌱', days:14, score:'great', added: Date.now()},
-    {id:2, name:'粉粉', type:'海棠花', emoji:'🌸', days:32, score:'ok', added: Date.now()},
-    {id:3, name:'刺蝟', type:'仙人掌', emoji:'🌵', days:67, score:'great', added: Date.now()}
-  ];
-  const today = new Date();
-  const d1 = new Date(today); d1.setDate(d1.getDate()-2);
-  const d2 = new Date(today); d2.setDate(d2.getDate()-1);
-  entries = [
-    {id:1, date:today.toISOString().split('T')[0], score:'great', desc:'葉色鮮綠飽滿，根系健康', tags:['澆水'], note:'今天狀態超好！', emoji:'🌱', photo:null},
-    {id:2, date:d2.toISOString().split('T')[0], score:'ok', desc:'葉尖略黃，建議補充水分', tags:['施肥'], note:'葉尖有點黃需注意', emoji:'🌿', photo:null},
-    {id:3, date:d1.toISOString().split('T')[0], score:'great', desc:'修剪後狀態良好，新芽冒出', tags:['整理'], note:'修剪後很漂亮', emoji:'🍀', photo:null}
-  ];
-  saveAll();
+function loadAll() {
+  plants  = storageGet('zrs_plants')  || [];
+  const raw = storageGet('zrs_entries') || [];
+  // 把照片讀回來
+  entries = raw.map(e => {
+    if (e.photo && e.photo.startsWith('__photo_')) {
+      return {...e, photo: localStorage.getItem('zrs_photo_'+e.id) || null};
+    }
+    return e;
+  });
+  care   = storageGet('zrs_care')   || {};
+  streak = storageGet('zrs_streak') || 0;
 }
+loadAll();
 
 // ── DATE ──
 const now = new Date();
@@ -465,7 +467,7 @@ function updateStreak() {
   document.getElementById('streak-num').textContent = '🔥 ' + streak;
   const left = 30 - (streak % 30);
   document.getElementById('streak-sub').textContent =
-    streak >= 30 ? '恭喜達成「月月好植」成就！🏆' : `再堅持 ${left} 天達成「月月好植」成就`;
+    streak >= 30 ? '恭喜達成「月月好植」成就！🏆' : streak > 0 ? `再堅持 ${left} 天達成「月月好植」成就` : '開始你的第一筆記錄吧！';
 }
 updateStreak();
 
@@ -745,6 +747,15 @@ document.querySelectorAll('.modal-overlay').forEach(m =>
 
 // initial render
 renderPlants();
+
+// 如果已有日記，更新首頁 AI 卡片顯示最新一筆
+if (entries.length > 0) {
+  const latest = entries[0];
+  const sMap2 = {great:{cls:'badge-great',txt:'🌿 極好'},ok:{cls:'badge-ok',txt:'🌤 普通'},bad:{cls:'badge-bad',txt:'🥀 不好'}};
+  const s2 = sMap2[latest.score] || sMap2.ok;
+  document.getElementById('home-badge').innerHTML = `<span class="badge ${s2.cls}">${s2.txt}</span>`;
+  document.getElementById('home-ai-desc').textContent = latest.desc || latest.note;
+}
 </script>
 </body>
 </html>
