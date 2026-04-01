@@ -281,6 +281,16 @@ textarea.finput{resize:none;}
       <div class="sk-num" id="sk-num">🔥 0</div>
       <div><div class="sk-lbl">連續照顧天數</div><div class="sk-sub" id="sk-sub">開始你的第一筆記錄吧！</div></div>
     </div>
+
+    <!-- BACKUP REMINDER (shows when needed) -->
+    <div id="backup-reminder" style="display:none;background:#fff8e1;border:.5px solid #fad87a;border-radius:var(--rad);padding:14px 16px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:600;color:var(--a800);margin-bottom:6px;">⚠️ 建議備份資料</div>
+      <div style="font-size:12px;color:var(--a600);margin-bottom:10px;">已超過 7 天未備份，建議到「統計」頁匯出備份，防止資料丟失。</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="goBackup()" style="flex:1;padding:9px;background:var(--a600);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">立即備份</button>
+        <button onclick="dismissReminder()" style="padding:9px 14px;background:transparent;color:var(--t3);border:.5px solid var(--bd);border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;">稍後</button>
+      </div>
+    </div>
   </div>
 
   <!-- DIARY -->
@@ -311,6 +321,23 @@ textarea.finput{resize:none;}
       <div class="cycle-item"><div class="cycle-icon">💧</div><div class="cycle-info"><div class="cycle-text">澆水週期</div><div class="cycle-sub" id="cy-water-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-water">--</div></div>
       <div class="cycle-item"><div class="cycle-icon">🌿</div><div class="cycle-info"><div class="cycle-text">施肥週期</div><div class="cycle-sub" id="cy-fert-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-fert">--</div></div>
       <div class="cycle-item"><div class="cycle-icon">✂️</div><div class="cycle-info"><div class="cycle-text">整理週期</div><div class="cycle-sub" id="cy-trim-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-trim">--</div></div>
+    </div>
+
+    <!-- BACKUP CARD -->
+    <div class="card" style="border-color:var(--g100);">
+      <div class="ctitle" style="color:var(--g600);">📦 資料備份與還原</div>
+      <div style="font-size:12px;color:var(--t3);line-height:1.7;margin-bottom:14px;">
+        建議每週備份一次，防止 Safari 自動清除資料。<br>備份檔包含所有日記、照片、植物資料。
+      </div>
+      <div id="last-backup-txt" style="font-size:12px;color:var(--t3);margin-bottom:14px;">上次備份：從未備份</div>
+      <button onclick="exportBackup()" style="width:100%;padding:13px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px;font-family:inherit;">
+        ⬇️ 匯出備份檔
+      </button>
+      <button onclick="document.getElementById('restore-input').click()" style="width:100%;padding:13px;background:var(--g50);color:var(--g800);border:.5px solid var(--g100);border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">
+        ⬆️ 載入備份還原
+      </button>
+      <input type="file" id="restore-input" accept=".json" style="display:none" onchange="importBackup(event)">
+      <div style="font-size:11px;color:var(--t3);margin-top:10px;text-align:center;">備份後請儲存到 iCloud 或 Google Drive</div>
     </div>
   </div>
 
@@ -546,6 +573,8 @@ function setupUI() {
   loadWeather();
   renderPlants();
   if (entries.length > 0 && entries[0].ai) updateHomeAI(entries[0].ai);
+  updateLastBackupText();
+  checkBackupReminder();
 }
 
 function updateStreak() {
@@ -990,6 +1019,157 @@ function deletePlant() {
   if (!confirm(`確定要刪除「${p ? p.name : '這株植物'}」嗎？`)) return;
   plants = plants.filter(x => x.id !== editingPlantId);
   saveData(); closeOverlay('modal-plant'); renderPlants();
+}
+
+// ═══════════════════════════════
+// BACKUP & RESTORE
+// ═══════════════════════════════
+function updateLastBackupText() {
+  const last = sg('zrs_last_backup');
+  const el = document.getElementById('last-backup-txt');
+  if (!el) return;
+  if (!last) { el.textContent = '上次備份：從未備份'; return; }
+  const d = new Date(last);
+  el.textContent = `上次備份：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+}
+
+function checkBackupReminder() {
+  const last = sg('zrs_last_backup');
+  const dismissed = sg('zrs_reminder_dismissed');
+  const reminder = document.getElementById('backup-reminder');
+  if (!reminder) return;
+  if (!last) {
+    // 有日記但從未備份才提醒
+    if (entries.length > 0) reminder.style.display = 'block';
+    return;
+  }
+  const daysSince = (Date.now() - last) / (1000 * 60 * 60 * 24);
+  if (daysSince >= 7 && dismissed !== new Date().toDateString()) {
+    reminder.style.display = 'block';
+  }
+}
+
+function dismissReminder() {
+  ss('zrs_reminder_dismissed', new Date().toDateString());
+  document.getElementById('backup-reminder').style.display = 'none';
+}
+
+function goBackup() {
+  dismissReminder();
+  // 切換到統計頁
+  const tabEl = document.querySelectorAll('.tab')[2];
+  showScreen('stats', tabEl);
+}
+
+async function exportBackup() {
+  if (entries.length === 0 && plants.length === 0) {
+    alert('還沒有資料可以備份！');
+    return;
+  }
+
+  const btn = document.querySelector('[onclick="exportBackup()"]');
+  const origText = btn.textContent;
+  btn.textContent = '準備中...';
+  btn.disabled = true;
+
+  try {
+    // 把所有照片從 IndexedDB 讀回來打包進 JSON
+    const entriesWithPhotos = await Promise.all(entries.map(async e => {
+      const photoIds = e.photoIds || [];
+      const photos = await Promise.all(photoIds.map(pid => dbGet(pid)));
+      return { ...e, photos: photos.filter(Boolean), photoIds };
+    }));
+
+    const backup = {
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      appName: '植日苼',
+      plants,
+      entries: entriesWithPhotos,
+      care,
+      streak
+    };
+
+    const json = JSON.stringify(backup);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `植日苼備份_${dateStr}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    ss('zrs_last_backup', Date.now());
+    updateLastBackupText();
+    document.getElementById('backup-reminder').style.display = 'none';
+    alert(`✅ 備份完成！\n共 ${entries.length} 筆日記、${plants.length} 株植物\n\n請將檔案儲存到 iCloud 或 Google Drive 保管。`);
+  } catch(err) {
+    alert('備份失敗，請再試一次。');
+  }
+
+  btn.textContent = origText;
+  btn.disabled = false;
+}
+
+async function importBackup(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    try {
+      const backup = JSON.parse(ev.target.result);
+      if (!backup.appName || backup.appName !== '植日苼') {
+        alert('這不是植日苼的備份檔，請選擇正確的檔案。');
+        return;
+      }
+      if (!confirm(`確定要還原備份嗎？\n備份時間：${new Date(backup.exportedAt).toLocaleString()}\n共 ${backup.entries?.length || 0} 筆日記、${backup.plants?.length || 0} 株植物\n\n⚠️ 目前的資料將被取代。`)) return;
+
+      const btn = document.querySelector('[onclick="document.getElementById(\'restore-input\').click()"]');
+      const origText = btn.textContent;
+      btn.textContent = '還原中...';
+      btn.disabled = true;
+
+      // 清除舊的 IndexedDB 照片
+      const tx = db.transaction('photos', 'readwrite');
+      tx.objectStore('photos').clear();
+      await new Promise(r => { tx.oncomplete = r; });
+
+      // 還原照片到 IndexedDB
+      const restoredEntries = await Promise.all((backup.entries || []).map(async e => {
+        const photos = e.photos || [];
+        const newIds = photos.map((_, i) => `photo_${e.id}_${i}`);
+        for (let i = 0; i < photos.length; i++) {
+          if (photos[i]) await dbPut(newIds[i], photos[i]);
+        }
+        return { ...e, photoIds: newIds, photos };
+      }));
+
+      // 還原其他資料
+      plants = backup.plants || [];
+      entries = restoredEntries;
+      care   = backup.care   || {};
+      streak = backup.streak || 0;
+
+      saveData();
+      ss('zrs_last_backup', Date.now());
+      updateLastBackupText();
+      updateStreak();
+      if (entries.length > 0 && entries[0].ai) updateHomeAI(entries[0].ai);
+      renderPlants();
+      renderDiary();
+
+      btn.textContent = origText;
+      btn.disabled = false;
+      document.getElementById('restore-input').value = '';
+
+      alert(`✅ 還原完成！\n共還原 ${entries.length} 筆日記、${plants.length} 株植物。`);
+    } catch(err) {
+      alert('還原失敗，備份檔可能已損壞。');
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ═══════════════════════════════
