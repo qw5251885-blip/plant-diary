@@ -962,6 +962,8 @@ function selectPlant(id, el) {
   document.querySelectorAll('.plant-sel-item').forEach(e => e.classList.remove('active'));
   el.classList.add('active');
 }
+
+async function handlePhoto(e) {
   const files = Array.from(e.target.files);
   if (!files.length) return;
   photoDatas = [];
