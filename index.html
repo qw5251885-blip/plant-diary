@@ -265,6 +265,10 @@ textarea.finput{resize:none;}
   <!-- DIARY -->
   <div class="screen hidden" id="screen-diary">
     <div class="add-diary-btn" onclick="openAddEntry()">📸　新增今日日記</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
+      <select id="filter-year" onchange="renderDiary()" style="flex:1;padding:9px 12px;border:.5px solid var(--bd);border-radius:var(--rads);font-size:13px;color:var(--t1);background:var(--card);outline:none;-webkit-appearance:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 10px center;"><option value="">全部年份</option></select>
+      <select id="filter-month" onchange="renderDiary()" style="flex:1;padding:9px 12px;border:.5px solid var(--bd);border-radius:var(--rads);font-size:13px;color:var(--t1);background:var(--card);outline:none;-webkit-appearance:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 10px center;"><option value="">全部月份</option></select>
+    </div>
     <div id="timeline-list"></div>
   </div>
 
@@ -307,7 +311,9 @@ textarea.finput{resize:none;}
 <div class="overlay hidden" id="modal-entry">
   <div class="modal">
     <div class="mhandle"></div>
-    <div class="mtitle">📸 新增今日日記</div>
+    <div class="mtitle">📸 新增日記</div>
+    <label class="flabel">日記日期</label>
+    <input type="date" class="finput" id="entry-date" style="margin-bottom:12px;">
     <label class="flabel">植物照片（可選多張）</label>
     <div class="pup-area" id="photo-area" onclick="document.getElementById('photo-input').click()">
       <div class="pup-icon">📷</div>
@@ -467,13 +473,35 @@ function updateHomeAI(ai){
 }
 if(entries.length>0&&entries[0].ai)updateHomeAI(entries[0].ai);
 
+function updateFilterOptions(){
+  const years=[...new Set(entries.map(e=>e.date.slice(0,4)))].sort((a,b)=>b-a);
+  const ySel=document.getElementById('filter-year');
+  const curY=ySel.value;
+  ySel.innerHTML='<option value="">全部年份</option>'+years.map(y=>`<option value="${y}"${y===curY?' selected':''}>${y} 年</option>`).join('');
+  const months=[1,2,3,4,5,6,7,8,9,10,11,12];
+  const mSel=document.getElementById('filter-month');
+  const curM=mSel.value;
+  mSel.innerHTML='<option value="">全部月份</option>'+months.map(m=>`<option value="${String(m).padStart(2,'0')}"${String(m).padStart(2,'0')===curM?' selected':''}>${m} 月</option>`).join('');
+}
+
 function renderDiary(){
+  updateFilterOptions();
   const list=document.getElementById('timeline-list');
-  if(!entries.length){list.innerHTML='<div class="empty"><div class="empty-icon">🌱</div><div class="empty-text">還沒有日記記錄<br>點擊上方按鈕，新增第一筆！</div></div>';return;}
+  const filterY=document.getElementById('filter-year')?.value||'';
+  const filterM=document.getElementById('filter-month')?.value||'';
+  let filtered=entries;
+  if(filterY) filtered=filtered.filter(e=>e.date.startsWith(filterY));
+  if(filterM) filtered=filtered.filter(e=>e.date.slice(5,7)===filterM);
+  if(!filtered.length){
+    list.innerHTML=entries.length===0
+      ?'<div class="empty"><div class="empty-icon">🌱</div><div class="empty-text">還沒有日記記錄<br>點擊上方按鈕，新增第一筆！</div></div>'
+      :'<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">這個時間沒有日記記錄</div></div>';
+    return;
+  }
   const bgs=['tl-bg1','tl-bg2','tl-bg3'];
   const sMap={great:{cls:'b-great',txt:'🌿 極好'},ok:{cls:'b-ok',txt:'🌤 普通'},bad:{cls:'b-bad',txt:'🥀 不好'}};
-  list.innerHTML=entries.map((e,i)=>{
-    const d=new Date(e.date),s=sMap[e.score]||sMap.ok;
+  list.innerHTML=filtered.map((e,i)=>{
+    const d=new Date(e.date+'T00:00:00'),s=sMap[e.score]||sMap.ok;
     const tags=(e.tags||[]).map(t=>`<span class="tl-tag">${t}</span>`).join('');
     const ph=e.photos||[];
     const pj=JSON.stringify(ph).replace(/\\/g,'\\\\').replace(/"/g,"'");
@@ -560,10 +588,30 @@ function renderPlants(){
   }).join('');
 }
 
+// PHOTO COMPRESS
+function compressPhoto(dataUrl,maxW,maxH,quality){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      res(canvas.toDataURL('image/jpeg',quality));
+    };
+    img.src=dataUrl;
+  });
+}
+
 // ADD ENTRY
 function openAddEntry(){
   photoDatas=[];aiResult=null;modalCare={water:false,fert:false,trim:false};
   document.getElementById('entry-note').value='';
+  // set today's date
+  const todayStr=NOW.toISOString().split('T')[0];
+  document.getElementById('entry-date').value=todayStr;
   document.getElementById('photo-area').style.display='flex';
   const pr=document.getElementById('preview-row');pr.style.display='none';pr.innerHTML='';
   document.getElementById('photo-input').value='';
@@ -573,19 +621,29 @@ function openAddEntry(){
   document.getElementById('modal-entry').classList.remove('hidden');
 }
 
-function handlePhoto(e){
+async function handlePhoto(e){
   const files=Array.from(e.target.files);if(!files.length)return;
   photoDatas=[];const pr=document.getElementById('preview-row');pr.innerHTML='';let loaded=0;
-  files.forEach((file,idx)=>{
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      photoDatas[idx]=ev.target.result;
-      const img=document.createElement('img');
-      img.src=ev.target.result;img.style.cssText='height:90px;width:auto;border-radius:8px;flex-shrink:0;object-fit:cover;';
-      pr.appendChild(img);loaded++;
-      if(loaded===files.length){document.getElementById('photo-area').style.display='none';pr.style.display='flex';analyzePhoto(photoDatas[0]);}
-    };reader.readAsDataURL(file);
-  });
+  for(let idx=0;idx<files.length;idx++){
+    const file=files[idx];
+    await new Promise(resolve=>{
+      const reader=new FileReader();
+      reader.onload=async ev=>{
+        // 壓縮到最大 1200px，品質 0.75，控制在約 200KB 以內
+        const compressed=await compressPhoto(ev.target.result,1200,1200,0.75);
+        photoDatas[idx]=compressed;
+        const img=document.createElement('img');
+        img.src=compressed;img.style.cssText='height:90px;width:auto;border-radius:8px;flex-shrink:0;object-fit:cover;';
+        pr.appendChild(img);loaded++;
+        if(loaded===files.length){
+          document.getElementById('photo-area').style.display='none';
+          pr.style.display='flex';
+          analyzePhoto(photoDatas[0]);
+        }
+        resolve();
+      };reader.readAsDataURL(file);
+    });
+  }
 }
 
 async function analyzePhoto(dataUrl){
@@ -626,8 +684,13 @@ function toggleModal(type){modalCare[type]=!modalCare[type];document.getElementB
 function saveEntry(){
   const tags=Object.keys(modalCare).filter(k=>modalCare[k]).map(k=>k==='water'?'澆水':k==='fert'?'施肥':'整理');
   const ai=aiResult||{score:'ok',reason:'今日植物記錄',suggestions:[],needs:[]};
-  entries.unshift({id:Date.now(),date:NOW.toISOString().split('T')[0],score:ai.score,desc:ai.reason,tags,note:document.getElementById('entry-note').value.trim()||ai.reason,photos:[...photoDatas],emoji:'🌱',ai});
-  streak++;updateStreak();updateHomeAI(ai);saveAll();closeOverlay('modal-entry');renderDiary();
+  const selectedDate=document.getElementById('entry-date').value||NOW.toISOString().split('T')[0];
+  entries.push({id:Date.now(),date:selectedDate,score:ai.score,desc:ai.reason,tags,note:document.getElementById('entry-note').value.trim()||ai.reason,photos:[...photoDatas],emoji:'🌱',ai});
+  // 按日期由新到舊排序
+  entries.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  streak++;updateStreak();updateHomeAI(ai);
+  updateFilterOptions();
+  saveAll();closeOverlay('modal-entry');renderDiary();
 }
 
 // PLANT CRUD
