@@ -410,6 +410,8 @@ textarea.finput{resize:none;}
     <input class="finput" id="p-name" placeholder="例如：小翠、我的薄荷">
     <label class="flabel">植物種類</label>
     <input class="finput" id="p-type" placeholder="例如：薄荷、仙人掌、海棠花">
+    <label class="flabel">開始養護日期</label>
+    <input type="date" class="finput" id="p-start-date">
     <label class="flabel">選擇圖示</label>
     <div class="emoji-grid">
       <div class="emj sel" onclick="pickEmoji(this,'🌱')">🌱</div>
@@ -838,7 +840,7 @@ function renderPlants() {
       <div style="flex:1;min-width:0;">
         <div class="plant-name">${p.name}</div>
         <div class="plant-type">${p.type}</div>
-        <div class="plant-days">照顧中 ${p.days} 天 🌱</div>
+        <div class="plant-days">🌱 養護中 ${calcDays(p.startDate)} 天${p.startDate ? `　從 ${p.startDate.slice(0,4)}/${p.startDate.slice(5,7)}/${p.startDate.slice(8,10)} 開始` : ''}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:8px;">
         <button class="pa-edit" onclick="openPlantModal(${p.id})">✏️ 編輯</button>
@@ -1104,6 +1106,8 @@ function openPlantModal(id) {
   document.getElementById('plant-mtitle').textContent = p ? '✏️ 編輯植物' : '🌱 新增植物';
   document.getElementById('p-name').value = p ? p.name : '';
   document.getElementById('p-type').value = p ? p.type : '';
+  // 開始養護日期：有舊資料用舊的，新增預設今天
+  document.getElementById('p-start-date').value = p && p.startDate ? p.startDate : NOW.toISOString().split('T')[0];
   selEmoji = p ? p.emoji : '🌱';
   document.querySelectorAll('.emj').forEach(el => el.classList.toggle('sel', el.textContent === selEmoji));
   document.getElementById('del-btn').style.display = p ? 'block' : 'none';
@@ -1115,15 +1119,23 @@ function pickEmoji(el, emoji) {
   el.classList.add('sel'); selEmoji = emoji;
 }
 
+function calcDays(startDate) {
+  if (!startDate) return 0;
+  const start = new Date(startDate + 'T00:00:00');
+  const diff = NOW - start;
+  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+}
+
 function savePlant() {
   const name = document.getElementById('p-name').value.trim();
   if (!name) { document.getElementById('p-name').focus(); return; }
   const type = document.getElementById('p-type').value.trim() || '植物';
+  const startDate = document.getElementById('p-start-date').value || NOW.toISOString().split('T')[0];
   if (editingPlantId) {
     const idx = plants.findIndex(p => p.id === editingPlantId);
-    if (idx >= 0) plants[idx] = { ...plants[idx], name, type, emoji: selEmoji };
+    if (idx >= 0) plants[idx] = { ...plants[idx], name, type, emoji: selEmoji, startDate };
   } else {
-    plants.push({ id: Date.now(), name, type, emoji: selEmoji, days: 0, score: 'great', added: Date.now() });
+    plants.push({ id: Date.now(), name, type, emoji: selEmoji, startDate, score: 'great', added: Date.now() });
   }
   saveData(); closeOverlay('modal-plant'); renderPlants();
 }
