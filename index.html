@@ -1,761 +1,1760 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="植日苼">
-<meta name="theme-color" content="#3B6D11">
-<title>植日苼</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-:root{
-  --green-50:#EAF3DE;--green-100:#C0DD97;--green-200:#97C459;--green-400:#639922;
-  --green-600:#3B6D11;--green-800:#27500A;--green-900:#173404;
-  --amber-50:#FAEEDA;--amber-400:#EF9F27;--amber-600:#BA7517;--amber-800:#633806;
-  --red-50:#FCEBEB;--red-400:#E24B4A;--red-800:#501313;
-  --bg:#F4F7F0;--card:#fff;--border:rgba(0,0,0,0.08);--text:#1a1a1a;--text2:#555;--text3:#999;
-  --radius:16px;--radius-sm:10px;
-}
-html,body{height:100%;background:var(--bg);}
-body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue',sans-serif;color:var(--text);max-width:430px;margin:0 auto;position:relative;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="植日苼">
+    <meta name="theme-color" content="#3B6D11">
+    <title>植日苼</title>
+    <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+    }
 
-.app-wrap{display:flex;flex-direction:column;height:100dvh;overflow:hidden;background:var(--bg);}
+    :root {
+        --green-50: #EAF3DE;
+        --green-100: #C0DD97;
+        --green-200: #97C459;
+        --green-400: #639922;
+        --green-600: #3B6D11;
+        --green-800: #27500A;
+        --green-900: #173404;
+        --amber-50: #FAEEDA;
+        --amber-400: #EF9F27;
+        --amber-600: #BA7517;
+        --amber-800: #633806;
+        --red-50: #FCEBEB;
+        --red-400: #E24B4A;
+        --red-800: #501313;
+        --bg: #F4F7F0;
+        --card: #fff;
+        --border: rgba(0, 0, 0, 0.08);
+        --text: #1a1a1a;
+        --text2: #555;
+        --text3: #999;
+        --radius: 16px;
+        --radius-sm: 10px;
+    }
 
-/* HEADER */
-.app-header{background:var(--card);padding:env(safe-area-inset-top,16px) 20px 12px;padding-top:calc(env(safe-area-inset-top,0px) + 16px);border-bottom:0.5px solid var(--border);flex-shrink:0;}
-.header-top{display:flex;justify-content:space-between;align-items:flex-start;}
-.app-title{font-size:22px;font-weight:700;color:var(--green-800);letter-spacing:0.08em;}
-.app-subtitle{font-size:11px;color:var(--text3);margin-top:1px;}
-.weather-mini{display:flex;align-items:center;gap:5px;justify-content:flex-end;}
-.weather-temp-big{font-size:20px;font-weight:500;color:var(--green-600);}
-.weather-icon-sm{font-size:20px;}
-.weather-sub{font-size:11px;color:var(--text3);margin-top:2px;text-align:right;}
+    html, body {
+        height: 100%;
+        background: var(--bg);
+    }
 
-/* SCROLL */
-.screen{flex:1;overflow-y:auto;padding:14px 16px 90px;-webkit-overflow-scrolling:touch;}
-.screen.hidden{display:none;}
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Helvetica Neue', sans-serif;
+        color: var(--text);
+        max-width: 430px;
+        margin: 0 auto;
+        position: relative;
+    }
 
-/* CARDS */
-.card{background:var(--card);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px 16px;margin-bottom:12px;}
-.card-title{font-size:11px;color:var(--text3);font-weight:600;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:10px;}
+    .app-wrap {
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
+        overflow: hidden;
+        background: var(--bg);
+    }/* HEADER */
+    .app-header {
+        background: var(--card);
+        padding: env(safe-area-inset-top, 16px) 20px 12px;
+        padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+        border-bottom: 0.5px solid var(--border);
+        flex-shrink: 0;
+    }
 
-/* BADGE */
-.badge{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:500;}
-.badge-great{background:var(--green-50);color:var(--green-800);}
-.badge-ok{background:var(--amber-50);color:var(--amber-800);}
-.badge-bad{background:var(--red-50);color:var(--red-800);}
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
 
-/* WEATHER CARD */
-.weather-card{background:linear-gradient(135deg,#d4edba,#a8d870);border-radius:var(--radius);padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
-.wc-temp{font-size:32px;font-weight:500;color:var(--green-900);}
-.wc-desc{font-size:13px;color:var(--green-800);margin-top:3px;}
-.wc-detail{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-.wc-chip{font-size:11px;background:rgba(255,255,255,0.45);color:var(--green-800);padding:3px 8px;border-radius:20px;}
-.wc-icon{font-size:52px;}
+    .app-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--green-800);
+        letter-spacing: 0.08em;
+    }
 
-/* CARE */
-.care-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.care-btn{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center;cursor:pointer;transition:all 0.2s;user-select:none;}
-.care-btn:active{transform:scale(0.95);}
-.care-btn.done{background:var(--green-50);border-color:var(--green-100);}
-.care-btn .ci{font-size:22px;display:block;margin-bottom:5px;}
-.care-btn .cl{font-size:12px;color:var(--text2);font-weight:500;display:block;}
-.care-btn.done .cl{color:var(--green-800);}
-.care-btn .ct{font-size:10px;color:var(--text3);display:block;margin-top:3px;}
+    .app-subtitle {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 1px;
+    }
 
-/* NEEDS */
-.need-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);}
-.need-item:last-child{border:none;padding-bottom:0;}
-.need-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
-.dot-good{background:var(--green-400);}
-.dot-warn{background:var(--amber-400);}
-.dot-bad{background:var(--red-400);}
-.need-text{font-size:13px;color:var(--text);line-height:1.5;}
+    .weather-mini {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        justify-content: flex-end;
+    }
 
-/* STREAK */
-.streak-card{background:linear-gradient(135deg,#fff9ee,#fef3d0);border:0.5px solid #fad87a;border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:12px;}
-.streak-num{font-size:32px;font-weight:700;color:var(--amber-600);}
-.streak-label{font-size:14px;font-weight:500;color:var(--amber-800);}
-.streak-sub{font-size:11px;color:var(--amber-600);margin-top:3px;}
+    .weather-temp-big {
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--green-600);
+    }
 
-/* AI CARD */
-.ai-card{background:var(--card);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px 16px;margin-bottom:12px;}
-.ai-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
-.ai-desc{font-size:13px;color:var(--text2);line-height:1.6;flex:1;}
-.ai-actions{padding-top:10px;border-top:0.5px solid var(--border);}
-.ai-action-title{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;letter-spacing:0.05em;}
-.ai-action-list{display:flex;flex-wrap:wrap;gap:6px;}
-.ai-action-chip{font-size:12px;background:var(--green-50);color:var(--green-600);padding:4px 10px;border-radius:20px;}
+    .weather-icon-sm {
+        font-size: 20px;
+    }
 
-/* TIMELINE */
-.tl-item{display:flex;gap:12px;margin-bottom:16px;}
-.tl-date{width:42px;text-align:center;flex-shrink:0;padding-top:4px;}
-.tl-day{font-size:20px;font-weight:600;color:var(--text);}
-.tl-month{font-size:10px;color:var(--text3);}
-.tl-content{flex:1;background:var(--card);border-radius:var(--radius);border:0.5px solid var(--border);overflow:hidden;}
-.tl-photo{width:100%;height:130px;display:flex;align-items:center;justify-content:center;font-size:48px;}
-.tl-photo img{width:100%;height:100%;object-fit:cover;}
-.tl-photo-bg1{background:linear-gradient(135deg,#d4edba,#a8d870);}
-.tl-photo-bg2{background:linear-gradient(135deg,#fef3d0,#fad87a);}
-.tl-photo-bg3{background:linear-gradient(135deg,#daf0e8,#9fe1cb);}
-.tl-meta{padding:10px 12px;}
-.tl-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center;}
-.tl-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:#f0f0ec;color:var(--text3);}
-.tl-note{font-size:12px;color:var(--text2);line-height:1.5;}
+    .weather-sub {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 2px;
+        text-align: right;
+    }/* SCROLL */
+    .screen {
+        flex: 1;
+        overflow-y: auto;
+        padding: 14px 16px 90px;
+        -webkit-overflow-scrolling: touch;
+    }
 
-/* ADD PHOTO BTN */
-.add-photo-btn{width:100%;padding:16px;background:var(--green-50);border:1.5px dashed var(--green-100);border-radius:var(--radius);text-align:center;font-size:14px;color:var(--green-600);cursor:pointer;margin-bottom:16px;font-weight:500;transition:all 0.2s;}
-.add-photo-btn:active{transform:scale(0.98);}
+    .screen.hidden {
+        display: none;
+    }/* CARDS */
+    .card {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 0.5px solid var(--border);
+        padding: 14px 16px;
+        margin-bottom: 12px;
+    }
 
-/* STATS */
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
-.stat-card{background:var(--card);border-radius:var(--radius-sm);border:0.5px solid var(--border);padding:14px;}
-.stat-val{font-size:28px;font-weight:600;}
-.stat-label{font-size:11px;color:var(--text3);margin-top:3px;}
-.stat-green{color:var(--green-600);}
-.stat-amber{color:var(--amber-600);}
-.stat-red{color:var(--red-400);}
+    .card-title {
+        font-size: 11px;
+        color: var(--text3);
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }/* BADGE */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
 
-/* BAR CHART */
-.bar-chart{display:flex;align-items:flex-end;justify-content:space-between;height:100px;gap:4px;margin-top:8px;}
-.bar-col2{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.bar2{width:100%;border-radius:4px 4px 0 0;min-height:6px;}
-.bar-g{background:var(--green-200);}
-.bar-a{background:var(--amber-400);}
-.bar-r{background:var(--red-400);}
-.bar-lbl{font-size:9px;color:var(--text3);}
+    .badge-great {
+        background: var(--green-50);
+        color: var(--green-800);
+    }
 
-/* CARE LOG ITEMS */
-.care-log-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);}
-.care-log-item:last-child{border:none;}
-.care-log-icon{font-size:16px;width:34px;height:34px;background:var(--green-50);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.care-log-text{flex:1;font-size:13px;color:var(--text);}
-.care-log-date{font-size:12px;color:var(--text3);}
+    .badge-ok {
+        background: var(--amber-50);
+        color: var(--amber-800);
+    }
 
-/* PLANTS */
-.plant-item{display:flex;align-items:center;gap:12px;background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;}
-.plant-item:active{transform:scale(0.98);}
-.plant-avatar{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
-.pa-g{background:linear-gradient(135deg,#d4edba,#a8d870);}
-.pa-p{background:linear-gradient(135deg,#fbeaf0,#f4c0d1);}
-.pa-a{background:linear-gradient(135deg,#fef3d0,#fad87a);}
-.pa-t{background:linear-gradient(135deg,#e1f5ee,#9fe1cb);}
-.plant-name{font-size:15px;font-weight:600;color:var(--text);}
-.plant-type{font-size:12px;color:var(--text3);margin-top:2px;}
-.plant-days{font-size:11px;color:var(--green-400);margin-top:3px;font-weight:500;}
-.add-plant-btn{width:100%;padding:16px;background:var(--card);border:1.5px dashed var(--border);border-radius:var(--radius);text-align:center;font-size:14px;color:var(--text3);cursor:pointer;transition:all 0.15s;}
-.add-plant-btn:active{transform:scale(0.98);}
+    .badge-bad {
+        background: var(--red-50);
+        color: var(--red-800);
+    }/* WEATHER CARD */
+    .weather-card {
+        background: linear-gradient(135deg, #d4edba, #a8d870);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-/* TAB BAR */
-.tab-bar{background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:0.5px solid var(--border);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);}
-.tab{flex:1;padding:10px 4px 10px;text-align:center;cursor:pointer;transition:all 0.15s;user-select:none;}
-.tab:active{transform:scale(0.92);}
-.tab-icon{font-size:22px;display:block;margin-bottom:2px;}
-.tab-label{font-size:10px;color:var(--text3);font-weight:500;}
-.tab.active .tab-label{color:var(--green-600);}
+    .wc-temp {
+        font-size: 32px;
+        font-weight: 500;
+        color: var(--green-900);
+    }
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
-.modal-overlay.hidden{display:none;}
-.modal{background:var(--card);border-radius:24px 24px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom,0px) + 20px);width:100%;max-width:430px;max-height:90dvh;overflow-y:auto;}
-.modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 18px;}
-.modal-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px;}
-.form-label{font-size:12px;color:var(--text3);margin-bottom:6px;display:block;font-weight:600;letter-spacing:0.04em;}
-.form-input{width:100%;padding:11px 14px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--text);background:var(--bg);margin-bottom:12px;outline:none;font-family:inherit;-webkit-appearance:none;}
-.form-input:focus{border-color:var(--green-400);background:#fff;}
-textarea.form-input{resize:none;}
-.form-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.care-toggle{padding:11px 6px;border:0.5px solid var(--border);border-radius:var(--radius-sm);text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all 0.15s;user-select:none;}
-.care-toggle:active{transform:scale(0.95);}
-.care-toggle.on{background:var(--green-50);border-color:var(--green-100);color:var(--green-800);}
-.care-toggle-icon{font-size:20px;display:block;margin-bottom:4px;}
-.submit-btn{width:100%;padding:15px;background:var(--green-600);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;transition:all 0.15s;}
-.submit-btn:active{transform:scale(0.97);background:var(--green-800);}
-.cancel-btn{width:100%;padding:12px;background:transparent;color:var(--text3);border:none;font-size:14px;cursor:pointer;margin-top:6px;font-family:inherit;}
+    .wc-desc {
+        font-size: 13px;
+        color: var(--green-800);
+        margin-top: 3px;
+    }
 
-/* PHOTO UPLOAD */
-.photo-upload-area{width:100%;height:150px;background:var(--green-50);border:1.5px dashed var(--green-100);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px;overflow:hidden;transition:all 0.2s;}
-.photo-upload-area:active{transform:scale(0.98);}
-.pu-icon{font-size:30px;margin-bottom:6px;}
-.pu-text{font-size:12px;color:var(--green-400);font-weight:500;}
-.photo-preview{width:100%;height:100%;object-fit:cover;}
+    .wc-detail {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
 
-/* AI LOADING */
-.ai-loading{display:flex;align-items:center;gap:8px;padding:8px 0;}
-.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--green-400);animation:bounce 1s infinite;}
-.ai-dot:nth-child(2){animation-delay:0.15s;}
-.ai-dot:nth-child(3){animation-delay:0.3s;}
-@keyframes bounce{0%,80%,100%{transform:scale(0.8);opacity:0.5;}40%{transform:scale(1.2);opacity:1;}}
+    .wc-chip {
+        font-size: 11px;
+        background: rgba(255, 255, 255, 0.45);
+        color: var(--green-800);
+        padding: 3px 8px;
+        border-radius: 20px;
+    }
 
-/* AI result in modal */
-.ai-result-box{background:var(--green-50);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px;}
-.ai-result-box .badge{margin-bottom:8px;}
-.ai-result-desc{font-size:13px;color:var(--green-800);line-height:1.5;}
-.ai-suggestions{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;}
-.ai-sug-chip{font-size:11px;background:#fff;color:var(--green-600);padding:3px 9px;border-radius:20px;border:0.5px solid var(--green-100);}
+    .wc-icon {
+        font-size: 52px;
+    }/* CARE */
+    .care-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 12px;
+    }
 
-/* EMOJI PICKER */
-.emoji-row{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px;}
-.emoji-opt{width:100%;aspect-ratio:1;border:0.5px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:all 0.15s;}
-.emoji-opt:active{transform:scale(0.9);}
-.emoji-opt.selected{background:var(--green-50);border-color:var(--green-200);}
+    .care-btn {
+        background: var(--card);
+        border: 0.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        user-select: none;
+    }
 
-/* EMPTY STATE */
-.empty-state{text-align:center;padding:50px 20px;color:var(--text3);}
-.empty-icon{font-size:48px;margin-bottom:12px;}
-.empty-text{font-size:14px;line-height:1.6;}
+    .care-btn:active {
+        transform: scale(0.95);
+    }
 
-/* SECTION HEADER */
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.section-title{font-size:16px;font-weight:600;color:var(--text);}
-</style>
+    .care-btn.done {
+        background: var(--green-50);
+        border-color: var(--green-100);
+    }
+
+    .care-btn .ci {
+        font-size: 22px;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .care-btn .cl {
+        font-size: 12px;
+        color: var(--text2);
+        font-weight: 500;
+        display: block;
+    }
+
+    .care-btn.done .cl {
+        color: var(--green-800);
+    }
+
+    .care-btn .ct {
+        font-size: 10px;
+        color: var(--text3);
+        display: block;
+        margin-top: 3px;
+    }/* NEEDS */
+    .need-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 0.5px solid var(--border);
+    }
+
+    .need-item:last-child {
+        border: none;
+        padding-bottom: 0;
+    }
+
+    .need-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 5px;
+    }
+
+    .dot-good {
+        background: var(--green-400);
+    }
+
+    .dot-warn {
+        background: var(--amber-400);
+    }
+
+    .dot-bad {
+        background: var(--red-400);
+    }
+
+    .need-text {
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.5;
+    }/* STREAK */
+    .streak-card {
+        background: linear-gradient(135deg, #fff9ee, #fef3d0);
+        border: 0.5px solid #fad87a;
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 12px;
+    }
+
+    .streak-num {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--amber-600);
+    }
+
+    .streak-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--amber-800);
+    }
+
+    .streak-sub {
+        font-size: 11px;
+        color: var(--amber-600);
+        margin-top: 3px;
+    }/* AI CARD */
+    .ai-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 0.5px solid var(--border);
+        padding: 14px 16px;
+        margin-bottom: 12px;
+    }
+
+    .ai-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .ai-desc {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.6;
+        flex: 1;
+    }
+
+    .ai-actions {
+        padding-top: 10px;
+        border-top: 0.5px solid var(--border);
+    }
+
+    .ai-action-title {
+        font-size: 11px;
+        color: var(--text3);
+        margin-bottom: 6px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+    }
+
+    .ai-action-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .ai-action-chip {
+        font-size: 12px;
+        background: var(--green-50);
+        color: var(--green-600);
+        padding: 4px 10px;
+        border-radius: 20px;
+    }/* TIMELINE */
+    .tl-item {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .tl-date {
+        width: 42px;
+        text-align: center;
+        flex-shrink: 0;
+        padding-top: 4px;
+    }
+
+    .tl-day {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .tl-month {
+        font-size: 10px;
+        color: var(--text3);
+    }
+
+    .tl-content {
+        flex: 1;
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 0.5px solid var(--border);
+        overflow: hidden;
+    }
+
+    .tl-photo {
+        width: 100%;
+        height: 130px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+    }
+
+    .tl-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .tl-photo-bg1 {
+        background: linear-gradient(135deg, #d4edba, #a8d870);
+    }
+
+    .tl-photo-bg2 {
+        background: linear-gradient(135deg, #fef3d0, #fad87a);
+    }
+
+    .tl-photo-bg3 {
+        background: linear-gradient(135deg, #daf0e8, #9fe1cb);
+    }
+
+    .tl-meta {
+        padding: 10px 12px;
+    }
+
+    .tl-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+        align-items: center;
+    }
+
+    .tl-tag {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: #f0f0ec;
+        color: var(--text3);
+    }
+
+    .tl-note {
+        font-size: 12px;
+        color: var(--text2);
+        line-height: 1.5;
+    }/* ADD PHOTO BTN */
+    .add-photo-btn {
+        width: 100%;
+        padding: 16px;
+        background: var(--green-50);
+        border: 1.5px dashed var(--green-100);
+        border-radius: var(--radius);
+        text-align: center;
+        font-size: 14px;
+        color: var(--green-600);
+        cursor: pointer;
+        margin-bottom: 16px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .add-photo-btn:active {
+        transform: scale(0.98);
+    }/* STATS */
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .stat-card {
+        background: var(--card);
+        border-radius: var(--radius-sm);
+        border: 0.5px solid var(--border);
+        padding: 14px;
+    }
+
+    .stat-val {
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 3px;
+    }
+
+    .stat-green {
+        color: var(--green-600);
+    }
+
+    .stat-amber {
+        color: var(--amber-600);
+    }
+
+    .stat-red {
+        color: var(--red-400);
+    }/* BAR CHART */
+    .bar-chart {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        height: 100px;
+        gap: 4px;
+        margin-top: 8px;
+    }
+
+    .bar-col2 {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .bar2 {
+        width: 100%;
+        border-radius: 4px 4px 0 0;
+        min-height: 6px;
+    }
+
+    .bar-g {
+        background: var(--green-200);
+    }
+
+    .bar-a {
+        background: var(--amber-400);
+    }
+
+    .bar-r {
+        background: var(--red-400);
+    }
+
+    .bar-lbl {
+        font-size: 9px;
+        color: var(--text3);
+    }/* CARE LOG ITEMS */
+    .care-log-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 0.5px solid var(--border);
+    }
+
+    .care-log-item:last-child {
+        border: none;
+    }
+
+    .care-log-icon {
+        font-size: 16px;
+        width: 34px;
+        height: 34px;
+        background: var(--green-50);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .care-log-text {
+        flex: 1;
+        font-size: 13px;
+        color: var(--text);
+    }
+
+    .care-log-date {
+        font-size: 12px;
+        color: var(--text3);
+    }/* PLANTS */
+    .plant-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--card);
+        border: 0.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .plant-item:active {
+        transform: scale(0.98);
+    }
+
+    .plant-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        flex-shrink: 0;
+    }
+
+    .pa-g {
+        background: linear-gradient(135deg, #d4edba, #a8d870);
+    }
+
+    .pa-p {
+        background: linear-gradient(135deg, #fbeaf0, #f4c0d1);
+    }
+
+    .pa-a {
+        background: linear-gradient(135deg, #fef3d0, #fad87a);
+    }
+
+    .pa-t {
+        background: linear-gradient(135deg, #e1f5ee, #9fe1cb);
+    }
+
+    .plant-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .plant-type {
+        font-size: 12px;
+        color: var(--text3);
+        margin-top: 2px;
+    }
+
+    .plant-days {
+        font-size: 11px;
+        color: var(--green-400);
+        margin-top: 3px;
+        font-weight: 500;
+    }
+
+    .add-plant-btn {
+        width: 100%;
+        padding: 16px;
+        background: var(--card);
+        border: 1.5px dashed var(--border);
+        border-radius: var(--radius);
+        text-align: center;
+        font-size: 14px;
+        color: var(--text3);
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .add-plant-btn:active {
+        transform: scale(0.98);
+    }/* TAB BAR */
+    .tab-bar {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 0.5px solid var(--border);
+        display: flex;
+        flex-shrink: 0;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .tab {
+        flex: 1;
+        padding: 10px 4px 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s;
+        user-select: none;
+    }
+
+    .tab:active {
+        transform: scale(0.92);
+    }
+
+    .tab-icon {
+        font-size: 22px;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .tab-label {
+        font-size: 10px;
+        color: var(--text3);
+        font-weight: 500;
+    }
+
+    .tab.active .tab-label {
+        color: var(--green-600);
+    }/* MODAL */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 200;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .modal-overlay.hidden {
+        display: none;
+    }
+
+    .modal {
+        background: var(--card);
+        border-radius: 24px 24px 0 0;
+        padding: 20px 20px calc(env(safe-area-inset-bottom, 0px) + 20px);
+        width: 100%;
+        max-width: 430px;
+        max-height: 90dvh;
+        overflow-y: auto;
+    }
+
+    .modal-handle {
+        width: 40px;
+        height: 4px;
+        background: #ddd;
+        border-radius: 2px;
+        margin: 0 auto 18px;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 16px;
+    }
+
+    .form-label {
+        font-size: 12px;
+        color: var(--text3);
+        margin-bottom: 6px;
+        display: block;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 11px 14px;
+        border: 0.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        color: var(--text);
+        background: var(--bg);
+        margin-bottom: 12px;
+        outline: none;
+        font-family: inherit;
+        -webkit-appearance: none;
+    }
+
+    .form-input:focus {
+        border-color: var(--green-400);
+        background: #fff;
+    }
+
+    textarea.form-input {
+        resize: none;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .care-toggle {
+        padding: 11px 6px;
+        border: 0.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        text-align: center;
+        cursor: pointer;
+        font-size: 12px;
+        color: var(--text2);
+        transition: all 0.15s;
+        user-select: none;
+    }
+
+    .care-toggle:active {
+        transform: scale(0.95);
+    }
+
+    .care-toggle.on {
+        background: var(--green-50);
+        border-color: var(--green-100);
+        color: var(--green-800);
+    }
+
+    .care-toggle-icon {
+        font-size: 20px;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background: var(--green-600);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        margin-top: 4px;
+        transition: all 0.15s;
+    }
+
+    .submit-btn:active {
+        transform: scale(0.97);
+        background: var(--green-800);
+    }
+
+    .cancel-btn {
+        width: 100%;
+        padding: 12px;
+        background: transparent;
+        color: var(--text3);
+        border: none;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 6px;
+        font-family: inherit;
+    }/* PHOTO UPLOAD */
+    .photo-upload-area {
+        width: 100%;
+        height: 150px;
+        background: var(--green-50);
+        border: 1.5px dashed var(--green-100);
+        border-radius: var(--radius-sm);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-bottom: 12px;
+        overflow: hidden;
+        transition: all 0.2s;
+    }
+
+    .photo-upload-area:active {
+        transform: scale(0.98);
+    }
+
+    .pu-icon {
+        font-size: 30px;
+        margin-bottom: 6px;
+    }
+
+    .pu-text {
+        font-size: 12px;
+        color: var(--green-400);
+        font-weight: 500;
+    }
+
+    .photo-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }/* AI LOADING */
+    .ai-loading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 0;
+    }
+
+    .ai-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green-400);
+        animation: bounce 1s infinite;
+    }
+
+    .ai-dot:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+
+    .ai-dot:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    @keyframes bounce {
+        0%, 80%, 100% {
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+
+        40% {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+    }/* AI result in modal */
+    .ai-result-box {
+        background: var(--green-50);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .ai-result-box .badge {
+        margin-bottom: 8px;
+    }
+
+    .ai-result-desc {
+        font-size: 13px;
+        color: var(--green-800);
+        line-height: 1.5;
+    }
+
+    .ai-suggestions {
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .ai-sug-chip {
+        font-size: 11px;
+        background: #fff;
+        color: var(--green-600);
+        padding: 3px 9px;
+        border-radius: 20px;
+        border: 0.5px solid var(--green-100);
+    }/* EMOJI PICKER */
+    .emoji-row {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+        margin-bottom: 14px;
+    }
+
+    .emoji-opt {
+        width: 100%;
+        aspect-ratio: 1;
+        border: 0.5px solid var(--border);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .emoji-opt:active {
+        transform: scale(0.9);
+    }
+
+    .emoji-opt.selected {
+        background: var(--green-50);
+        border-color: var(--green-200);
+    }/* EMPTY STATE */
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: var(--text3);
+    }
+
+    .empty-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+    }
+
+    .empty-text {
+        font-size: 14px;
+        line-height: 1.6;
+    }/* SECTION HEADER */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+    }
+    </style>
 </head>
 <body>
-<div class="app-wrap">
+    <div class="app-wrap">
 
-  <!-- HEADER -->
-  <div class="app-header">
-    <div class="header-top">
-      <div>
-        <div class="app-title">植日苼</div>
-        <div class="app-subtitle" id="today-date">載入中...</div>
-      </div>
-      <div>
-        <div class="weather-mini">
-          <span class="weather-icon-sm" id="h-icon">🌿</span>
-          <span class="weather-temp-big" id="h-temp">--°</span>
+        <!-- HEADER -->
+        <div class="app-header">
+            <div class="header-top">
+                <div>
+                    <div class="app-title">植日苼</div>
+                    <div class="app-subtitle" id="today-date">載入中...</div>
+                </div>
+                <div>
+                    <div class="weather-mini">
+                        <span class="weather-icon-sm" id="h-icon">🌿</span>
+                        <span class="weather-temp-big" id="h-temp">--°</span>
+                    </div>
+                    <div class="weather-sub" id="h-desc">取得天氣中...</div>
+                </div>
+            </div>
         </div>
-        <div class="weather-sub" id="h-desc">取得天氣中...</div>
-      </div>
-    </div>
-  </div>
 
-  <!-- HOME -->
-  <div class="screen" id="screen-home">
-    <div class="weather-card">
-      <div>
-        <div class="wc-temp" id="wc-temp">--°C</div>
-        <div class="wc-desc" id="wc-desc">取得天氣中...</div>
-        <div class="wc-detail">
-          <span class="wc-chip" id="wc-hum">💧 --%</span>
-          <span class="wc-chip" id="wc-wind">💨 -- km/h</span>
-          <span class="wc-chip" id="wc-uv">☀️ UV --</span>
+        <!-- HOME -->
+        <div class="screen" id="screen-home">
+            <div class="weather-card">
+                <div>
+                    <div class="wc-temp" id="wc-temp">--°C</div>
+                    <div class="wc-desc" id="wc-desc">取得天氣中...</div>
+                    <div class="wc-detail">
+                        <span class="wc-chip" id="wc-hum">💧 --%</span>
+                        <span class="wc-chip" id="wc-wind">💨 -- km/h</span>
+                        <span class="wc-chip" id="wc-uv">☀️ UV --</span>
+                    </div>
+                </div>
+                <div class="wc-icon" id="wc-icon">🌿</div>
+            </div>
+
+            <div class="ai-card" id="home-ai-card">
+                <div class="card-title">AI 植物評估 · 今日</div>
+                <div class="ai-row">
+                    <div id="home-badge">
+                        <span class="badge badge-ok" style="background:#f0f0ec;color:var(--text3);">尚無評估</span>
+                    </div>
+                    <div class="ai-desc" id="home-ai-desc">新增第一筆日記並拍照，AI 就會自動評估你的植物狀況！</div>
+                </div>
+                <div class="ai-actions">
+                    <div class="ai-action-title">AI 建議</div>
+                    <div class="ai-action-list" id="home-ai-actions">
+                        <span class="ai-action-chip">📸 先拍一張植物照片吧</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="care-row">
+                <div class="care-btn" id="btn-water" onclick="toggleCare('water')">
+                    <span class="ci">💧</span>
+                    <span class="cl" id="cl-water">澆水</span>
+                    <span class="ct" id="ct-water">點擊記錄</span>
+                </div>
+                <div class="care-btn" id="btn-fert" onclick="toggleCare('fert')">
+                    <span class="ci">🌿</span>
+                    <span class="cl" id="cl-fert">施肥</span>
+                    <span class="ct" id="ct-fert">3 天後</span>
+                </div>
+                <div class="care-btn" id="btn-trim" onclick="toggleCare('trim')">
+                    <span class="ci">✂️</span>
+                    <span class="cl" id="cl-trim">整理</span>
+                    <span class="ct" id="ct-trim">本週</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">目前植物需求</div>
+                <div id="needs-list">
+                    <div class="need-item">
+                        <div class="need-dot dot-good"></div>
+                        <div class="need-text">光照充足，無需調整位置</div>
+                    </div>
+                    <div class="need-item">
+                        <div class="need-dot dot-warn"></div>
+                        <div class="need-text">土壤稍乾，建議明日早晨補水</div>
+                    </div>
+                    <div class="need-item">
+                        <div class="need-dot dot-bad"></div>
+                        <div class="need-text">發現輕微蟲害，建議噴灑稀釋農藥</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="streak-card">
+                <div class="streak-num" id="streak-num">🔥 1</div>
+                <div>
+                    <div class="streak-label">連續照顧天數</div>
+                    <div class="streak-sub" id="streak-sub">繼續加油！</div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="wc-icon" id="wc-icon">🌿</div>
-    </div>
 
-    <div class="ai-card" id="home-ai-card">
-      <div class="card-title">AI 植物評估 · 今日</div>
-      <div class="ai-row">
-        <div id="home-badge"><span class="badge badge-ok" style="background:#f0f0ec;color:var(--text3);">尚無評估</span></div>
-        <div class="ai-desc" id="home-ai-desc">新增第一筆日記並拍照，AI 就會自動評估你的植物狀況！</div>
-      </div>
-      <div class="ai-actions">
-        <div class="ai-action-title">AI 建議</div>
-        <div class="ai-action-list" id="home-ai-actions">
-          <span class="ai-action-chip">📸 先拍一張植物照片吧</span>
+        <!-- DIARY -->
+        <div class="screen hidden" id="screen-diary">
+            <div class="add-photo-btn" onclick="openAddEntry()">📸　新增今日日記</div>
+            <div id="timeline-list"></div>
         </div>
-      </div>
+
+        <!-- STATS -->
+        <div class="screen hidden" id="screen-stats">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-val stat-green" id="s-water">0</div>
+                    <div class="stat-label">本月澆水次數</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val stat-amber" id="s-fert">0</div>
+                    <div class="stat-label">本月施肥次數</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val stat-green" id="s-avg">--</div>
+                    <div class="stat-label">平均健康評分</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val stat-red" id="s-days">0</div>
+                    <div class="stat-label">日記記錄天數</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">近期健康趨勢</div>
+                <div class="bar-chart" id="bar-chart">
+                    <div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--text3);font-size:13px;">新增日記後顯示趨勢圖</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">護理週期參考</div>
+                <div class="care-log-item">
+                    <div class="care-log-icon">💧</div>
+                    <div class="care-log-text">澆水週期</div>
+                    <div class="care-log-date">每 2 天</div>
+                </div>
+                <div class="care-log-item">
+                    <div class="care-log-icon">🌿</div>
+                    <div class="care-log-text">施肥週期</div>
+                    <div class="care-log-date">每 7 天</div>
+                </div>
+                <div class="care-log-item">
+                    <div class="care-log-icon">✂️</div>
+                    <div class="care-log-text">整理週期</div>
+                    <div class="care-log-date">每 14 天</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLANTS -->
+        <div class="screen hidden" id="screen-plants">
+            <div class="section-header">
+                <div class="section-title">我的植物</div>
+            </div>
+            <div id="plants-list"></div>
+            <div class="add-plant-btn" onclick="openAddPlant()">＋ 新增植物</div>
+        </div>
+
+        <!-- TAB BAR -->
+        <div class="tab-bar">
+            <div class="tab active" onclick="showScreen('home',this)">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-label">首頁</span>
+            </div>
+            <div class="tab" onclick="showScreen('diary',this)">
+                <span class="tab-icon">📸</span>
+                <span class="tab-label">日記</span>
+            </div>
+            <div class="tab" onclick="showScreen('stats',this)">
+                <span class="tab-icon">📊</span>
+                <span class="tab-label">統計</span>
+            </div>
+            <div class="tab" onclick="showScreen('plants',this)">
+                <span class="tab-icon">🌿</span>
+                <span class="tab-label">植物</span>
+            </div>
+        </div>
     </div>
 
-    <div class="care-row">
-      <div class="care-btn" id="btn-water" onclick="toggleCare('water')">
-        <span class="ci">💧</span>
-        <span class="cl" id="cl-water">澆水</span>
-        <span class="ct" id="ct-water">點擊記錄</span>
-      </div>
-      <div class="care-btn" id="btn-fert" onclick="toggleCare('fert')">
-        <span class="ci">🌿</span>
-        <span class="cl" id="cl-fert">施肥</span>
-        <span class="ct" id="ct-fert">3 天後</span>
-      </div>
-      <div class="care-btn" id="btn-trim" onclick="toggleCare('trim')">
-        <span class="ci">✂️</span>
-        <span class="cl" id="cl-trim">整理</span>
-        <span class="ct" id="ct-trim">本週</span>
-      </div>
+    <!-- ADD ENTRY MODAL -->
+    <div class="modal-overlay hidden" id="modal-entry">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-title">📸 新增今日日記</div>
+            <label class="form-label">植物照片</label>
+            <div class="photo-upload-area" onclick="document.getElementById('photo-input').click()" id="photo-area">
+                <div class="pu-icon">📷</div>
+                <div class="pu-text">點擊拍照或從相簿選取</div>
+            </div>
+            <input type="file" accept="image/*" id="photo-input" style="display:none" onchange="handlePhoto(event)">
+
+            <div id="ai-loading-wrap" style="display:none">
+                <div class="card-title" style="margin-bottom:6px">AI 分析照片中</div>
+                <div class="ai-loading">
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                </div>
+            </div>
+            <div id="ai-result-wrap" style="display:none">
+                <label class="form-label">AI 評估結果</label>
+                <div class="ai-result-box">
+                    <div id="modal-badge"></div>
+                    <div class="ai-result-desc" id="modal-desc"></div>
+                    <div class="ai-suggestions" id="modal-sugs"></div>
+                </div>
+            </div>
+
+            <label class="form-label">今日護理記錄</label>
+            <div class="form-row">
+                <div class="care-toggle" id="t-water" onclick="toggleModal('water')">
+                    <span class="care-toggle-icon">💧</span>
+                    澆水
+                </div>
+                <div class="care-toggle" id="t-fert" onclick="toggleModal('fert')">
+                    <span class="care-toggle-icon">🌿</span>
+                    施肥
+                </div>
+                <div class="care-toggle" id="t-trim" onclick="toggleModal('trim')">
+                    <span class="care-toggle-icon">✂️</span>
+                    整理
+                </div>
+            </div>
+            <label class="form-label">備註</label>
+            <textarea class="form-input" id="entry-note" rows="2" placeholder="今天植物的狀況..."></textarea>
+            <button class="submit-btn" onclick="saveEntry()">儲存日記 ✓</button>
+            <button class="cancel-btn" onclick="closeModal('modal-entry')">取消</button>
+        </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">目前植物需求</div>
-      <div id="needs-list">
-        <div class="need-item"><div class="need-dot dot-good"></div><div class="need-text">光照充足，無需調整位置</div></div>
-        <div class="need-item"><div class="need-dot dot-warn"></div><div class="need-text">土壤稍乾，建議明日早晨補水</div></div>
-        <div class="need-item"><div class="need-dot dot-bad"></div><div class="need-text">發現輕微蟲害，建議噴灑稀釋農藥</div></div>
-      </div>
+    <!-- ADD PLANT MODAL -->
+    <div class="modal-overlay hidden" id="modal-plant">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-title">🌱 新增植物</div>
+            <label class="form-label">植物暱稱</label>
+            <input class="form-input" id="p-name" placeholder="例如：小翠、我的薄荷">
+            <label class="form-label">植物種類</label>
+            <input class="form-input" id="p-type" placeholder="例如：薄荷、仙人掌、海棠花">
+            <label class="form-label">選擇圖示</label>
+            <div class="emoji-row">
+                <div class="emoji-opt selected" onclick="pickEmoji(this,'🌱')">🌱</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🌸')">🌸</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🌵')">🌵</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🌿')">🌿</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🍀')">🍀</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🌺')">🌺</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🎋')">🎋</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🌻')">🌻</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🍃')">🍃</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🪴')">🪴</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🌾')">🌾</div>
+                <div class="emoji-opt" onclick="pickEmoji(this,'🍁')">🍁</div>
+            </div>
+            <button class="submit-btn" onclick="savePlant()">新增植物 ✓</button>
+            <button class="cancel-btn" onclick="closeModal('modal-plant')">取消</button>
+        </div>
     </div>
 
-    <div class="streak-card">
-      <div class="streak-num" id="streak-num">🔥 1</div>
-      <div>
-        <div class="streak-label">連續照顧天數</div>
-        <div class="streak-sub" id="streak-sub">繼續加油！</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DIARY -->
-  <div class="screen hidden" id="screen-diary">
-    <div class="add-photo-btn" onclick="openAddEntry()">📸　新增今日日記</div>
-    <div id="timeline-list"></div>
-  </div>
-
-  <!-- STATS -->
-  <div class="screen hidden" id="screen-stats">
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-val stat-green" id="s-water">0</div><div class="stat-label">本月澆水次數</div></div>
-      <div class="stat-card"><div class="stat-val stat-amber" id="s-fert">0</div><div class="stat-label">本月施肥次數</div></div>
-      <div class="stat-card"><div class="stat-val stat-green" id="s-avg">--</div><div class="stat-label">平均健康評分</div></div>
-      <div class="stat-card"><div class="stat-val stat-red" id="s-days">0</div><div class="stat-label">日記記錄天數</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">近期健康趨勢</div>
-      <div class="bar-chart" id="bar-chart">
-        <div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--text3);font-size:13px;">新增日記後顯示趨勢圖</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">護理週期參考</div>
-      <div class="care-log-item"><div class="care-log-icon">💧</div><div class="care-log-text">澆水週期</div><div class="care-log-date">每 2 天</div></div>
-      <div class="care-log-item"><div class="care-log-icon">🌿</div><div class="care-log-text">施肥週期</div><div class="care-log-date">每 7 天</div></div>
-      <div class="care-log-item"><div class="care-log-icon">✂️</div><div class="care-log-text">整理週期</div><div class="care-log-date">每 14 天</div></div>
-    </div>
-  </div>
-
-  <!-- PLANTS -->
-  <div class="screen hidden" id="screen-plants">
-    <div class="section-header">
-      <div class="section-title">我的植物</div>
-    </div>
-    <div id="plants-list"></div>
-    <div class="add-plant-btn" onclick="openAddPlant()">＋ 新增植物</div>
-  </div>
-
-  <!-- TAB BAR -->
-  <div class="tab-bar">
-    <div class="tab active" onclick="showScreen('home',this)"><span class="tab-icon">🏠</span><span class="tab-label">首頁</span></div>
-    <div class="tab" onclick="showScreen('diary',this)"><span class="tab-icon">📸</span><span class="tab-label">日記</span></div>
-    <div class="tab" onclick="showScreen('stats',this)"><span class="tab-icon">📊</span><span class="tab-label">統計</span></div>
-    <div class="tab" onclick="showScreen('plants',this)"><span class="tab-icon">🌿</span><span class="tab-label">植物</span></div>
-  </div>
-</div>
-
-<!-- ADD ENTRY MODAL -->
-<div class="modal-overlay hidden" id="modal-entry">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">📸 新增今日日記</div>
-    <label class="form-label">植物照片</label>
-    <div class="photo-upload-area" onclick="document.getElementById('photo-input').click()" id="photo-area">
-      <div class="pu-icon">📷</div>
-      <div class="pu-text">點擊拍照或從相簿選取</div>
-    </div>
-    <input type="file" accept="image/*" id="photo-input" style="display:none" onchange="handlePhoto(event)">
-
-    <div id="ai-loading-wrap" style="display:none">
-      <div class="card-title" style="margin-bottom:6px">AI 分析照片中</div>
-      <div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>
-    </div>
-    <div id="ai-result-wrap" style="display:none">
-      <label class="form-label">AI 評估結果</label>
-      <div class="ai-result-box">
-        <div id="modal-badge"></div>
-        <div class="ai-result-desc" id="modal-desc"></div>
-        <div class="ai-suggestions" id="modal-sugs"></div>
-      </div>
-    </div>
-
-    <label class="form-label">今日護理記錄</label>
-    <div class="form-row">
-      <div class="care-toggle" id="t-water" onclick="toggleModal('water')"><span class="care-toggle-icon">💧</span>澆水</div>
-      <div class="care-toggle" id="t-fert" onclick="toggleModal('fert')"><span class="care-toggle-icon">🌿</span>施肥</div>
-      <div class="care-toggle" id="t-trim" onclick="toggleModal('trim')"><span class="care-toggle-icon">✂️</span>整理</div>
-    </div>
-    <label class="form-label">備註</label>
-    <textarea class="form-input" id="entry-note" rows="2" placeholder="今天植物的狀況..."></textarea>
-    <button class="submit-btn" onclick="saveEntry()">儲存日記 ✓</button>
-    <button class="cancel-btn" onclick="closeModal('modal-entry')">取消</button>
-  </div>
-</div>
-
-<!-- ADD PLANT MODAL -->
-<div class="modal-overlay hidden" id="modal-plant">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">🌱 新增植物</div>
-    <label class="form-label">植物暱稱</label>
-    <input class="form-input" id="p-name" placeholder="例如：小翠、我的薄荷">
-    <label class="form-label">植物種類</label>
-    <input class="form-input" id="p-type" placeholder="例如：薄荷、仙人掌、海棠花">
-    <label class="form-label">選擇圖示</label>
-    <div class="emoji-row">
-      <div class="emoji-opt selected" onclick="pickEmoji(this,'🌱')">🌱</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🌸')">🌸</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🌵')">🌵</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🌿')">🌿</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🍀')">🍀</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🌺')">🌺</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🎋')">🎋</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🌻')">🌻</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🍃')">🍃</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🪴')">🪴</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🌾')">🌾</div>
-      <div class="emoji-opt" onclick="pickEmoji(this,'🍁')">🍁</div>
-    </div>
-    <button class="submit-btn" onclick="savePlant()">新增植物 ✓</button>
-    <button class="cancel-btn" onclick="closeModal('modal-plant')">取消</button>
-  </div>
-</div>
-
-<script>
-// ── STATE ──
-function storageGet(k) { try { return JSON.parse(localStorage.getItem(k)) } catch(e) { return null } }
-function storageSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e) { return false; } }
-
-let plants  = storageGet('zrs_plants')  || [];
-let entries = storageGet('zrs_entries') || [];
-let care    = storageGet('zrs_care')    || {};
-let streak  = storageGet('zrs_streak')  || 0;
-let selEmoji  = '🌱';
-let photoData = null;
-let aiResult  = null;
-let modalCare = {water:false, fert:false, trim:false};
-
-// 儲存時照片單獨存，避免超過 localStorage 限制
-function saveAll() {
-  // 儲存不含照片的 entries（照片另外存）
-  const entriesNoPhoto = entries.map(e => ({...e, photo: e.photo ? '__photo_'+e.id : null}));
-  storageSet('zrs_plants', plants);
-  storageSet('zrs_entries', entriesNoPhoto);
-  storageSet('zrs_care', care);
-  storageSet('zrs_streak', streak);
-  // 照片單獨存
-  entries.forEach(e => {
-    if (e.photo && e.photo.startsWith('data:')) {
-      try { localStorage.setItem('zrs_photo_'+e.id, e.photo); } catch(err) { console.warn('照片儲存空間不足'); }
+    <script>
+    // ── STATE ──
+    function storageGet(k) {
+        try {
+            return JSON.parse(localStorage.getItem(k))
+        } catch (e) {
+            return null
+        }
     }
-  });
-}
-
-function loadAll() {
-  plants  = storageGet('zrs_plants')  || [];
-  const raw = storageGet('zrs_entries') || [];
-  // 把照片讀回來
-  entries = raw.map(e => {
-    if (e.photo && e.photo.startsWith('__photo_')) {
-      return {...e, photo: localStorage.getItem('zrs_photo_'+e.id) || null};
+    function storageSet(k, v) {
+        try {
+            localStorage.setItem(k, JSON.stringify(v));
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
-    return e;
-  });
-  care   = storageGet('zrs_care')   || {};
-  streak = storageGet('zrs_streak') || 0;
-}
-loadAll();
 
-// ── DATE ──
-const now = new Date();
-const dayNames = ['日','一','二','三','四','五','六'];
-const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-document.getElementById('today-date').textContent =
-  `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · 星期${dayNames[now.getDay()]}`;
+    let plants = storageGet('zrs_plants') || [];
+    let entries = storageGet('zrs_entries') || [];
+    let care = storageGet('zrs_care') || {};
+    let streak = storageGet('zrs_streak') || 0;
+    let selEmoji = '🌱';
+    let photoData = null;
+    let aiResult = null;
+    let modalCare = {
+        water: false,
+        fert: false,
+        trim: false
+    };
 
-// ── STREAK ──
-function updateStreak() {
-  document.getElementById('streak-num').textContent = '🔥 ' + streak;
-  const left = 30 - (streak % 30);
-  document.getElementById('streak-sub').textContent =
-    streak >= 30 ? '恭喜達成「月月好植」成就！🏆' : streak > 0 ? `再堅持 ${left} 天達成「月月好植」成就` : '開始你的第一筆記錄吧！';
-}
-updateStreak();
+    // 儲存時照片單獨存，避免超過 localStorage 限制
+    function saveAll() {
+        // 儲存不含照片的 entries（照片另外存）
+        const entriesNoPhoto = entries.map(e => ({
+            ...e,
+            photo: e.photo ? '__photo_' + e.id : null
+        }));
+        storageSet('zrs_plants', plants);
+        storageSet('zrs_entries', entriesNoPhoto);
+        storageSet('zrs_care', care);
+        storageSet('zrs_streak', streak);
+        // 照片單獨存
+        entries.forEach(e => {
+            if (e.photo && e.photo.startsWith('data:')) {
+                try {
+                    localStorage.setItem('zrs_photo_' + e.id, e.photo);
+                } catch (err) {
+                    console.warn('照片儲存空間不足');
+                }
+            }
+        });
+    }
 
-// ── CARE INIT ──
-['water','fert','trim'].forEach(t => {
-  if (care[t]) {
-    document.getElementById('btn-'+t).classList.add('done');
-    document.getElementById('cl-'+t).style.color = 'var(--green-800)';
-    document.getElementById('ct-'+t).textContent = '今日完成 ✓';
-  }
-});
+    function loadAll() {
+        plants = storageGet('zrs_plants') || [];
+        const raw = storageGet('zrs_entries') || [];
+        // 把照片讀回來
+        entries = raw.map(e => {
+            if (e.photo && e.photo.startsWith('__photo_')) {
+                return {
+                    ...e,
+                    photo: localStorage.getItem('zrs_photo_' + e.id) || null
+                };
+            }
+            return e;
+        });
+        care = storageGet('zrs_care') || {};
+        streak = storageGet('zrs_streak') || 0;
+    }
+    loadAll();
 
-// ── WEATHER ──
-async function loadWeather() {
-  try {
-    const pos = await new Promise((res,rej) =>
-      navigator.geolocation.getCurrentPosition(res, rej, {timeout:8000}));
-    const {latitude:lat, longitude:lon} = pos.coords;
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,uv_index&timezone=auto`;
-    const data = await (await fetch(url)).json();
-    const c = data.current;
-    const temp = Math.round(c.temperature_2m);
-    const hum = Math.round(c.relative_humidity_2m);
-    const wind = Math.round(c.wind_speed_10m);
-    const uv = Math.round(c.uv_index || 0);
-    const wc = c.weather_code;
-    const icon = wc<=1?'☀️':wc<=3?'⛅':wc<=48?'🌫️':wc<=67?'🌧️':wc<=77?'❄️':'⛈️';
-    const desc = wc<=1?'晴天，陽光充足':wc<=3?'多雲，適合照顧植物':wc<=48?'有霧，注意通風':wc<=67?'雨天，減少澆水':wc<=77?'降雪，保持溫暖':'雷雨，移至室內';
-    document.getElementById('wc-temp').textContent = temp+'°C';
-    document.getElementById('wc-desc').textContent = desc;
-    document.getElementById('wc-hum').textContent = '💧 '+hum+'%';
-    document.getElementById('wc-wind').textContent = '💨 '+wind+' km/h';
-    document.getElementById('wc-uv').textContent = '☀️ UV '+uv;
-    document.getElementById('wc-icon').textContent = icon;
-    document.getElementById('h-temp').textContent = temp+'°';
-    document.getElementById('h-icon').textContent = icon;
-    document.getElementById('h-desc').textContent = desc.split('，')[0];
-  } catch(e) {
-    document.getElementById('wc-desc').textContent = '點擊允許定位以取得天氣';
-    document.getElementById('h-desc').textContent = '允許定位後顯示';
-    document.getElementById('wc-temp').textContent = '--°C';
-  }
-}
-loadWeather();
+    // ── DATE ──
+    const now = new Date();
+    const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    document.getElementById('today-date').textContent =
+    `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 · 星期${dayNames[now.getDay()]}`;
 
-// ── SCREENS ──
-function showScreen(name, el) {
-  ['home','diary','stats','plants'].forEach(s =>
-    document.getElementById('screen-'+s).classList.toggle('hidden', s !== name));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  if (name === 'diary') renderDiary();
-  if (name === 'stats') renderStats();
-  if (name === 'plants') renderPlants();
-}
+    // ── STREAK ──
+    function updateStreak() {
+        document.getElementById('streak-num').textContent = '🔥 ' + streak;
+        const left = 30 - (streak % 30);
+        document.getElementById('streak-sub').textContent =
+        streak >= 30 ? '恭喜達成「月月好植」成就！🏆' : streak > 0 ? `再堅持 ${left} 天達成「月月好植」成就` : '開始你的第一筆記錄吧！';
+    }
+    updateStreak();
 
-// ── CARE TOGGLE ──
-function toggleCare(type) {
-  const btn = document.getElementById('btn-'+type);
-  const isDone = btn.classList.toggle('done');
-  const lbl = document.getElementById('cl-'+type);
-  const t = document.getElementById('ct-'+type);
-  lbl.style.color = isDone ? 'var(--green-800)' : '';
-  if (type==='water') t.textContent = isDone ? '今日完成 ✓' : '點擊記錄';
-  if (type==='fert')  t.textContent = isDone ? '今日完成 ✓' : '3 天後';
-  if (type==='trim')  t.textContent = isDone ? '今日完成 ✓' : '本週';
-  care[type] = isDone;
-  saveAll();
-}
+    // ── CARE INIT ──
+    ['water', 'fert', 'trim'].forEach(t => {
+        if (care[t]) {
+            document.getElementById('btn-' + t).classList.add('done');
+            document.getElementById('cl-' + t).style.color = 'var(--green-800)';
+            document.getElementById('ct-' + t).textContent = '今日完成 ✓';
+        }
+    });
 
-// ── DIARY ──
-function renderDiary() {
-  const list = document.getElementById('timeline-list');
-  if (entries.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-text">還沒有日記記錄<br>點擊上方按鈕，新增第一筆！</div></div>';
-    return;
-  }
-  const bgs = ['tl-photo-bg1','tl-photo-bg2','tl-photo-bg3'];
-  const sMap = {great:{cls:'badge-great',txt:'🌿 極好'},ok:{cls:'badge-ok',txt:'🌤 普通'},bad:{cls:'badge-bad',txt:'🥀 不好'}};
-  list.innerHTML = entries.map((e,i) => {
-    const d = new Date(e.date);
-    const s = sMap[e.score] || sMap.ok;
-    const tags = (e.tags||[]).map(t=>`<span class="tl-tag">${t}</span>`).join('');
-    const photoHTML = e.photo
-      ? `<div class="tl-photo"><img src="${e.photo}" alt="植物照片"></div>`
-      : `<div class="tl-photo ${bgs[i%3]}">${e.emoji||'🌱'}</div>`;
-    return `<div class="tl-item">
-      <div class="tl-date"><div class="tl-day">${String(d.getDate()).padStart(2,'0')}</div><div class="tl-month">${months[d.getMonth()]}</div></div>
+    // ── WEATHER ──
+    async function loadWeather() {
+        try {
+            const pos = await new Promise((res, rej) =>
+            navigator.geolocation.getCurrentPosition(res, rej, {
+                timeout: 8000
+            }));
+            const {latitude: lat, longitude: lon} = pos.coords;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,uv_index&timezone=auto`;
+            const data = await (await fetch(url)).json();
+            const c = data.current;
+            const temp = Math.round(c.temperature_2m);
+            const hum = Math.round(c.relative_humidity_2m);
+            const wind = Math.round(c.wind_speed_10m);
+            const uv = Math.round(c.uv_index || 0);
+            const wc = c.weather_code;
+            const icon = wc <= 1 ? '☀️' : wc <= 3 ? '⛅' : wc <= 48 ? '🌫️' : wc <= 67 ? '🌧️' : wc <= 77 ? '❄️' : '⛈️';
+            const desc = wc <= 1 ? '晴天，陽光充足' : wc <= 3 ? '多雲，適合照顧植物' : wc <= 48 ? '有霧，注意通風' : wc <= 67 ? '雨天，減少澆水' : wc <= 77 ? '降雪，保持溫暖' : '雷雨，移至室內';
+            document.getElementById('wc-temp').textContent = temp + '°C';
+            document.getElementById('wc-desc').textContent = desc;
+            document.getElementById('wc-hum').textContent = '💧 ' + hum + '%';
+            document.getElementById('wc-wind').textContent = '💨 ' + wind + ' km/h';
+            document.getElementById('wc-uv').textContent = '☀️ UV ' + uv;
+            document.getElementById('wc-icon').textContent = icon;
+            document.getElementById('h-temp').textContent = temp + '°';
+            document.getElementById('h-icon').textContent = icon;
+            document.getElementById('h-desc').textContent = desc.split('，')[0];
+        } catch (e) {
+            document.getElementById('wc-desc').textContent = '點擊允許定位以取得天氣';
+            document.getElementById('h-desc').textContent = '允許定位後顯示';
+            document.getElementById('wc-temp').textContent = '--°C';
+        }
+    }
+    loadWeather();
+
+    // ── SCREENS ──
+    function showScreen(name, el) {
+        ['home', 'diary', 'stats', 'plants'].forEach(s =>
+        document.getElementById('screen-' + s).classList.toggle('hidden', s !== name));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        if (name === 'diary')
+            renderDiary();
+        if (name === 'stats')
+            renderStats();
+        if (name === 'plants')
+            renderPlants();
+    }
+
+    // ── CARE TOGGLE ──
+    function toggleCare(type) {
+        const btn = document.getElementById('btn-' + type);
+        const isDone = btn.classList.toggle('done');
+        const lbl = document.getElementById('cl-' + type);
+        const t = document.getElementById('ct-' + type);
+        lbl.style.color = isDone ? 'var(--green-800)' : '';
+        if (type === 'water')
+            t.textContent = isDone ? '今日完成 ✓' : '點擊記錄';
+        if (type === 'fert')
+            t.textContent = isDone ? '今日完成 ✓' : '3 天後';
+        if (type === 'trim')
+            t.textContent = isDone ? '今日完成 ✓' : '本週';
+        care[type] = isDone;
+        saveAll();
+    }
+
+    // ── DIARY ──
+    function renderDiary() {
+        const list = document.getElementById('timeline-list');
+        if (entries.length === 0) {
+            list.innerHTML = '<div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-text">還沒有日記記錄<br>點擊上方按鈕，新增第一筆！</div></div>';
+            return;
+        }
+        const bgs = ['tl-photo-bg1', 'tl-photo-bg2', 'tl-photo-bg3'];
+        const sMap = {
+            great: {
+                cls: 'badge-great',
+                txt: '🌿 極好'
+            },
+            ok: {
+                cls: 'badge-ok',
+                txt: '🌤 普通'
+            },
+            bad: {
+                cls: 'badge-bad',
+                txt: '🥀 不好'
+            }
+        };
+        list.innerHTML = entries.map((e, i) => {
+            const d = new Date(e.date);
+            const s = sMap[e.score] || sMap.ok;
+            const tags = (e.tags || []).map(t => `<span class="tl-tag">${t}</span>`).join('');
+            const photoHTML = e.photo
+            ? `<div class="tl-photo"><img src="${e.photo}" alt="植物照片"></div>`
+            : `<div class="tl-photo ${bgs[i % 3]}">${e.emoji || '🌱'}</div>`;
+            return `<div class="tl-item">
+      <div class="tl-date"><div class="tl-day">${String(d.getDate()).padStart(2, '0')}</div><div class="tl-month">${months[d.getMonth()]}</div></div>
       <div class="tl-content">
-        ${photoHTML}
+        ${
+            photoHTML}
         <div class="tl-meta">
-          <div class="tl-tags"><span class="badge ${s.cls}" style="font-size:11px;padding:3px 9px;">${s.txt}</span>${tags}</div>
+          <div class="tl-tags"><span class="badge ${
+            s.cls}" style="font-size:11px;padding:3px 9px;">${s.txt}</span>${tags}</div>
           <div class="tl-note">${e.note || e.desc}</div>
         </div>
       </div>
-    </div>`;
-  }).join('');
-}
+    </div>`
 
-// ── STATS ──
-function renderStats() {
-  const water = entries.filter(e=>(e.tags||[]).includes('澆水')).length;
-  const fert  = entries.filter(e=>(e.tags||[]).includes('施肥')).length;
-  const scores = entries.map(e=>e.score==='great'?100:e.score==='ok'?60:25);
-  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
-  document.getElementById('s-water').textContent = water;
-  document.getElementById('s-fert').textContent = fert;
-  document.getElementById('s-avg').textContent = avg !== null ? avg+'%' : '--';
-  document.getElementById('s-days').textContent = entries.length;
-  const chart = document.getElementById('bar-chart');
-  if (entries.length === 0) {
-    chart.innerHTML = '<div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--text3);font-size:13px;">新增日記後顯示趨勢圖</div>';
-    return;
-  }
-  const last7 = entries.slice(0,7).reverse();
-  const hMap = {great:90,ok:55,bad:28};
-  const cMap = {great:'bar-g',ok:'bar-a',bad:'bar-r'};
-  chart.innerHTML = last7.map(e => {
-    const d = new Date(e.date);
-    return `<div class="bar-col2">
-      <div class="bar2 ${cMap[e.score]||'bar-g'}" style="height:${hMap[e.score]||55}px;"></div>
-      <div class="bar-lbl">${d.getMonth()+1}/${d.getDate()}</div>
-    </div>`;
-  }).join('');
-}
 
-// ── PLANTS ──
-const paBgs = ['pa-g','pa-p','pa-a','pa-t'];
-function renderPlants() {
-  const list = document.getElementById('plants-list');
-  if (plants.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🪴</div><div class="empty-text">還沒有植物<br>點擊下方按鈕新增你的第一株植物！</div></div>';
-    return;
-  }
-  const sMap = {great:{cls:'badge-great',txt:'極好'},ok:{cls:'badge-ok',txt:'普通'},bad:{cls:'badge-bad',txt:'不好'}};
-  list.innerHTML = plants.map((p,i) => {
-    const s = sMap[p.score] || sMap.great;
-    return `<div class="plant-item">
-      <div class="plant-avatar ${paBgs[i%4]}">${p.emoji||'🌱'}</div>
+            ;
+        }).join('');
+    }
+
+    // ── STATS ──
+    function renderStats() {
+        const water = entries.filter(e => (e.tags || []).includes('澆水')).length;
+        const fert = entries.filter(e => (e.tags || []).includes('施肥')).length;
+        const scores = entries.map(e => e.score === 'great' ? 100 : e.score === 'ok' ? 60 : 25);
+        const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+        document.getElementById('s-water').textContent = water;
+        document.getElementById('s-fert').textContent = fert;
+        document.getElementById('s-avg').textContent = avg !== null ? avg + '%' : '--';
+        document.getElementById('s-days').textContent = entries.length;
+        const chart = document.getElementById('bar-chart');
+        if (entries.length === 0) {
+            chart.innerHTML = '<div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--text3);font-size:13px;">新增日記後顯示趨勢圖</div>';
+            return;
+        }
+        const last7 = entries.slice(0, 7).reverse();
+        const hMap = {
+            great: 90,
+            ok: 55,
+            bad: 28
+        };
+        const cMap = {
+            great: 'bar-g',
+            ok: 'bar-a',
+            bad: 'bar-r'
+        };
+        chart.innerHTML = last7.map(e => {
+            const d = new Date(e.date);
+            return `<div class="bar-col2">
+      <div class="bar2 ${cMap[e.score] || 'bar-g'}" style="height:${hMap[e.score] || 55}px;"></div>
+      <div class="bar-lbl">${d.getMonth() + 1}/${d.getDate()}</div>
+    </div>`
+            ;
+        }).join('');
+    }
+
+    // ── PLANTS ──
+    const paBgs = ['pa-g', 'pa-p', 'pa-a', 'pa-t'];
+    function renderPlants() {
+        const list = document.getElementById('plants-list');
+        if (plants.length === 0) {
+            list.innerHTML = '<div class="empty-state"><div class="empty-icon">🪴</div><div class="empty-text">還沒有植物<br>點擊下方按鈕新增你的第一株植物！</div></div>';
+            return;
+        }
+        const sMap = {
+            great: {
+                cls: 'badge-great',
+                txt: '極好'
+            },
+            ok: {
+                cls: 'badge-ok',
+                txt: '普通'
+            },
+            bad: {
+                cls: 'badge-bad',
+                txt: '不好'
+            }
+        };
+        list.innerHTML = plants.map((p, i) => {
+            const s = sMap[p.score] || sMap.great;
+            return `<div class="plant-item">
+      <div class="plant-avatar ${paBgs[i % 4]}">${p.emoji || '🌱'}</div>
       <div style="flex:1;">
-        <div class="plant-name">${p.name}</div>
+        <div class="plant-name">${
+            p.name}</div>
         <div class="plant-type">${p.type}</div>
         <div class="plant-days">照顧中 ${p.days} 天 🌱</div>
       </div>
-      <span class="badge ${s.cls}" style="font-size:12px;">${s.txt}</span>
-    </div>`;
-  }).join('');
-}
+      <span class="badge ${
+            s.cls}" style="font-size:12px;">${s.txt}</span>
+    </div>`
+            ;
+        }).join('');
+    }
 
-// ── ADD ENTRY ──
-function openAddEntry() {
-  photoData = null; aiResult = null;
-  modalCare = {water:false,fert:false,trim:false};
-  document.getElementById('entry-note').value = '';
-  document.getElementById('photo-area').innerHTML = '<div class="pu-icon">📷</div><div class="pu-text">點擊拍照或從相簿選取</div>';
-  document.getElementById('photo-input').value = '';
-  ['water','fert','trim'].forEach(t => document.getElementById('t-'+t).classList.remove('on'));
-  document.getElementById('ai-loading-wrap').style.display = 'none';
-  document.getElementById('ai-result-wrap').style.display = 'none';
-  document.getElementById('modal-entry').classList.remove('hidden');
-}
+    // ── ADD ENTRY ──
+    function openAddEntry() {
+        photoData = null;
+        aiResult = null;
+        modalCare = {
+            water: false,
+            fert: false,
+            trim: false
+        };
+        document.getElementById('entry-note').value = '';
+        document.getElementById('photo-area').innerHTML = '<div class="pu-icon">📷</div><div class="pu-text">點擊拍照或從相簿選取</div>';
+        document.getElementById('photo-input').value = '';
+        ['water', 'fert', 'trim'].forEach(t => document.getElementById('t-' + t).classList.remove('on'));
+        document.getElementById('ai-loading-wrap').style.display = 'none';
+        document.getElementById('ai-result-wrap').style.display = 'none';
+        document.getElementById('modal-entry').classList.remove('hidden');
+    }
 
-function handlePhoto(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    photoData = ev.target.result;
-    const img = document.createElement('img');
-    img.src = photoData;
-    img.className = 'photo-preview';
-    const area = document.getElementById('photo-area');
-    area.innerHTML = '';
-    area.appendChild(img);
-    analyzePhoto(photoData);
-  };
-  reader.readAsDataURL(file);
-}
+    function handlePhoto(e) {
+        const file = e.target.files[0];
+        if (!file)
+            return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            photoData = ev.target.result;
+            const img = document.createElement('img');
+            img.src = photoData;
+            img.className = 'photo-preview';
+            const area = document.getElementById('photo-area');
+            area.innerHTML = '';
+            area.appendChild(img);
+            analyzePhoto(photoData);
+        };
+        reader.readAsDataURL(file);
+    }
 
-async function analyzePhoto(dataUrl) {
-  document.getElementById('ai-loading-wrap').style.display = 'block';
-  document.getElementById('ai-result-wrap').style.display = 'none';
-  try {
-    const base64 = dataUrl.split(',')[1];
-    const mtype = dataUrl.split(';')[0].split(':')[1];
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        messages: [{role:'user', content:[
-          {type:'image', source:{type:'base64', media_type: mtype || 'image/jpeg', data: base64}},
-          {type:'text', text:'你是專業植物健康評估師。請分析這張植物照片並以JSON回應，只回傳JSON不要其他文字：{"score":"great|ok|bad","reason":"繁體中文，25字內描述植物健康狀況","suggestions":["繁體中文建議1","繁體中文建議2"]}。great=極好，ok=普通，bad=不好。'}
-        ]}]
-      })
-    });
-    const data = await resp.json();
-    const text = data.content.map(c=>c.text||'').join('');
-    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
-    aiResult = parsed;
-    showAIResult(parsed);
-  } catch(err) {
-    aiResult = {score:'ok', reason:'照片已記錄，AI 分析暫時無法使用', suggestions:['保持定期觀察','注意葉片顏色變化']};
-    showAIResult(aiResult);
-  }
-  document.getElementById('ai-loading-wrap').style.display = 'none';
-}
+    async function analyzePhoto(dataUrl) {
+        document.getElementById('ai-loading-wrap').style.display = 'block';
+        document.getElementById('ai-result-wrap').style.display = 'none';
+        try {
+            const base64 = dataUrl.split(',')[1];
+            const mtype = dataUrl.split(';')[0].split(':')[1];
+            const resp = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 400,
+                    messages: [{
+                        role: 'user',
+                        content: [
+                        {
+                            type: 'image',
+                            source: {
+                                type: 'base64',
+                                media_type: mtype || 'image/jpeg',
+                                data: base64
+                            }
+                        },
+                        {
+                            type: 'text',
+                            text: '你是專業植物健康評估師。請分析這張植物照片並以JSON回應，只回傳JSON不要其他文字：{"score":"great|ok|bad","reason":"繁體中文，25字內描述植物健康狀況","suggestions":["繁體中文建議1","繁體中文建議2"]}。great=極好，ok=普通，bad=不好。'
+                        }
+                        ]
+                    }]
+                })
+            });
+            const data = await resp.json();
+            const text = data.content.map(c => c.text || '').join('');
+            const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+            aiResult = parsed;
+            showAIResult(parsed);
+        } catch (err) {
+            aiResult = {
+                score: 'ok',
+                reason: '照片已記錄，AI 分析暫時無法使用',
+                suggestions: ['保持定期觀察', '注意葉片顏色變化']
+            };
+            showAIResult(aiResult);
+        }
+        document.getElementById('ai-loading-wrap').style.display = 'none';
+    }
 
-function showAIResult(r) {
-  document.getElementById('ai-result-wrap').style.display = 'block';
-  const sMap = {great:{cls:'badge-great',txt:'🌿 極好'},ok:{cls:'badge-ok',txt:'🌤 普通'},bad:{cls:'badge-bad',txt:'🥀 不好'}};
-  const s = sMap[r.score] || sMap.ok;
-  document.getElementById('modal-badge').innerHTML = `<span class="badge ${s.cls}">${s.txt}</span>`;
-  document.getElementById('modal-desc').textContent = r.reason;
-  document.getElementById('modal-sugs').innerHTML = (r.suggestions||[]).map(sg=>`<span class="ai-sug-chip">${sg}</span>`).join('');
-}
+    function showAIResult(r) {
+        document.getElementById('ai-result-wrap').style.display = 'block';
+        const sMap = {
+            great: {
+                cls: 'badge-great',
+                txt: '🌿 極好'
+            },
+            ok: {
+                cls: 'badge-ok',
+                txt: '🌤 普通'
+            },
+            bad: {
+                cls: 'badge-bad',
+                txt: '🥀 不好'
+            }
+        };
+        const s = sMap[r.score] || sMap.ok;
+        document.getElementById('modal-badge').innerHTML = `<span class="badge ${s.cls}">${s.txt}</span>`;
+        document.getElementById('modal-desc').textContent = r.reason;
+        document.getElementById('modal-sugs').innerHTML = (r.suggestions || []).map(sg => `<span class="ai-sug-chip">${sg}</span>`).join('');
+    }
 
-function toggleModal(type) {
-  modalCare[type] = !modalCare[type];
-  document.getElementById('t-'+type).classList.toggle('on', modalCare[type]);
-}
+    function toggleModal(type) {
+        modalCare[type] = !modalCare[type];
+        document.getElementById('t-' + type).classList.toggle('on', modalCare[type]);
+    }
 
-function saveEntry() {
-  const tags = Object.keys(modalCare).filter(k=>modalCare[k]).map(k=>k==='water'?'澆水':k==='fert'?'施肥':'整理');
-  const ai = aiResult || {score:'ok', reason:'今日植物記錄', suggestions:[]};
-  entries.unshift({
-    id: Date.now(),
-    date: now.toISOString().split('T')[0],
-    score: ai.score,
-    desc: ai.reason,
-    tags,
-    note: document.getElementById('entry-note').value.trim() || ai.reason,
-    photo: photoData,
-    emoji: '🌱'
-  });
-  streak++;
-  updateStreak();
-  // update home AI
-  const sMap = {great:{cls:'badge-great',txt:'🌿 極好'},ok:{cls:'badge-ok',txt:'🌤 普通'},bad:{cls:'badge-bad',txt:'🥀 不好'}};
-  const s = sMap[ai.score] || sMap.ok;
-  document.getElementById('home-badge').innerHTML = `<span class="badge ${s.cls}">${s.txt}</span>`;
-  document.getElementById('home-ai-desc').textContent = ai.reason;
-  saveAll();
-  closeModal('modal-entry');
-  renderDiary();
-}
+    function saveEntry() {
+        const tags = Object.keys(modalCare).filter(k => modalCare[k]).map(k => k === 'water' ? '澆水' : k === 'fert' ? '施肥' : '整理');
+        const ai = aiResult || {
+            score: 'ok',
+            reason: '今日植物記錄',
+            suggestions: []
+        };
+        entries.unshift({
+            id: Date.now(),
+            date: now.toISOString().split('T')[0],
+            score: ai.score,
+            desc: ai.reason,
+            tags,
+            note: document.getElementById('entry-note').value.trim() || ai.reason,
+            photo: photoData,
+            emoji: '🌱'
+        });
+        streak++;
+        updateStreak();
+        // update home AI
+        const sMap = {
+            great: {
+                cls: 'badge-great',
+                txt: '🌿 極好'
+            },
+            ok: {
+                cls: 'badge-ok',
+                txt: '🌤 普通'
+            },
+            bad: {
+                cls: 'badge-bad',
+                txt: '🥀 不好'
+            }
+        };
+        const s = sMap[ai.score] || sMap.ok;
+        document.getElementById('home-badge').innerHTML = `<span class="badge ${s.cls}">${s.txt}</span>`;
+        document.getElementById('home-ai-desc').textContent = ai.reason;
+        saveAll();
+        closeModal('modal-entry');
+        renderDiary();
+    }
 
-// ── ADD PLANT ──
-function openAddPlant() {
-  document.getElementById('p-name').value = '';
-  document.getElementById('p-type').value = '';
-  selEmoji = '🌱';
-  document.querySelectorAll('.emoji-opt').forEach((el,i)=>el.classList.toggle('selected',i===0));
-  document.getElementById('modal-plant').classList.remove('hidden');
-}
+    // ── ADD PLANT ──
+    function openAddPlant() {
+        document.getElementById('p-name').value = '';
+        document.getElementById('p-type').value = '';
+        selEmoji = '🌱';
+        document.querySelectorAll('.emoji-opt').forEach((el, i) => el.classList.toggle('selected', i === 0));
+        document.getElementById('modal-plant').classList.remove('hidden');
+    }
 
-function pickEmoji(el, emoji) {
-  document.querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('selected'));
-  el.classList.add('selected');
-  selEmoji = emoji;
-}
+    function pickEmoji(el, emoji) {
+        document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        selEmoji = emoji;
+    }
 
-function savePlant() {
-  const name = document.getElementById('p-name').value.trim();
-  if (!name) { document.getElementById('p-name').focus(); return; }
-  const type = document.getElementById('p-type').value.trim() || '植物';
-  plants.push({id:Date.now(), name, type, emoji:selEmoji, days:0, score:'great', added:Date.now()});
-  saveAll();
-  closeModal('modal-plant');
-  renderPlants();
-}
+    function savePlant() {
+        const name = document.getElementById('p-name').value.trim();
+        if (!name) {
+            document.getElementById('p-name').focus();
+            return;
+        }
+        const type = document.getElementById('p-type').value.trim() || '植物';
+        plants.push({
+            id: Date.now(),
+            name,
+            type,
+            emoji: selEmoji,
+            days: 0,
+            score: 'great',
+            added: Date.now()
+        });
+        saveAll();
+        closeModal('modal-plant');
+        renderPlants();
+    }
 
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-document.querySelectorAll('.modal-overlay').forEach(m =>
-  m.addEventListener('click', e => { if (e.target===m) m.classList.add('hidden'); }));
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+    document.querySelectorAll('.modal-overlay').forEach(m =>
+    m.addEventListener('click', e => {
+        if (e.target === m)
+            m.classList.add('hidden');
+    }));
 
-// initial render
-renderPlants();
+    // initial render
+    renderPlants();
 
-// 如果已有日記，更新首頁 AI 卡片顯示最新一筆
-if (entries.length > 0) {
-  const latest = entries[0];
-  const sMap2 = {great:{cls:'badge-great',txt:'🌿 極好'},ok:{cls:'badge-ok',txt:'🌤 普通'},bad:{cls:'badge-bad',txt:'🥀 不好'}};
-  const s2 = sMap2[latest.score] || sMap2.ok;
-  document.getElementById('home-badge').innerHTML = `<span class="badge ${s2.cls}">${s2.txt}</span>`;
-  document.getElementById('home-ai-desc').textContent = latest.desc || latest.note;
-}
-</script>
+    // 如果已有日記，更新首頁 AI 卡片顯示最新一筆
+    if (entries.length > 0) {
+        const latest = entries[0];
+        const sMap2 = {
+            great: {
+                cls: 'badge-great',
+                txt: '🌿 極好'
+            },
+            ok: {
+                cls: 'badge-ok',
+                txt: '🌤 普通'
+            },
+            bad: {
+                cls: 'badge-bad',
+                txt: '🥀 不好'
+            }
+        };
+        const s2 = sMap2[latest.score] || sMap2.ok;
+        document.getElementById('home-badge').innerHTML = `<span class="badge ${s2.cls}">${s2.txt}</span>`;
+        document.getElementById('home-ai-desc').textContent = latest.desc || latest.note;
+    }
+    </script>
 </body>
 </html>
