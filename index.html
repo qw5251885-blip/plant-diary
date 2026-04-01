@@ -11,14 +11,14 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --g50:#EAF3DE;--g100:#C0DD97;--g200:#97C459;--g400:#639922;--g600:#3B6D11;--g800:#27500A;--g900:#173404;
+  --g50:#EAF3DE;--g100:#C0DD97;--g200:#97C459;--g400:#639922;--g600:#3B6D11;--g800:#27500A;
   --a50:#FAEEDA;--a400:#EF9F27;--a600:#BA7517;--a800:#633806;
-  --r50:#FCEBEB;--r400:#E24B4A;--r800:#501313;
+  --r50:#FCEBEB;--r400:#E24B4A;
   --bg:#F4F7F0;--card:#fff;--bd:rgba(0,0,0,0.08);--t1:#1a1a1a;--t2:#555;--t3:#999;
   --rad:16px;--rads:10px;
 }
 html,body{height:100%;background:var(--bg);}
-body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue',sans-serif;color:var(--t1);max-width:430px;margin:0 auto;}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC',sans-serif;color:var(--t1);max-width:430px;margin:0 auto;}
 .app{display:flex;flex-direction:column;height:100dvh;overflow:hidden;}
 
 .hdr{background:var(--card);padding:calc(env(safe-area-inset-top,0px)+14px) 20px 12px;border-bottom:.5px solid var(--bd);flex-shrink:0;}
@@ -38,10 +38,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 .badge{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:500;}
 .b-great{background:var(--g50);color:var(--g800);}
 .b-ok{background:var(--a50);color:var(--a800);}
-.b-bad{background:var(--r50);color:var(--r800);}
+.b-bad{background:var(--r50);color:var(--r400);}
 
 .wcard{background:linear-gradient(135deg,#d4edba,#a8d870);border-radius:var(--rad);padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
-.wc-temp{font-size:32px;font-weight:500;color:var(--g900);}
+.wc-temp{font-size:32px;font-weight:500;color:#173404;}
 .wc-desc{font-size:13px;color:var(--g800);margin-top:3px;}
 .wc-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
 .wc-chip{font-size:11px;background:rgba(255,255,255,.45);color:var(--g800);padding:3px 8px;border-radius:20px;}
@@ -62,7 +62,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 .d-good{background:var(--g400);}
 .d-warn{background:var(--a400);}
 .d-bad{background:var(--r400);}
-.need-text{font-size:13px;color:var(--t1);line-height:1.5;}
+.need-text{font-size:13px;line-height:1.5;}
 
 .streak{background:linear-gradient(135deg,#fff9ee,#fef3d0);border:.5px solid #fad87a;border-radius:var(--rad);padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:12px;}
 .sk-num{font-size:32px;font-weight:700;color:var(--a600);}
@@ -77,11 +77,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 .ai-chips{display:flex;flex-wrap:wrap;gap:6px;}
 .ai-chip{font-size:12px;background:var(--g50);color:var(--g600);padding:4px 10px;border-radius:20px;}
 
+/* FILTER BAR */
+.filter-bar{display:flex;gap:8px;margin-bottom:12px;}
+.fsel{flex:1;padding:9px 28px 9px 12px;border:.5px solid var(--bd);border-radius:var(--rads);font-size:13px;color:var(--t1);background:var(--card);outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23aaa' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+
+/* TIMELINE */
 .tl-item{display:flex;gap:12px;margin-bottom:16px;}
-.tl-date{width:42px;text-align:center;flex-shrink:0;padding-top:4px;}
-.tl-day{font-size:20px;font-weight:600;color:var(--t1);}
-.tl-month{font-size:10px;color:var(--t3);}
+.tl-date-col{width:42px;text-align:center;flex-shrink:0;padding-top:4px;}
+.tl-day{font-size:20px;font-weight:600;}
+.tl-mon{font-size:10px;color:var(--t3);}
 .tl-box{flex:1;background:var(--card);border-radius:var(--rad);border:.5px solid var(--bd);overflow:hidden;}
+.tl-plant-tag{display:flex;align-items:center;gap:6px;padding:8px 12px 0;font-size:12px;color:var(--t3);}
 .tl-ph{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:64px;cursor:pointer;overflow:hidden;}
 .tl-ph img{width:100%;height:100%;object-fit:cover;}
 .tl-bg1{background:linear-gradient(135deg,#d4edba,#a8d870);}
@@ -97,9 +103,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 .tl-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:#f0f0ec;color:var(--t3);}
 .tl-note{font-size:12px;color:var(--t2);line-height:1.5;}
 
-.add-diary-btn{width:100%;padding:16px;background:var(--g50);border:1.5px dashed var(--g100);border-radius:var(--rad);text-align:center;font-size:14px;color:var(--g600);cursor:pointer;margin-bottom:16px;font-weight:500;transition:all .2s;}
+.add-diary-btn{width:100%;padding:16px;background:var(--g50);border:1.5px dashed var(--g100);border-radius:var(--rad);text-align:center;font-size:14px;color:var(--g600);cursor:pointer;margin-bottom:12px;font-weight:500;}
 .add-diary-btn:active{transform:scale(.98);}
 
+/* STATS */
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
 .stat-card{background:var(--card);border-radius:var(--rads);border:.5px solid var(--bd);padding:14px;}
 .sv{font-size:28px;font-weight:600;}
@@ -107,7 +114,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 .c-g{color:var(--g600);}
 .c-a{color:var(--a600);}
 .c-r{color:var(--r400);}
-
 .bar-chart{display:flex;align-items:flex-end;justify-content:space-between;height:100px;gap:4px;margin-top:8px;}
 .bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .br{width:100%;border-radius:4px 4px 0 0;min-height:6px;}
@@ -115,27 +121,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 .br-a{background:var(--a400);}
 .br-r{background:var(--r400);}
 .bl{font-size:9px;color:var(--t3);}
-
 .cycle-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:.5px solid var(--bd);}
 .cycle-item:last-child{border:none;}
 .cycle-icon{font-size:16px;width:34px;height:34px;background:var(--g50);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .cycle-info{flex:1;}
-.cycle-text{font-size:13px;color:var(--t1);}
+.cycle-text{font-size:13px;}
 .cycle-sub{font-size:10px;color:var(--g400);margin-top:2px;}
 .cycle-val{font-size:13px;font-weight:600;color:var(--t2);}
 
+/* PLANTS */
 .plant-item{display:flex;align-items:center;gap:12px;background:var(--card);border:.5px solid var(--bd);border-radius:var(--rad);padding:14px 16px;margin-bottom:10px;}
 .pa{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
 .pa-g{background:linear-gradient(135deg,#d4edba,#a8d870);}
 .pa-p{background:linear-gradient(135deg,#fbeaf0,#f4c0d1);}
 .pa-a{background:linear-gradient(135deg,#fef3d0,#fad87a);}
 .pa-t{background:linear-gradient(135deg,#e1f5ee,#9fe1cb);}
-.plant-name{font-size:15px;font-weight:600;color:var(--t1);}
+.plant-name{font-size:15px;font-weight:600;}
 .plant-type{font-size:12px;color:var(--t3);margin-top:2px;}
 .plant-days{font-size:11px;color:var(--g400);margin-top:3px;font-weight:500;}
 .pa-edit{font-size:11px;padding:6px 12px;border-radius:8px;border:.5px solid var(--bd);background:var(--bg);color:var(--t2);cursor:pointer;white-space:nowrap;margin-left:auto;}
-.add-plant-btn{width:100%;padding:16px;background:var(--card);border:1.5px dashed var(--bd);border-radius:var(--rad);text-align:center;font-size:14px;color:var(--t3);cursor:pointer;transition:all .15s;}
+.add-plant-btn{width:100%;padding:16px;background:var(--card);border:1.5px dashed var(--bd);border-radius:var(--rad);text-align:center;font-size:14px;color:var(--t3);cursor:pointer;}
 .add-plant-btn:active{transform:scale(.98);}
+
+/* PLANT SELECTOR IN MODAL */
+.plant-sel-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;}
+.plant-sel-row::-webkit-scrollbar{display:none;}
+.plant-sel-item{flex-shrink:0;padding:8px 14px;border:.5px solid var(--bd);border-radius:20px;font-size:13px;color:var(--t2);cursor:pointer;background:var(--bg);white-space:nowrap;transition:all .15s;}
+.plant-sel-item.active{background:var(--g50);border-color:var(--g200);color:var(--g800);font-weight:500;}
 
 .tab-bar{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:.5px solid var(--bd);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);}
 .tab{flex:1;padding:10px 4px;text-align:center;cursor:pointer;transition:all .15s;user-select:none;}
@@ -148,7 +160,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 .overlay.hidden{display:none;}
 .modal{background:var(--card);border-radius:24px 24px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom,0px)+20px);width:100%;max-width:430px;max-height:92dvh;overflow-y:auto;}
 .mhandle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 18px;}
-.mtitle{font-size:18px;font-weight:700;color:var(--t1);margin-bottom:16px;}
+.mtitle{font-size:18px;font-weight:700;margin-bottom:16px;}
 .flabel{font-size:12px;color:var(--t3);margin-bottom:6px;display:block;font-weight:600;letter-spacing:.04em;}
 .finput{width:100%;padding:11px 14px;border:.5px solid var(--bd);border-radius:var(--rads);font-size:14px;color:var(--t1);background:var(--bg);margin-bottom:12px;outline:none;font-family:inherit;-webkit-appearance:none;}
 .finput:focus{border-color:var(--g400);background:#fff;}
@@ -158,13 +170,12 @@ textarea.finput{resize:none;}
 .ctog:active{transform:scale(.95);}
 .ctog.on{background:var(--g50);border-color:var(--g100);color:var(--g800);}
 .ctog-icon{font-size:20px;display:block;margin-bottom:4px;}
-.sbtn{width:100%;padding:15px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;transition:all .15s;}
+.sbtn{width:100%;padding:15px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;}
 .sbtn:active{transform:scale(.97);}
 .cbtn{width:100%;padding:12px;background:transparent;color:var(--t3);border:none;font-size:14px;cursor:pointer;margin-top:6px;font-family:inherit;}
 .dbtn{width:100%;padding:13px;background:var(--r50);color:var(--r400);border:.5px solid #f5c1c1;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;}
 
-.pup-area{width:100%;height:160px;background:var(--g50);border:1.5px dashed var(--g100);border-radius:var(--rads);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px;overflow:hidden;transition:all .2s;}
-.pup-area:active{transform:scale(.98);}
+.pup-area{width:100%;height:160px;background:var(--g50);border:1.5px dashed var(--g100);border-radius:var(--rads);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px;overflow:hidden;}
 .pup-icon{font-size:30px;margin-bottom:6px;}
 .pup-text{font-size:12px;color:var(--g400);font-weight:500;}
 .pup-sub{font-size:11px;color:var(--t3);margin-top:4px;}
@@ -182,13 +193,18 @@ textarea.finput{resize:none;}
 .ai-sug{font-size:11px;background:#fff;color:var(--g600);padding:3px 9px;border-radius:20px;border:.5px solid var(--g100);}
 
 .emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px;}
-.emj{width:100%;aspect-ratio:1;border:.5px solid var(--bd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:all .15s;}
+.emj{width:100%;aspect-ratio:1;border:.5px solid var(--bd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;}
 .emj:active{transform:scale(.9);}
 .emj.sel{background:var(--g50);border-color:var(--g200);}
 
 .empty{text-align:center;padding:50px 20px;color:var(--t3);}
 .empty-icon{font-size:48px;margin-bottom:12px;}
 .empty-text{font-size:14px;line-height:1.6;}
+
+/* LOADING OVERLAY */
+.loading-cover{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.loading-cover.hidden{display:none;}
+.loading-cover .ld-text{font-size:14px;color:var(--t2);}
 
 /* LIGHTBOX */
 .lightbox{position:fixed;inset:0;background:#000;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;}
@@ -203,8 +219,13 @@ textarea.finput{resize:none;}
 </style>
 </head>
 <body>
-<div class="app">
 
+<div class="loading-cover" id="loading-cover">
+  <div style="font-size:36px;">🌱</div>
+  <div class="ld-text">植日苼啟動中...</div>
+</div>
+
+<div class="app">
   <div class="hdr">
     <div class="hdr-row">
       <div>
@@ -264,10 +285,11 @@ textarea.finput{resize:none;}
 
   <!-- DIARY -->
   <div class="screen hidden" id="screen-diary">
-    <div class="add-diary-btn" onclick="openAddEntry()">📸　新增今日日記</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
-      <select id="filter-year" onchange="renderDiary()" style="flex:1;padding:9px 12px;border:.5px solid var(--bd);border-radius:var(--rads);font-size:13px;color:var(--t1);background:var(--card);outline:none;-webkit-appearance:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 10px center;"><option value="">全部年份</option></select>
-      <select id="filter-month" onchange="renderDiary()" style="flex:1;padding:9px 12px;border:.5px solid var(--bd);border-radius:var(--rads);font-size:13px;color:var(--t1);background:var(--card);outline:none;-webkit-appearance:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 10px center;"><option value="">全部月份</option></select>
+    <div class="add-diary-btn" onclick="openAddEntry()">📸　新增日記</div>
+    <div class="filter-bar">
+      <select class="fsel" id="filter-plant" onchange="renderDiary()"><option value="">全部植物</option></select>
+      <select class="fsel" id="filter-year" onchange="renderDiary()"><option value="">全部年份</option></select>
+      <select class="fsel" id="filter-month" onchange="renderDiary()"><option value="">月份</option></select>
     </div>
     <div id="timeline-list"></div>
   </div>
@@ -282,19 +304,19 @@ textarea.finput{resize:none;}
     </div>
     <div class="card">
       <div class="ctitle">近期健康趨勢</div>
-      <div class="bar-chart" id="bar-chart"><div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--t3);font-size:13px;">新增日記後顯示趨勢圖</div></div>
+      <div class="bar-chart" id="bar-chart"><div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--t3);font-size:13px;">新增日記後顯示</div></div>
     </div>
     <div class="card">
       <div class="ctitle">護理週期 · AI 智慧判斷</div>
-      <div class="cycle-item"><div class="cycle-icon">💧</div><div class="cycle-info"><div class="cycle-text">澆水週期</div><div class="cycle-sub" id="cy-water-sub">累積 3 筆日記後 AI 自動分析</div></div><div class="cycle-val" id="cy-water">-- 天</div></div>
-      <div class="cycle-item"><div class="cycle-icon">🌿</div><div class="cycle-info"><div class="cycle-text">施肥週期</div><div class="cycle-sub" id="cy-fert-sub">累積 3 筆日記後 AI 自動分析</div></div><div class="cycle-val" id="cy-fert">-- 天</div></div>
-      <div class="cycle-item"><div class="cycle-icon">✂️</div><div class="cycle-info"><div class="cycle-text">整理週期</div><div class="cycle-sub" id="cy-trim-sub">累積 3 筆日記後 AI 自動分析</div></div><div class="cycle-val" id="cy-trim">-- 天</div></div>
+      <div class="cycle-item"><div class="cycle-icon">💧</div><div class="cycle-info"><div class="cycle-text">澆水週期</div><div class="cycle-sub" id="cy-water-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-water">--</div></div>
+      <div class="cycle-item"><div class="cycle-icon">🌿</div><div class="cycle-info"><div class="cycle-text">施肥週期</div><div class="cycle-sub" id="cy-fert-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-fert">--</div></div>
+      <div class="cycle-item"><div class="cycle-icon">✂️</div><div class="cycle-info"><div class="cycle-text">整理週期</div><div class="cycle-sub" id="cy-trim-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-trim">--</div></div>
     </div>
   </div>
 
   <!-- PLANTS -->
   <div class="screen hidden" id="screen-plants">
-    <div style="font-size:16px;font-weight:600;color:var(--t1);margin-bottom:12px;">我的植物</div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:12px;">我的植物</div>
     <div id="plants-list"></div>
     <div class="add-plant-btn" onclick="openPlantModal(null)">＋ 新增植物</div>
   </div>
@@ -312,21 +334,31 @@ textarea.finput{resize:none;}
   <div class="modal">
     <div class="mhandle"></div>
     <div class="mtitle">📸 新增日記</div>
+
+    <label class="flabel">這是哪株植物的日記？</label>
+    <div class="plant-sel-row" id="plant-sel-row"></div>
+
     <label class="flabel">日記日期</label>
-    <input type="date" class="finput" id="entry-date" style="margin-bottom:12px;">
+    <input type="date" class="finput" id="entry-date">
+
     <label class="flabel">植物照片（可選多張）</label>
     <div class="pup-area" id="photo-area" onclick="document.getElementById('photo-input').click()">
       <div class="pup-icon">📷</div>
       <div class="pup-text">點擊從相簿選取或拍照</div>
-      <div class="pup-sub">可一次選多張照片</div>
+      <div class="pup-sub">支援多張照片</div>
     </div>
     <div class="preview-row" id="preview-row"></div>
     <input type="file" accept="image/*" multiple id="photo-input" style="display:none" onchange="handlePhoto(event)">
-    <div id="ai-ld-wrap" style="display:none"><div class="ctitle" style="margin-bottom:6px">AI 分析照片中</div><div class="ai-ld"><div class="ald"></div><div class="ald"></div><div class="ald"></div></div></div>
+
+    <div id="ai-ld-wrap" style="display:none">
+      <div class="ctitle" style="margin-bottom:6px">AI 分析照片中</div>
+      <div class="ai-ld"><div class="ald"></div><div class="ald"></div><div class="ald"></div></div>
+    </div>
     <div id="ai-res-wrap" style="display:none">
       <label class="flabel">AI 評估結果</label>
       <div class="ai-res-box"><div id="modal-badge"></div><div class="ai-res-desc" id="modal-desc"></div><div class="ai-sugs" id="modal-sugs"></div></div>
     </div>
+
     <label class="flabel">今日護理記錄</label>
     <div class="frow">
       <div class="ctog" id="t-water" onclick="toggleModal('water')"><span class="ctog-icon">💧</span>澆水</div>
@@ -378,356 +410,598 @@ textarea.finput{resize:none;}
 </div>
 
 <script>
-const sg=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
-const ss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+// ═══════════════════════════════
+// IndexedDB — 照片專用，空間大
+// ═══════════════════════════════
+let db = null;
 
-const VER='v6';
-let plants=[],entries=[],care={},streak=0;
-let selEmoji='🌱',photoDatas=[],aiResult=null,modalCare={water:false,fert:false,trim:false};
-let editingPlantId=null;
-
-function loadAll(){
-  if(sg('zrs_ver')!==VER){
-    Object.keys(localStorage).filter(k=>k.startsWith('zrs_')).forEach(k=>localStorage.removeItem(k));
-    ss('zrs_ver',VER);
-  }
-  plants=sg('zrs_plants')||[];
-  const raw=sg('zrs_entries')||[];
-  entries=raw.map(e=>{
-    const ids=e.photos||(e.photo?[e.id+'_0']:[]);
-    return{...e,photos:ids.map(pid=>localStorage.getItem('zrs_p_'+pid)||null).filter(Boolean)};
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('ZhiRiSheng', 2);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('photos')) d.createObjectStore('photos');
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror = () => reject(req.error);
   });
-  care=sg('zrs_care')||{};
-  streak=sg('zrs_streak')||0;
 }
 
-function saveAll(){
-  const meta=entries.map(e=>{const ids=(e.photos||[]).map((_,i)=>e.id+'_'+i);return{...e,photos:ids};});
-  ss('zrs_plants',plants);ss('zrs_entries',meta);ss('zrs_care',care);ss('zrs_streak',streak);
-  entries.forEach(e=>(e.photos||[]).forEach((p,i)=>{if(p&&p.startsWith('data:'))try{localStorage.setItem('zrs_p_'+e.id+'_'+i,p)}catch(e){}}));
+function dbPut(key, value) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('photos', 'readwrite');
+    tx.objectStore('photos').put(value, key);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
 }
 
-loadAll();
-
-const NOW=new Date();
-const DAYS=['日','一','二','三','四','五','六'];
-const MONS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-document.getElementById('today-date').textContent=`${NOW.getFullYear()}年${NOW.getMonth()+1}月${NOW.getDate()}日 · 星期${DAYS[NOW.getDay()]}`;
-
-function updateStreak(){
-  document.getElementById('sk-num').textContent='🔥 '+streak;
-  document.getElementById('sk-sub').textContent=streak===0?'開始你的第一筆記錄吧！':streak>=30?'恭喜達成「月月好植」成就！🏆':`再堅持 ${30-(streak%30)} 天達成「月月好植」成就`;
-}
-updateStreak();
-
-['water','fert','trim'].forEach(t=>{
-  if(care[t]){document.getElementById('btn-'+t).classList.add('done');document.getElementById('cl-'+t).style.color='var(--g800)';document.getElementById('ct-'+t).textContent='今日完成 ✓';}
-});
-
-async function loadWeather(){
-  try{
-    const pos=await new Promise((r,j)=>navigator.geolocation.getCurrentPosition(r,j,{timeout:8000}));
-    const{latitude:lat,longitude:lon}=pos.coords;
-    const d=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,uv_index&timezone=auto`)).json();
-    const c=d.current,temp=Math.round(c.temperature_2m),hum=Math.round(c.relative_humidity_2m),wind=Math.round(c.wind_speed_10m),uv=Math.round(c.uv_index||0),wc=c.weather_code;
-    const icon=wc<=1?'☀️':wc<=3?'⛅':wc<=48?'🌫️':wc<=67?'🌧️':wc<=77?'❄️':'⛈️';
-    const desc=wc<=1?'晴天，陽光充足':wc<=3?'多雲，適合照顧':wc<=48?'有霧，注意通風':wc<=67?'雨天，減少澆水':wc<=77?'降雪，保持溫暖':'雷雨，移至室內';
-    document.getElementById('wc-temp').textContent=temp+'°C';
-    document.getElementById('wc-desc').textContent=desc;
-    document.getElementById('wc-hum').textContent='💧 '+hum+'%';
-    document.getElementById('wc-wind').textContent='💨 '+wind+' km/h';
-    document.getElementById('wc-uv').textContent='☀️ UV '+uv;
-    document.getElementById('wc-icon').textContent=icon;
-    document.getElementById('h-temp').textContent=temp+'°';
-    document.getElementById('h-icon').textContent=icon;
-    document.getElementById('h-desc').textContent=desc.split('，')[0];
-  }catch(e){document.getElementById('wc-desc').textContent='請允許定位以取得天氣';document.getElementById('h-desc').textContent='請允許定位';}
-}
-loadWeather();
-
-function showScreen(name,el){
-  ['home','diary','stats','plants'].forEach(s=>document.getElementById('screen-'+s).classList.toggle('hidden',s!==name));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  if(name==='diary')renderDiary();
-  if(name==='stats')renderStats();
-  if(name==='plants')renderPlants();
+function dbGet(key) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('photos', 'readonly');
+    const req = tx.objectStore('photos').get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
 }
 
-function toggleCare(type){
-  const isDone=document.getElementById('btn-'+type).classList.toggle('done');
-  document.getElementById('cl-'+type).style.color=isDone?'var(--g800)':'';
-  document.getElementById('ct-'+type).textContent=isDone?'今日完成 ✓':'點擊記錄';
-  care[type]=isDone;saveAll();
+function dbDelete(key) {
+  return new Promise(resolve => {
+    const tx = db.transaction('photos', 'readwrite');
+    tx.objectStore('photos').delete(key);
+    tx.oncomplete = resolve;
+  });
 }
 
-function updateHomeAI(ai){
-  const sMap={great:{cls:'b-great',txt:'🌿 極好'},ok:{cls:'b-ok',txt:'🌤 普通'},bad:{cls:'b-bad',txt:'🥀 不好'}};
-  const s=sMap[ai.score]||sMap.ok;
-  document.getElementById('home-badge').innerHTML=`<span class="badge ${s.cls}">${s.txt}</span>`;
-  document.getElementById('home-desc').textContent=ai.reason||'';
-  document.getElementById('home-chips').innerHTML=(ai.suggestions||[]).map(sg=>`<span class="ai-chip">${sg}</span>`).join('');
-  if(ai.needs&&ai.needs.length){
-    document.getElementById('needs-list').innerHTML=ai.needs.map(n=>`<div class="need-item"><div class="ndot ${n.level==='good'?'d-good':n.level==='warn'?'d-warn':'d-bad'}"></div><div class="need-text">${n.text}</div></div>`).join('');
+// ═══════════════════════════════
+// localStorage — 資料（不含照片）
+// ═══════════════════════════════
+const sg = k => { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } };
+const ss = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+
+let plants = [], entries = [], care = {}, streak = 0;
+let selEmoji = '🌱', photoDatas = [], aiResult = null;
+let modalCare = { water: false, fert: false, trim: false };
+let editingPlantId = null, selectedPlantId = null;
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+async function init() {
+  await openDB();
+  plants  = sg('zrs_plants')  || [];
+  const rawEntries = sg('zrs_entries') || [];
+  care    = sg('zrs_care')    || {};
+  streak  = sg('zrs_streak')  || 0;
+
+  // 讀回每筆日記的照片（從 IndexedDB）
+  entries = await Promise.all(rawEntries.map(async e => {
+    const photoIds = e.photoIds || [];
+    const photos = await Promise.all(photoIds.map(pid => dbGet(pid)));
+    return { ...e, photos: photos.filter(Boolean) };
+  }));
+
+  document.getElementById('loading-cover').classList.add('hidden');
+  setupUI();
+}
+
+function saveData() {
+  // 只存 metadata，不存照片 blob
+  const meta = entries.map(e => ({
+    ...e,
+    photos: undefined,
+    photoIds: (e.photoIds || [])
+  }));
+  ss('zrs_plants', plants);
+  ss('zrs_entries', meta);
+  ss('zrs_care', care);
+  ss('zrs_streak', streak);
+}
+
+async function savePhotosForEntry(entry, newPhotos) {
+  // 刪除舊的照片
+  const oldIds = entry.photoIds || [];
+  for (const id of oldIds) await dbDelete(id);
+  // 存新照片
+  const newIds = newPhotos.map((_, i) => `photo_${entry.id}_${i}`);
+  for (let i = 0; i < newPhotos.length; i++) {
+    await dbPut(newIds[i], newPhotos[i]);
+  }
+  entry.photoIds = newIds;
+  entry.photos = newPhotos;
+}
+
+// ═══════════════════════════════
+// PHOTO COMPRESS
+// ═══════════════════════════════
+function compressPhoto(dataUrl, maxPx, quality) {
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      const scale = Math.min(1, maxPx / Math.max(w, h));
+      w = Math.round(w * scale); h = Math.round(h * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      res(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = dataUrl;
+  });
+}
+
+// ═══════════════════════════════
+// UI SETUP
+// ═══════════════════════════════
+const NOW = new Date();
+const DAYS = ['日','一','二','三','四','五','六'];
+const MONS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const PA_BG = ['pa-g','pa-p','pa-a','pa-t'];
+
+function setupUI() {
+  document.getElementById('today-date').textContent =
+    `${NOW.getFullYear()}年${NOW.getMonth()+1}月${NOW.getDate()}日 · 星期${DAYS[NOW.getDay()]}`;
+  updateStreak();
+  initCareButtons();
+  loadWeather();
+  renderPlants();
+  if (entries.length > 0 && entries[0].ai) updateHomeAI(entries[0].ai);
+}
+
+function updateStreak() {
+  document.getElementById('sk-num').textContent = '🔥 ' + streak;
+  document.getElementById('sk-sub').textContent =
+    streak === 0 ? '開始你的第一筆記錄吧！' :
+    streak >= 30 ? '恭喜達成「月月好植」成就！🏆' :
+    `再堅持 ${30 - (streak % 30)} 天達成「月月好植」成就`;
+}
+
+function initCareButtons() {
+  ['water','fert','trim'].forEach(t => {
+    if (care[t]) {
+      document.getElementById('btn-'+t).classList.add('done');
+      document.getElementById('cl-'+t).style.color = 'var(--g800)';
+      document.getElementById('ct-'+t).textContent = '今日完成 ✓';
+    }
+  });
+}
+
+// ═══════════════════════════════
+// WEATHER
+// ═══════════════════════════════
+async function loadWeather() {
+  try {
+    const pos = await new Promise((r, j) => navigator.geolocation.getCurrentPosition(r, j, {timeout:8000}));
+    const { latitude: lat, longitude: lon } = pos.coords;
+    const d = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,uv_index&timezone=auto`)).json();
+    const c = d.current;
+    const temp = Math.round(c.temperature_2m), hum = Math.round(c.relative_humidity_2m);
+    const wind = Math.round(c.wind_speed_10m), uv = Math.round(c.uv_index || 0), wc = c.weather_code;
+    const icon = wc<=1?'☀️':wc<=3?'⛅':wc<=48?'🌫️':wc<=67?'🌧️':wc<=77?'❄️':'⛈️';
+    const desc = wc<=1?'晴天，陽光充足':wc<=3?'多雲，適合照顧':wc<=48?'有霧，注意通風':wc<=67?'雨天，減少澆水':wc<=77?'降雪，保持溫暖':'雷雨，移至室內';
+    document.getElementById('wc-temp').textContent = temp+'°C';
+    document.getElementById('wc-desc').textContent = desc;
+    document.getElementById('wc-hum').textContent = '💧 '+hum+'%';
+    document.getElementById('wc-wind').textContent = '💨 '+wind+' km/h';
+    document.getElementById('wc-uv').textContent = '☀️ UV '+uv;
+    document.getElementById('wc-icon').textContent = icon;
+    document.getElementById('h-temp').textContent = temp+'°';
+    document.getElementById('h-icon').textContent = icon;
+    document.getElementById('h-desc').textContent = desc.split('，')[0];
+  } catch(e) {
+    document.getElementById('wc-desc').textContent = '請允許定位以取得天氣';
+    document.getElementById('h-desc').textContent = '請允許定位';
   }
 }
-if(entries.length>0&&entries[0].ai)updateHomeAI(entries[0].ai);
 
-function updateFilterOptions(){
-  const years=[...new Set(entries.map(e=>e.date.slice(0,4)))].sort((a,b)=>b-a);
-  const ySel=document.getElementById('filter-year');
-  const curY=ySel.value;
-  ySel.innerHTML='<option value="">全部年份</option>'+years.map(y=>`<option value="${y}"${y===curY?' selected':''}>${y} 年</option>`).join('');
-  const months=[1,2,3,4,5,6,7,8,9,10,11,12];
-  const mSel=document.getElementById('filter-month');
-  const curM=mSel.value;
-  mSel.innerHTML='<option value="">全部月份</option>'+months.map(m=>`<option value="${String(m).padStart(2,'0')}"${String(m).padStart(2,'0')===curM?' selected':''}>${m} 月</option>`).join('');
+// ═══════════════════════════════
+// SCREENS
+// ═══════════════════════════════
+function showScreen(name, el) {
+  ['home','diary','stats','plants'].forEach(s =>
+    document.getElementById('screen-'+s).classList.toggle('hidden', s !== name));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (name === 'diary') renderDiary();
+  if (name === 'stats') renderStats();
+  if (name === 'plants') renderPlants();
 }
 
-function renderDiary(){
+// ═══════════════════════════════
+// CARE TOGGLE
+// ═══════════════════════════════
+function toggleCare(type) {
+  const isDone = document.getElementById('btn-'+type).classList.toggle('done');
+  document.getElementById('cl-'+type).style.color = isDone ? 'var(--g800)' : '';
+  document.getElementById('ct-'+type).textContent = isDone ? '今日完成 ✓' : '點擊記錄';
+  care[type] = isDone; saveData();
+}
+
+// ═══════════════════════════════
+// HOME AI
+// ═══════════════════════════════
+function updateHomeAI(ai) {
+  const sMap = { great:{cls:'b-great',txt:'🌿 極好'}, ok:{cls:'b-ok',txt:'🌤 普通'}, bad:{cls:'b-bad',txt:'🥀 不好'} };
+  const s = sMap[ai.score] || sMap.ok;
+  document.getElementById('home-badge').innerHTML = `<span class="badge ${s.cls}">${s.txt}</span>`;
+  document.getElementById('home-desc').textContent = ai.reason || '';
+  document.getElementById('home-chips').innerHTML = (ai.suggestions||[]).map(sg => `<span class="ai-chip">${sg}</span>`).join('');
+  if (ai.needs && ai.needs.length) {
+    document.getElementById('needs-list').innerHTML = ai.needs.map(n =>
+      `<div class="need-item"><div class="ndot ${n.level==='good'?'d-good':n.level==='warn'?'d-warn':'d-bad'}"></div><div class="need-text">${n.text}</div></div>`
+    ).join('');
+  }
+}
+
+// ═══════════════════════════════
+// DIARY
+// ═══════════════════════════════
+function updateFilterOptions() {
+  // plants filter
+  const pSel = document.getElementById('filter-plant');
+  const curP = pSel.value;
+  pSel.innerHTML = '<option value="">全部植物</option>' +
+    plants.map(p => `<option value="${p.id}"${String(p.id)===curP?' selected':''}>${p.emoji} ${p.name}</option>`).join('');
+
+  // year filter
+  const years = [...new Set(entries.map(e => e.date.slice(0,4)))].sort((a,b) => b-a);
+  const ySel = document.getElementById('filter-year');
+  const curY = ySel.value;
+  ySel.innerHTML = '<option value="">全部年份</option>' +
+    years.map(y => `<option value="${y}"${y===curY?' selected':''}>${y} 年</option>`).join('');
+
+  // month filter
+  const mSel = document.getElementById('filter-month');
+  const curM = mSel.value;
+  mSel.innerHTML = '<option value="">月份</option>' +
+    [1,2,3,4,5,6,7,8,9,10,11,12].map(m => {
+      const mv = String(m).padStart(2,'0');
+      return `<option value="${mv}"${mv===curM?' selected':''}>${m} 月</option>`;
+    }).join('');
+}
+
+function renderDiary() {
   updateFilterOptions();
-  const list=document.getElementById('timeline-list');
-  const filterY=document.getElementById('filter-year')?.value||'';
-  const filterM=document.getElementById('filter-month')?.value||'';
-  let filtered=entries;
-  if(filterY) filtered=filtered.filter(e=>e.date.startsWith(filterY));
-  if(filterM) filtered=filtered.filter(e=>e.date.slice(5,7)===filterM);
-  if(!filtered.length){
-    list.innerHTML=entries.length===0
-      ?'<div class="empty"><div class="empty-icon">🌱</div><div class="empty-text">還沒有日記記錄<br>點擊上方按鈕，新增第一筆！</div></div>'
-      :'<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">這個時間沒有日記記錄</div></div>';
+  const list = document.getElementById('timeline-list');
+  const filterP = document.getElementById('filter-plant').value;
+  const filterY = document.getElementById('filter-year').value;
+  const filterM = document.getElementById('filter-month').value;
+
+  let filtered = [...entries].sort((a,b) => new Date(b.date) - new Date(a.date));
+  if (filterP) filtered = filtered.filter(e => String(e.plantId) === filterP);
+  if (filterY) filtered = filtered.filter(e => e.date.startsWith(filterY));
+  if (filterM) filtered = filtered.filter(e => e.date.slice(5,7) === filterM);
+
+  if (!filtered.length) {
+    list.innerHTML = entries.length === 0
+      ? '<div class="empty"><div class="empty-icon">🌱</div><div class="empty-text">還沒有日記記錄<br>點擊上方按鈕新增第一筆！</div></div>'
+      : '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">這個條件沒有日記記錄</div></div>';
     return;
   }
-  const bgs=['tl-bg1','tl-bg2','tl-bg3'];
-  const sMap={great:{cls:'b-great',txt:'🌿 極好'},ok:{cls:'b-ok',txt:'🌤 普通'},bad:{cls:'b-bad',txt:'🥀 不好'}};
-  list.innerHTML=filtered.map((e,i)=>{
-    const d=new Date(e.date+'T00:00:00'),s=sMap[e.score]||sMap.ok;
-    const tags=(e.tags||[]).map(t=>`<span class="tl-tag">${t}</span>`).join('');
-    const ph=e.photos||[];
-    const pj=JSON.stringify(ph).replace(/\\/g,'\\\\').replace(/"/g,"'");
-    let phHTML='';
-    if(!ph.length){phHTML=`<div class="tl-ph ${bgs[i%3]}">${e.emoji||'🌱'}</div>`;}
-    else if(ph.length===1){phHTML=`<div class="tl-ph" onclick="openLB(${pj},0)"><img src="${ph[0]}" loading="lazy"></div>`;}
-    else{const imgs=ph.map((p,pi)=>`<img src="${p}" loading="lazy" onclick="openLB(${pj},${pi})">`).join('');phHTML=`<div class="tl-scroll-wrap"><div class="tl-ph-scroll">${imgs}</div><div class="tl-ph-count">${ph.length} 張</div></div>`;}
-    return`<div class="tl-item"><div class="tl-date"><div class="tl-day">${String(d.getDate()).padStart(2,'0')}</div><div class="tl-month">${MONS[d.getMonth()]}</div></div><div class="tl-box">${phHTML}<div class="tl-meta"><div class="tl-tags"><span class="badge ${s.cls}" style="font-size:11px;padding:3px 9px;">${s.txt}</span>${tags}</div><div class="tl-note">${e.note||e.desc||''}</div></div></div></div>`;
+
+  const bgs = ['tl-bg1','tl-bg2','tl-bg3'];
+  const sMap = { great:{cls:'b-great',txt:'🌿 極好'}, ok:{cls:'b-ok',txt:'🌤 普通'}, bad:{cls:'b-bad',txt:'🥀 不好'} };
+
+  list.innerHTML = filtered.map((e, i) => {
+    const d = new Date(e.date + 'T00:00:00');
+    const s = sMap[e.score] || sMap.ok;
+    const tags = (e.tags||[]).map(t => `<span class="tl-tag">${t}</span>`).join('');
+    const ph = e.photos || [];
+    const plant = plants.find(p => p.id === e.plantId);
+    const plantTag = plant ? `<div class="tl-plant-tag">${plant.emoji} ${plant.name}</div>` : '';
+    const pj = JSON.stringify(ph).replace(/\\/g,'\\\\').replace(/"/g,"'");
+
+    let phHTML = '';
+    if (!ph.length) {
+      phHTML = `<div class="tl-ph ${bgs[i%3]}">${plant?.emoji || e.emoji || '🌱'}</div>`;
+    } else if (ph.length === 1) {
+      phHTML = `<div class="tl-ph" onclick="openLB(${pj},0)"><img src="${ph[0]}" loading="lazy"></div>`;
+    } else {
+      const imgs = ph.map((p, pi) => `<img src="${p}" loading="lazy" onclick="openLB(${pj},${pi})">`).join('');
+      phHTML = `<div class="tl-scroll-wrap"><div class="tl-ph-scroll">${imgs}</div><div class="tl-ph-count">${ph.length} 張</div></div>`;
+    }
+
+    return `<div class="tl-item">
+      <div class="tl-date-col"><div class="tl-day">${String(d.getDate()).padStart(2,'0')}</div><div class="tl-mon">${MONS[d.getMonth()]}</div><div class="tl-mon">${d.getFullYear()}</div></div>
+      <div class="tl-box">${plantTag}${phHTML}<div class="tl-meta"><div class="tl-tags"><span class="badge ${s.cls}" style="font-size:11px;padding:3px 9px;">${s.txt}</span>${tags}</div><div class="tl-note">${e.note||e.desc||''}</div></div></div>
+    </div>`;
   }).join('');
 }
 
+// ═══════════════════════════════
 // LIGHTBOX
-function openLB(photos,start){
-  if(!photos||!photos.length)return;
-  const wrap=document.getElementById('lb-imgs'),dots=document.getElementById('lb-dots');
-  wrap.innerHTML=photos.map(p=>`<img src="${p}">`).join('');
-  dots.innerHTML=photos.length>1?photos.map((_,i)=>`<div class="lb-dot${i===start?' on':''}"></div>`).join(''):'';
+// ═══════════════════════════════
+function openLB(photos, start) {
+  if (!photos || !photos.length) return;
+  const wrap = document.getElementById('lb-imgs');
+  const dots = document.getElementById('lb-dots');
+  wrap.innerHTML = photos.map(p => `<img src="${p}">`).join('');
+  dots.innerHTML = photos.length > 1 ? photos.map((_,i) => `<div class="lb-dot${i===start?' on':''}"></div>`).join('') : '';
   document.getElementById('lightbox').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-  if(start>0)setTimeout(()=>wrap.scrollTo({left:start*wrap.clientWidth,behavior:'instant'}),20);
+  document.body.style.overflow = 'hidden';
+  if (start > 0) setTimeout(() => wrap.scrollTo({left: start * wrap.clientWidth, behavior:'instant'}), 20);
 }
-function closeLightbox(){document.getElementById('lightbox').classList.add('hidden');document.body.style.overflow='';}
-function updateDots(){
-  const wrap=document.getElementById('lb-imgs'),idx=Math.round(wrap.scrollLeft/wrap.clientWidth);
-  document.querySelectorAll('.lb-dot').forEach((d,i)=>d.classList.toggle('on',i===idx));
+function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); document.body.style.overflow = ''; }
+function updateDots() {
+  const wrap = document.getElementById('lb-imgs');
+  const idx = Math.round(wrap.scrollLeft / wrap.clientWidth);
+  document.querySelectorAll('.lb-dot').forEach((d,i) => d.classList.toggle('on', i===idx));
 }
 
-// STATS + AI CYCLES
-async function renderStats(){
-  const water=entries.filter(e=>(e.tags||[]).includes('澆水')).length;
-  const fert=entries.filter(e=>(e.tags||[]).includes('施肥')).length;
-  const scores=entries.map(e=>e.score==='great'?100:e.score==='ok'?60:25);
-  const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
-  document.getElementById('s-water').textContent=water;
-  document.getElementById('s-fert').textContent=fert;
-  document.getElementById('s-avg').textContent=avg!==null?avg+'%':'--';
-  document.getElementById('s-days').textContent=entries.length;
-  const chart=document.getElementById('bar-chart');
-  if(!entries.length){chart.innerHTML='<div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--t3);font-size:13px;">新增日記後顯示趨勢圖</div>';return;}
-  const last7=entries.slice(0,7).reverse();
-  const hMap={great:90,ok:55,bad:28},cMap={great:'br-g',ok:'br-a',bad:'br-r'};
-  chart.innerHTML=last7.map(e=>{const d=new Date(e.date);return`<div class="bc"><div class="br ${cMap[e.score]||'br-g'}" style="height:${hMap[e.score]||55}px;"></div><div class="bl">${d.getMonth()+1}/${d.getDate()}</div></div>`;}).join('');
+// ═══════════════════════════════
+// STATS
+// ═══════════════════════════════
+async function renderStats() {
+  const water = entries.filter(e => (e.tags||[]).includes('澆水')).length;
+  const fert  = entries.filter(e => (e.tags||[]).includes('施肥')).length;
+  const scores = entries.map(e => e.score==='great'?100:e.score==='ok'?60:25);
+  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  document.getElementById('s-water').textContent = water;
+  document.getElementById('s-fert').textContent  = fert;
+  document.getElementById('s-avg').textContent   = avg !== null ? avg+'%' : '--';
+  document.getElementById('s-days').textContent  = entries.length;
 
-  const cached=sg('zrs_cycles');
-  if(cached){
-    document.getElementById('cy-water').textContent=cached.water||'-- 天';
-    document.getElementById('cy-fert').textContent=cached.fert||'-- 天';
-    document.getElementById('cy-trim').textContent=cached.trim||'-- 天';
-    ['water','fert','trim'].forEach(t=>document.getElementById('cy-'+t+'-sub').textContent='AI 根據你的記錄分析');
+  const chart = document.getElementById('bar-chart');
+  if (!entries.length) { chart.innerHTML = '<div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--t3);font-size:13px;">新增日記後顯示</div>'; return; }
+  const last7 = [...entries].sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0,7).reverse();
+  const hMap = {great:90,ok:55,bad:28}, cMap = {great:'br-g',ok:'br-a',bad:'br-r'};
+  chart.innerHTML = last7.map(e => {
+    const d = new Date(e.date+'T00:00:00');
+    return `<div class="bc"><div class="br ${cMap[e.score]||'br-g'}" style="height:${hMap[e.score]||55}px;"></div><div class="bl">${d.getMonth()+1}/${d.getDate()}</div></div>`;
+  }).join('');
+
+  // AI cycle analysis
+  const cached = sg('zrs_cycles');
+  if (cached) {
+    document.getElementById('cy-water').textContent = cached.water || '--';
+    document.getElementById('cy-fert').textContent  = cached.fert  || '--';
+    document.getElementById('cy-trim').textContent  = cached.trim  || '--';
+    ['water','fert','trim'].forEach(t => document.getElementById('cy-'+t+'-sub').textContent = '✨ AI 根據記錄分析');
   }
-  if(entries.length>=3&&sg('zrs_cycle_key')!==entries.length+''){
-    analyzeCycles();
-  }
+  if (entries.length >= 3 && sg('zrs_cycle_key') !== entries.length+'') analyzeCycles();
 }
 
-async function analyzeCycles(){
-  const summary=entries.slice(0,15).map(e=>`日期:${e.date} 健康:${e.score} 護理:[${(e.tags||[]).join(',')}]`).join('\n');
-  try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:150,
-      messages:[{role:'user',content:`根據以下植物照顧記錄，分析最適合的護理週期。只回傳JSON不要其他文字：{"water":"每X天","fert":"每X天","trim":"每X天"}\n\n${summary}`}]
-    })});
-    const data=await resp.json();
-    const txt=data.content.map(c=>c.text||'').join('');
-    const parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
-    ss('zrs_cycles',parsed);
-    ss('zrs_cycle_key',entries.length+'');
-    document.getElementById('cy-water').textContent=parsed.water||'-- 天';
-    document.getElementById('cy-fert').textContent=parsed.fert||'-- 天';
-    document.getElementById('cy-trim').textContent=parsed.trim||'-- 天';
-    ['water','fert','trim'].forEach(t=>document.getElementById('cy-'+t+'-sub').textContent='✨ AI 根據你的記錄分析');
-  }catch(e){}
+async function analyzeCycles() {
+  const summary = entries.slice(0,15).map(e => `日期:${e.date} 健康:${e.score} 護理:[${(e.tags||[]).join(',')}]`).join('\n');
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:150,
+        messages:[{role:'user', content:`根據以下植物照顧記錄，分析最適護理週期，只回傳JSON：{"water":"每X天","fert":"每X天","trim":"每X天"}\n${summary}`}]
+      })
+    });
+    const data = await resp.json();
+    const parsed = JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());
+    ss('zrs_cycles', parsed);
+    ss('zrs_cycle_key', entries.length+'');
+    document.getElementById('cy-water').textContent = parsed.water || '--';
+    document.getElementById('cy-fert').textContent  = parsed.fert  || '--';
+    document.getElementById('cy-trim').textContent  = parsed.trim  || '--';
+    ['water','fert','trim'].forEach(t => document.getElementById('cy-'+t+'-sub').textContent = '✨ AI 根據記錄分析');
+  } catch(e) {}
 }
 
+// ═══════════════════════════════
 // PLANTS
-const PA_BG=['pa-g','pa-p','pa-a','pa-t'];
-function renderPlants(){
-  const list=document.getElementById('plants-list');
-  if(!plants.length){list.innerHTML='<div class="empty"><div class="empty-icon">🪴</div><div class="empty-text">還沒有植物<br>點擊下方按鈕新增你的第一株植物！</div></div>';return;}
-  const sMap={great:{cls:'b-great',txt:'極好'},ok:{cls:'b-ok',txt:'普通'},bad:{cls:'b-bad',txt:'不好'}};
-  list.innerHTML=plants.map((p,i)=>{
-    const s=sMap[p.score]||sMap.great;
-    return`<div class="plant-item"><div class="pa ${PA_BG[i%4]}">${p.emoji||'🌱'}</div><div style="flex:1;min-width:0;"><div class="plant-name">${p.name}</div><div class="plant-type">${p.type}</div><div class="plant-days">照顧中 ${p.days} 天 🌱</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:8px;"><button class="pa-edit" onclick="openPlantModal(${p.id})">✏️ 編輯</button><span class="badge ${s.cls}" style="font-size:11px;">${s.txt}</span></div></div>`;
+// ═══════════════════════════════
+function renderPlants() {
+  const list = document.getElementById('plants-list');
+  if (!plants.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🪴</div><div class="empty-text">還沒有植物<br>點擊下方按鈕新增！</div></div>';
+    return;
+  }
+  const sMap = { great:{cls:'b-great',txt:'極好'}, ok:{cls:'b-ok',txt:'普通'}, bad:{cls:'b-bad',txt:'不好'} };
+  list.innerHTML = plants.map((p, i) => {
+    const s = sMap[p.score] || sMap.great;
+    return `<div class="plant-item">
+      <div class="pa ${PA_BG[i%4]}">${p.emoji||'🌱'}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="plant-name">${p.name}</div>
+        <div class="plant-type">${p.type}</div>
+        <div class="plant-days">照顧中 ${p.days} 天 🌱</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:8px;">
+        <button class="pa-edit" onclick="openPlantModal(${p.id})">✏️ 編輯</button>
+        <span class="badge ${s.cls}" style="font-size:11px;">${s.txt}</span>
+      </div>
+    </div>`;
   }).join('');
 }
 
-// PHOTO COMPRESS
-function compressPhoto(dataUrl,maxW,maxH,quality){
-  return new Promise(res=>{
-    const img=new Image();
-    img.onload=()=>{
-      let w=img.width,h=img.height;
-      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
-      if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
-      const canvas=document.createElement('canvas');
-      canvas.width=w;canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      res(canvas.toDataURL('image/jpeg',quality));
-    };
-    img.src=dataUrl;
-  });
-}
-
+// ═══════════════════════════════
 // ADD ENTRY
-function openAddEntry(){
-  photoDatas=[];aiResult=null;modalCare={water:false,fert:false,trim:false};
-  document.getElementById('entry-note').value='';
-  // set today's date
-  const todayStr=NOW.toISOString().split('T')[0];
-  document.getElementById('entry-date').value=todayStr;
-  document.getElementById('photo-area').style.display='flex';
-  const pr=document.getElementById('preview-row');pr.style.display='none';pr.innerHTML='';
-  document.getElementById('photo-input').value='';
-  ['water','fert','trim'].forEach(t=>document.getElementById('t-'+t).classList.remove('on'));
-  document.getElementById('ai-ld-wrap').style.display='none';
-  document.getElementById('ai-res-wrap').style.display='none';
+// ═══════════════════════════════
+function openAddEntry() {
+  photoDatas = []; aiResult = null;
+  modalCare = {water:false, fert:false, trim:false};
+  selectedPlantId = plants.length > 0 ? plants[0].id : null;
+
+  // render plant selector
+  const row = document.getElementById('plant-sel-row');
+  if (plants.length === 0) {
+    row.innerHTML = '<div style="font-size:13px;color:var(--t3);padding:8px 0;">請先到「植物」頁新增你的植物</div>';
+  } else {
+    row.innerHTML = plants.map(p =>
+      `<div class="plant-sel-item${p.id===selectedPlantId?' active':''}" onclick="selectPlant(${p.id},this)">${p.emoji} ${p.name}</div>`
+    ).join('');
+  }
+
+  const todayStr = NOW.toISOString().split('T')[0];
+  document.getElementById('entry-date').value = todayStr;
+  document.getElementById('entry-note').value = '';
+  document.getElementById('photo-area').style.display = 'flex';
+  const pr = document.getElementById('preview-row'); pr.style.display = 'none'; pr.innerHTML = '';
+  document.getElementById('photo-input').value = '';
+  ['water','fert','trim'].forEach(t => document.getElementById('t-'+t).classList.remove('on'));
+  document.getElementById('ai-ld-wrap').style.display = 'none';
+  document.getElementById('ai-res-wrap').style.display = 'none';
   document.getElementById('modal-entry').classList.remove('hidden');
 }
 
-async function handlePhoto(e){
-  const files=Array.from(e.target.files);if(!files.length)return;
-  photoDatas=[];const pr=document.getElementById('preview-row');pr.innerHTML='';let loaded=0;
-  for(let idx=0;idx<files.length;idx++){
-    const file=files[idx];
-    await new Promise(resolve=>{
-      const reader=new FileReader();
-      reader.onload=async ev=>{
-        // 壓縮到最大 1200px，品質 0.75，控制在約 200KB 以內
-        const compressed=await compressPhoto(ev.target.result,1200,1200,0.75);
-        photoDatas[idx]=compressed;
-        const img=document.createElement('img');
-        img.src=compressed;img.style.cssText='height:90px;width:auto;border-radius:8px;flex-shrink:0;object-fit:cover;';
-        pr.appendChild(img);loaded++;
-        if(loaded===files.length){
-          document.getElementById('photo-area').style.display='none';
-          pr.style.display='flex';
-          analyzePhoto(photoDatas[0]);
-        }
-        resolve();
-      };reader.readAsDataURL(file);
-    });
-  }
+function selectPlant(id, el) {
+  selectedPlantId = id;
+  document.querySelectorAll('.plant-sel-item').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
 }
 
-async function analyzePhoto(dataUrl){
-  document.getElementById('ai-ld-wrap').style.display='block';
-  document.getElementById('ai-res-wrap').style.display='none';
-  try{
-    const base64=dataUrl.split(',')[1],mtype=dataUrl.split(';')[0].split(':')[1];
-    const hist=entries.slice(0,5).map(e=>`${e.date} ${e.score} [${(e.tags||[]).join(',')}] ${e.note||''}`).join('\n');
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:500,
-      messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:mtype||'image/jpeg',data:base64}},
-        {type:'text',text:`你是專業植物健康評估師。分析這張植物照片${hist?'，結合過去記錄給出更準確評估':''}。只回傳JSON：{"score":"great|ok|bad","reason":"繁體中文25字內","suggestions":["建議1","建議2"],"needs":[{"level":"good|warn|bad","text":"需求描述"}]}${hist?'\n\n過去記錄：\n'+hist:''}`}
-      ]}]
-    })});
-    const data=await resp.json();
-    const txt=data.content.map(c=>c.text||'').join('');
-    const parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
-    aiResult=parsed;showAIResult(parsed);
-  }catch(err){
-    aiResult={score:'ok',reason:'照片已記錄，AI 分析暫時無法使用',suggestions:['保持定期觀察','注意葉片顏色'],needs:[{level:'good',text:'保持目前照顧習慣'}]};
+async function handlePhoto(e) {
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
+  photoDatas = [];
+  const pr = document.getElementById('preview-row');
+  pr.innerHTML = '';
+
+  for (let i = 0; i < files.length; i++) {
+    const dataUrl = await new Promise(res => {
+      const reader = new FileReader();
+      reader.onload = ev => res(ev.target.result);
+      reader.readAsDataURL(files[i]);
+    });
+    // 壓縮：最大 1000px，品質 0.72
+    const compressed = await compressPhoto(dataUrl, 1000, 0.72);
+    photoDatas.push(compressed);
+
+    const img = document.createElement('img');
+    img.src = compressed;
+    img.style.cssText = 'height:90px;width:auto;border-radius:8px;flex-shrink:0;object-fit:cover;';
+    pr.appendChild(img);
+  }
+
+  document.getElementById('photo-area').style.display = 'none';
+  pr.style.display = 'flex';
+  if (photoDatas.length > 0) analyzePhoto(photoDatas[0]);
+}
+
+async function analyzePhoto(dataUrl) {
+  document.getElementById('ai-ld-wrap').style.display = 'block';
+  document.getElementById('ai-res-wrap').style.display = 'none';
+  try {
+    const base64 = dataUrl.split(',')[1];
+    const mtype  = dataUrl.split(';')[0].split(':')[1];
+    const hist = entries.slice(0,5).map(e => `${e.date} ${e.score} [${(e.tags||[]).join(',')}] ${e.note||''}`).join('\n');
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:500,
+        messages:[{role:'user', content:[
+          {type:'image', source:{type:'base64', media_type: mtype||'image/jpeg', data: base64}},
+          {type:'text', text:`你是專業植物健康評估師。分析這張植物照片${hist?'，結合過去記錄':''}。只回傳JSON：{"score":"great|ok|bad","reason":"繁體中文25字內","suggestions":["建議1","建議2"],"needs":[{"level":"good|warn|bad","text":"需求說明"}]}${hist?'\n\n過去記錄：\n'+hist:''}`}
+        ]}]
+      })
+    });
+    const data = await resp.json();
+    const parsed = JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());
+    aiResult = parsed; showAIResult(parsed);
+  } catch(err) {
+    aiResult = {score:'ok', reason:'照片已記錄，AI 分析暫時無法使用', suggestions:['保持定期觀察'], needs:[{level:'good',text:'保持目前照顧習慣'}]};
     showAIResult(aiResult);
   }
-  document.getElementById('ai-ld-wrap').style.display='none';
+  document.getElementById('ai-ld-wrap').style.display = 'none';
 }
 
-function showAIResult(r){
-  document.getElementById('ai-res-wrap').style.display='block';
-  const sMap={great:{cls:'b-great',txt:'🌿 極好'},ok:{cls:'b-ok',txt:'🌤 普通'},bad:{cls:'b-bad',txt:'🥀 不好'}};
-  const s=sMap[r.score]||sMap.ok;
-  document.getElementById('modal-badge').innerHTML=`<span class="badge ${s.cls}">${s.txt}</span>`;
-  document.getElementById('modal-desc').textContent=r.reason;
-  document.getElementById('modal-sugs').innerHTML=(r.suggestions||[]).map(sg=>`<span class="ai-sug">${sg}</span>`).join('');
+function showAIResult(r) {
+  document.getElementById('ai-res-wrap').style.display = 'block';
+  const sMap = { great:{cls:'b-great',txt:'🌿 極好'}, ok:{cls:'b-ok',txt:'🌤 普通'}, bad:{cls:'b-bad',txt:'🥀 不好'} };
+  const s = sMap[r.score] || sMap.ok;
+  document.getElementById('modal-badge').innerHTML = `<span class="badge ${s.cls}">${s.txt}</span>`;
+  document.getElementById('modal-desc').textContent = r.reason;
+  document.getElementById('modal-sugs').innerHTML = (r.suggestions||[]).map(sg => `<span class="ai-sug">${sg}</span>`).join('');
 }
 
-function toggleModal(type){modalCare[type]=!modalCare[type];document.getElementById('t-'+type).classList.toggle('on',modalCare[type]);}
-
-function saveEntry(){
-  const tags=Object.keys(modalCare).filter(k=>modalCare[k]).map(k=>k==='water'?'澆水':k==='fert'?'施肥':'整理');
-  const ai=aiResult||{score:'ok',reason:'今日植物記錄',suggestions:[],needs:[]};
-  const selectedDate=document.getElementById('entry-date').value||NOW.toISOString().split('T')[0];
-  entries.push({id:Date.now(),date:selectedDate,score:ai.score,desc:ai.reason,tags,note:document.getElementById('entry-note').value.trim()||ai.reason,photos:[...photoDatas],emoji:'🌱',ai});
-  // 按日期由新到舊排序
-  entries.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  streak++;updateStreak();updateHomeAI(ai);
-  updateFilterOptions();
-  saveAll();closeOverlay('modal-entry');renderDiary();
+function toggleModal(type) {
+  modalCare[type] = !modalCare[type];
+  document.getElementById('t-'+type).classList.toggle('on', modalCare[type]);
 }
 
-// PLANT CRUD
-function openPlantModal(id){
-  editingPlantId=id;
-  const p=id?plants.find(x=>x.id===id):null;
-  document.getElementById('plant-mtitle').textContent=p?'✏️ 編輯植物':'🌱 新增植物';
-  document.getElementById('p-name').value=p?p.name:'';
-  document.getElementById('p-type').value=p?p.type:'';
-  selEmoji=p?p.emoji:'🌱';
-  document.querySelectorAll('.emj').forEach(el=>el.classList.toggle('sel',el.textContent===selEmoji));
-  document.getElementById('del-btn').style.display=p?'block':'none';
+async function saveEntry() {
+  const tags = Object.keys(modalCare).filter(k=>modalCare[k]).map(k=>k==='water'?'澆水':k==='fert'?'施肥':'整理');
+  const ai = aiResult || {score:'ok', reason:'今日植物記錄', suggestions:[], needs:[]};
+  const selectedDate = document.getElementById('entry-date').value || NOW.toISOString().split('T')[0];
+
+  const entry = {
+    id: Date.now(),
+    date: selectedDate,
+    plantId: selectedPlantId,
+    score: ai.score,
+    desc: ai.reason,
+    tags,
+    note: document.getElementById('entry-note').value.trim() || ai.reason,
+    photoIds: [],
+    photos: [],
+    emoji: '🌱',
+    ai
+  };
+
+  // 儲存照片到 IndexedDB
+  await savePhotosForEntry(entry, photoDatas);
+
+  entries.push(entry);
+  entries.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  // 更新植物評分
+  if (selectedPlantId) {
+    const p = plants.find(x => x.id === selectedPlantId);
+    if (p) { p.score = ai.score; p.days = (p.days || 0) + 1; }
+  }
+
+  streak++; updateStreak();
+  updateHomeAI(ai);
+  saveData();
+  closeOverlay('modal-entry');
+  renderDiary();
+}
+
+// ═══════════════════════════════
+// PLANTS CRUD
+// ═══════════════════════════════
+function openPlantModal(id) {
+  editingPlantId = id;
+  const p = id ? plants.find(x => x.id === id) : null;
+  document.getElementById('plant-mtitle').textContent = p ? '✏️ 編輯植物' : '🌱 新增植物';
+  document.getElementById('p-name').value = p ? p.name : '';
+  document.getElementById('p-type').value = p ? p.type : '';
+  selEmoji = p ? p.emoji : '🌱';
+  document.querySelectorAll('.emj').forEach(el => el.classList.toggle('sel', el.textContent === selEmoji));
+  document.getElementById('del-btn').style.display = p ? 'block' : 'none';
   document.getElementById('modal-plant').classList.remove('hidden');
 }
 
-function pickEmoji(el,emoji){document.querySelectorAll('.emj').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');selEmoji=emoji;}
-
-function savePlant(){
-  const name=document.getElementById('p-name').value.trim();if(!name){document.getElementById('p-name').focus();return;}
-  const type=document.getElementById('p-type').value.trim()||'植物';
-  if(editingPlantId){const idx=plants.findIndex(p=>p.id===editingPlantId);if(idx>=0)plants[idx]={...plants[idx],name,type,emoji:selEmoji};}
-  else plants.push({id:Date.now(),name,type,emoji:selEmoji,days:0,score:'great',added:Date.now()});
-  saveAll();closeOverlay('modal-plant');renderPlants();
+function pickEmoji(el, emoji) {
+  document.querySelectorAll('.emj').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel'); selEmoji = emoji;
 }
 
-function deletePlant(){
-  if(!editingPlantId)return;
-  const p=plants.find(x=>x.id===editingPlantId);
-  if(!confirm(`確定要刪除「${p?p.name:'這株植物'}」嗎？`))return;
-  plants=plants.filter(x=>x.id!==editingPlantId);
-  saveAll();closeOverlay('modal-plant');renderPlants();
+function savePlant() {
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) { document.getElementById('p-name').focus(); return; }
+  const type = document.getElementById('p-type').value.trim() || '植物';
+  if (editingPlantId) {
+    const idx = plants.findIndex(p => p.id === editingPlantId);
+    if (idx >= 0) plants[idx] = { ...plants[idx], name, type, emoji: selEmoji };
+  } else {
+    plants.push({ id: Date.now(), name, type, emoji: selEmoji, days: 0, score: 'great', added: Date.now() });
+  }
+  saveData(); closeOverlay('modal-plant'); renderPlants();
 }
 
-function closeOverlay(id){document.getElementById(id).classList.add('hidden');}
-document.querySelectorAll('.overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.add('hidden');}));
+function deletePlant() {
+  if (!editingPlantId) return;
+  const p = plants.find(x => x.id === editingPlantId);
+  if (!confirm(`確定要刪除「${p ? p.name : '這株植物'}」嗎？`)) return;
+  plants = plants.filter(x => x.id !== editingPlantId);
+  saveData(); closeOverlay('modal-plant'); renderPlants();
+}
 
-renderPlants();
+// ═══════════════════════════════
+// UTILS
+// ═══════════════════════════════
+function closeOverlay(id) { document.getElementById(id).classList.add('hidden'); }
+document.querySelectorAll('.overlay').forEach(m =>
+  m.addEventListener('click', e => { if (e.target === m) m.classList.add('hidden'); })
+);
+
+// START
+init();
 </script>
 </body>
 </html>
