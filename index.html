@@ -360,7 +360,7 @@ textarea.finput{resize:none;}
 <div class="overlay hidden" id="modal-entry">
   <div class="modal">
     <div class="mhandle"></div>
-    <div class="mtitle">📸 新增日記</div>
+    <div class="mtitle" id="entry-modal-title">📸 新增日記</div>
 
     <label class="flabel">這是哪株植物的日記？</label>
     <div class="plant-sel-row" id="plant-sel-row"></div>
@@ -372,9 +372,10 @@ textarea.finput{resize:none;}
     <div class="pup-area" id="photo-area" onclick="document.getElementById('photo-input').click()">
       <div class="pup-icon">📷</div>
       <div class="pup-text">點擊從相簿選取或拍照</div>
-      <div class="pup-sub">支援多張照片</div>
+      <div class="pup-sub">支援多張照片 · 可重新選取取代</div>
     </div>
     <div class="preview-row" id="preview-row"></div>
+    <button id="reselect-photo-btn" onclick="reselectPhoto()" style="display:none;width:100%;padding:9px;background:var(--bg);border:.5px solid var(--bd);border-radius:var(--rads);font-size:12px;color:var(--t2);cursor:pointer;margin-bottom:12px;font-family:inherit;">🔄 重新選取照片</button>
     <input type="file" accept="image/*" multiple id="photo-input" style="display:none" onchange="handlePhoto(event)">
 
     <div id="ai-ld-wrap" style="display:none">
@@ -394,7 +395,8 @@ textarea.finput{resize:none;}
     </div>
     <label class="flabel">備註</label>
     <textarea class="finput" id="entry-note" rows="2" placeholder="今天植物的狀況..."></textarea>
-    <button class="sbtn" onclick="saveEntry()">儲存日記 ✓</button>
+    <button class="sbtn" onclick="saveEntry()">儲存 ✓</button>
+    <button class="dbtn" id="entry-del-btn" style="display:none" onclick="deleteEntryFromModal()">🗑 刪除這筆日記</button>
     <button class="cbtn" onclick="closeOverlay('modal-entry')">取消</button>
   </div>
 </div>
@@ -489,7 +491,7 @@ const ss = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch
 let plants = [], entries = [], care = {}, streak = 0;
 let selEmoji = '🌱', photoDatas = [], aiResult = null;
 let modalCare = { water: false, fert: false, trim: false };
-let editingPlantId = null, selectedPlantId = null;
+let editingPlantId = null, selectedPlantId = null, editingEntryId = null;
 
 // ═══════════════════════════════
 // INIT
@@ -732,7 +734,16 @@ function renderDiary() {
 
     return `<div class="tl-item">
       <div class="tl-date-col"><div class="tl-day">${String(d.getDate()).padStart(2,'0')}</div><div class="tl-mon">${MONS[d.getMonth()]}</div><div class="tl-mon">${d.getFullYear()}</div></div>
-      <div class="tl-box">${plantTag}${phHTML}<div class="tl-meta"><div class="tl-tags"><span class="badge ${s.cls}" style="font-size:11px;padding:3px 9px;">${s.txt}</span>${tags}</div><div class="tl-note">${e.note||e.desc||''}</div></div></div>
+      <div class="tl-box">${plantTag}${phHTML}
+        <div class="tl-meta">
+          <div class="tl-tags"><span class="badge ${s.cls}" style="font-size:11px;padding:3px 9px;">${s.txt}</span>${tags}</div>
+          <div class="tl-note">${e.note||e.desc||''}</div>
+          <div style="display:flex;gap:8px;margin-top:10px;padding-top:8px;border-top:.5px solid var(--bd);">
+            <button onclick="openEditEntry(${e.id})" style="flex:1;padding:7px;background:var(--g50);color:var(--g800);border:.5px solid var(--g100);border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">✏️ 編輯</button>
+            <button onclick="deleteEntry(${e.id})" style="padding:7px 12px;background:var(--r50);color:var(--r400);border:.5px solid #f5c1c1;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">🗑</button>
+          </div>
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -838,14 +849,26 @@ function renderPlants() {
 }
 
 // ═══════════════════════════════
-// ADD ENTRY
+// ADD / EDIT ENTRY
 // ═══════════════════════════════
-function openAddEntry() {
-  photoDatas = []; aiResult = null;
-  modalCare = {water:false, fert:false, trim:false};
-  selectedPlantId = plants.length > 0 ? plants[0].id : null;
+function openAddEntry() { openEntryModal(null); }
 
-  // render plant selector
+async function openEditEntry(id) {
+  openEntryModal(id);
+}
+
+async function openEntryModal(id) {
+  editingEntryId = id;
+  const existing = id ? entries.find(e => e.id === id) : null;
+
+  photoDatas = []; aiResult = null;
+  modalCare = { water:false, fert:false, trim:false };
+
+  // 標題
+  document.getElementById('entry-modal-title').textContent = existing ? '✏️ 編輯日記' : '📸 新增日記';
+
+  // 植物選擇
+  selectedPlantId = existing ? existing.plantId : (plants.length > 0 ? plants[0].id : null);
   const row = document.getElementById('plant-sel-row');
   if (plants.length === 0) {
     row.innerHTML = '<div style="font-size:13px;color:var(--t3);padding:8px 0;">請先到「植物」頁新增你的植物</div>';
@@ -855,16 +878,83 @@ function openAddEntry() {
     ).join('');
   }
 
-  const todayStr = NOW.toISOString().split('T')[0];
-  document.getElementById('entry-date').value = todayStr;
-  document.getElementById('entry-note').value = '';
+  // 日期
+  document.getElementById('entry-date').value = existing ? existing.date : NOW.toISOString().split('T')[0];
+
+  // 照片：如果是編輯模式，把舊照片載入預覽
+  const pr = document.getElementById('preview-row');
+  pr.innerHTML = ''; pr.style.display = 'none';
   document.getElementById('photo-area').style.display = 'flex';
-  const pr = document.getElementById('preview-row'); pr.style.display = 'none'; pr.innerHTML = '';
   document.getElementById('photo-input').value = '';
-  ['water','fert','trim'].forEach(t => document.getElementById('t-'+t).classList.remove('on'));
+
+  if (existing && existing.photos && existing.photos.length > 0) {
+    photoDatas = [...existing.photos];
+    existing.photos.forEach(p => {
+      const img = document.createElement('img');
+      img.src = p;
+      img.style.cssText = 'height:90px;width:auto;border-radius:8px;flex-shrink:0;object-fit:cover;';
+      pr.appendChild(img);
+    });
+    document.getElementById('photo-area').style.display = 'none';
+    pr.style.display = 'flex';
+    document.getElementById('reselect-photo-btn').style.display = 'block';
+  } else {
+    document.getElementById('reselect-photo-btn').style.display = 'none';
+  }
+
+  // 護理記錄
+  if (existing) {
+    ['water','fert','trim'].forEach(t => {
+      const label = t==='water'?'澆水':t==='fert'?'施肥':'整理';
+      modalCare[t] = (existing.tags||[]).includes(label);
+      document.getElementById('t-'+t).classList.toggle('on', modalCare[t]);
+    });
+  } else {
+    ['water','fert','trim'].forEach(t => document.getElementById('t-'+t).classList.remove('on'));
+  }
+
+  // 備註
+  document.getElementById('entry-note').value = existing ? (existing.note || '') : '';
+
+  // AI 結果：編輯時顯示舊的 AI 評估
   document.getElementById('ai-ld-wrap').style.display = 'none';
-  document.getElementById('ai-res-wrap').style.display = 'none';
+  if (existing && existing.ai) {
+    aiResult = existing.ai;
+    showAIResult(existing.ai);
+  } else {
+    document.getElementById('ai-res-wrap').style.display = 'none';
+  }
+
+  // 刪除按鈕：編輯時才顯示
+  document.getElementById('entry-del-btn').style.display = existing ? 'block' : 'none';
+
   document.getElementById('modal-entry').classList.remove('hidden');
+}
+
+async function deleteEntry(id) {
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  const d = new Date(e.date + 'T00:00:00');
+  if (!confirm(`確定要刪除 ${d.getMonth()+1}/${d.getDate()} 的日記嗎？\n此操作無法復原。`)) return;
+
+  // 刪除 IndexedDB 照片
+  const ids = e.photoIds || [];
+  for (const pid of ids) await dbDelete(pid);
+
+  entries = entries.filter(x => x.id !== id);
+  if (streak > 0) streak--;
+  updateStreak();
+  saveData();
+  renderDiary();
+}
+
+function reselectPhoto() {
+  document.getElementById('photo-input').click();
+}
+
+function deleteEntryFromModal() {
+  if (editingEntryId) deleteEntry(editingEntryId);
+  closeOverlay('modal-entry');
 }
 
 function selectPlant(id, el) {
@@ -872,8 +962,6 @@ function selectPlant(id, el) {
   document.querySelectorAll('.plant-sel-item').forEach(e => e.classList.remove('active'));
   el.classList.add('active');
 }
-
-async function handlePhoto(e) {
   const files = Array.from(e.target.files);
   if (!files.length) return;
   photoDatas = [];
@@ -898,6 +986,7 @@ async function handlePhoto(e) {
 
   document.getElementById('photo-area').style.display = 'none';
   pr.style.display = 'flex';
+  document.getElementById('reselect-photo-btn').style.display = 'block';
   if (photoDatas.length > 0) analyzePhoto(photoDatas[0]);
 }
 
@@ -946,34 +1035,58 @@ async function saveEntry() {
   const tags = Object.keys(modalCare).filter(k=>modalCare[k]).map(k=>k==='water'?'澆水':k==='fert'?'施肥':'整理');
   const ai = aiResult || {score:'ok', reason:'今日植物記錄', suggestions:[], needs:[]};
   const selectedDate = document.getElementById('entry-date').value || NOW.toISOString().split('T')[0];
+  const note = document.getElementById('entry-note').value.trim() || ai.reason;
 
-  const entry = {
-    id: Date.now(),
-    date: selectedDate,
-    plantId: selectedPlantId,
-    score: ai.score,
-    desc: ai.reason,
-    tags,
-    note: document.getElementById('entry-note').value.trim() || ai.reason,
-    photoIds: [],
-    photos: [],
-    emoji: '🌱',
-    ai
-  };
+  if (editingEntryId) {
+    // ── 編輯模式 ──
+    const idx = entries.findIndex(e => e.id === editingEntryId);
+    if (idx < 0) return;
+    const existing = entries[idx];
 
-  // 儲存照片到 IndexedDB
-  await savePhotosForEntry(entry, photoDatas);
+    // 如果照片有變動才重新存
+    const photosChanged = JSON.stringify(photoDatas) !== JSON.stringify(existing.photos || []);
+    if (photosChanged) {
+      await savePhotosForEntry(existing, photoDatas);
+    }
 
-  entries.push(entry);
-  entries.sort((a,b) => new Date(b.date) - new Date(a.date));
+    entries[idx] = {
+      ...existing,
+      date: selectedDate,
+      plantId: selectedPlantId,
+      tags,
+      note,
+      score: ai.score,
+      desc: ai.reason,
+      ai
+    };
+  } else {
+    // ── 新增模式 ──
+    const entry = {
+      id: Date.now(),
+      date: selectedDate,
+      plantId: selectedPlantId,
+      score: ai.score,
+      desc: ai.reason,
+      tags,
+      note,
+      photoIds: [],
+      photos: [],
+      emoji: '🌱',
+      ai
+    };
+    await savePhotosForEntry(entry, photoDatas);
+    entries.push(entry);
+    streak++;
+    updateStreak();
 
-  // 更新植物評分
-  if (selectedPlantId) {
-    const p = plants.find(x => x.id === selectedPlantId);
-    if (p) { p.score = ai.score; p.days = (p.days || 0) + 1; }
+    // 更新植物評分
+    if (selectedPlantId) {
+      const p = plants.find(x => x.id === selectedPlantId);
+      if (p) { p.score = ai.score; p.days = (p.days || 0) + 1; }
+    }
   }
 
-  streak++; updateStreak();
+  entries.sort((a,b) => new Date(b.date) - new Date(a.date));
   updateHomeAI(ai);
   saveData();
   closeOverlay('modal-entry');
