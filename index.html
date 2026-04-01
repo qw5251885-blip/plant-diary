@@ -87,7 +87,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC',sans-serif;color
 .tl-day{font-size:20px;font-weight:600;}
 .tl-mon{font-size:10px;color:var(--t3);}
 .tl-box{flex:1;background:var(--card);border-radius:var(--rad);border:.5px solid var(--bd);overflow:hidden;}
-.tl-plant-tag{display:flex;align-items:center;gap:6px;padding:8px 12px 0;font-size:12px;color:var(--t3);}
+.tl-plant-tag{position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(255,255,255,0.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:20px;font-size:12px;font-weight:500;color:var(--t1);box-shadow:0 1px 6px rgba(0,0,0,0.12);z-index:2;pointer-events:none;}
 .tl-ph{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:64px;cursor:pointer;overflow:hidden;}
 .tl-ph img{width:100%;height:100%;object-fit:cover;}
 .tl-bg1{background:linear-gradient(135deg,#d4edba,#a8d870);}
@@ -726,17 +726,17 @@ function renderDiary() {
 
     let phHTML = '';
     if (!ph.length) {
-      phHTML = `<div class="tl-ph ${bgs[i%3]}">${plant?.emoji || e.emoji || '🌱'}</div>`;
+      phHTML = `<div class="tl-ph ${bgs[i%3]}" style="position:relative;">${plant?.emoji || e.emoji || '🌱'}${plantTag}</div>`;
     } else if (ph.length === 1) {
-      phHTML = `<div class="tl-ph" onclick="openLB(${pj},0)"><img src="${ph[0]}" loading="lazy"></div>`;
+      phHTML = `<div class="tl-ph" style="position:relative;" onclick="openLB(${pj},0)"><img src="${ph[0]}" loading="lazy">${plantTag}</div>`;
     } else {
       const imgs = ph.map((p, pi) => `<img src="${p}" loading="lazy" onclick="openLB(${pj},${pi})">`).join('');
-      phHTML = `<div class="tl-scroll-wrap"><div class="tl-ph-scroll">${imgs}</div><div class="tl-ph-count">${ph.length} 張</div></div>`;
+      phHTML = `<div class="tl-scroll-wrap" style="position:relative;"><div class="tl-ph-scroll">${imgs}</div><div class="tl-ph-count">${ph.length} 張</div>${plantTag}</div>`;
     }
 
     return `<div class="tl-item">
       <div class="tl-date-col"><div class="tl-day">${String(d.getDate()).padStart(2,'0')}</div><div class="tl-mon">${MONS[d.getMonth()]}</div><div class="tl-mon">${d.getFullYear()}</div></div>
-      <div class="tl-box">${plantTag}${phHTML}
+      <div class="tl-box">${phHTML}
         <div class="tl-meta">
           <div class="tl-tags"><span class="badge ${s.cls}" style="font-size:11px;padding:3px 9px;">${s.txt}</span>${tags}</div>
           <div class="tl-note">${e.note||e.desc||''}</div>
