@@ -323,6 +323,19 @@ textarea.finput{resize:none;}
       <div class="cycle-item"><div class="cycle-icon">✂️</div><div class="cycle-info"><div class="cycle-text">整理週期</div><div class="cycle-sub" id="cy-trim-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-trim">--</div></div>
     </div>
 
+    <!-- API KEY CARD -->
+    <div class="card" style="border-color:var(--g100);">
+      <div class="ctitle" style="color:var(--g600);">🤖 Gemini AI 設定</div>
+      <div style="font-size:12px;color:var(--t3);line-height:1.7;margin-bottom:10px;">
+        貼上你的 Gemini API Key，即可免費使用 AI 分析植物照片。<br>
+        申請網址：<span style="color:var(--g600);font-weight:500;">aistudio.google.com</span>
+      </div>
+      <div id="api-key-status" style="font-size:12px;margin-bottom:10px;"></div>
+      <input class="finput" id="gemini-key-input" type="password" placeholder="貼上 API Key（AIza...）" style="margin-bottom:8px;font-family:monospace;font-size:13px;">
+      <button onclick="saveApiKey()" style="width:100%;padding:12px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">儲存 API Key</button>
+      <button onclick="clearApiKey()" id="clear-key-btn" style="display:none;width:100%;padding:11px;background:transparent;color:var(--r400);border:.5px solid #f5c1c1;border-radius:var(--rads);font-size:13px;cursor:pointer;font-family:inherit;margin-top:6px;">清除 API Key</button>
+    </div>
+
     <!-- BACKUP CARD -->
     <div class="card" style="border-color:var(--g100);">
       <div class="ctitle" style="color:var(--g600);">📦 資料備份與還原</div>
@@ -801,26 +814,36 @@ async function renderStats() {
     ['water','fert','trim'].forEach(t => document.getElementById('cy-'+t+'-sub').textContent = '✨ AI 根據記錄分析');
   }
   if (entries.length >= 3 && sg('zrs_cycle_key') !== entries.length+'') analyzeCycles();
+  updateApiKeyStatus();
 }
 
 async function analyzeCycles() {
+  const apiKey = sg('zrs_gemini_key');
+  if (!apiKey) return;
   const summary = entries.slice(0,15).map(e => `日期:${e.date} 健康:${e.score} 護理:[${(e.tags||[]).join(',')}]`).join('\n');
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:150,
-        messages:[{role:'user', content:`根據以下植物照顧記錄，分析最適護理週期，只回傳JSON：{"water":"每X天","fert":"每X天","trim":"每X天"}\n${summary}`}]
-      })
-    });
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: `根據以下植物照顧記錄，分析最適護理週期，只回傳JSON不要其他文字：{"water":"每X天","fert":"每X天","trim":"每X天"}\n${summary}` }] }],
+          generationConfig: { maxOutputTokens: 150, temperature: 0.2 }
+        })
+      }
+    );
     const data = await resp.json();
-    const parsed = JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());
+    if (data.error) throw new Error(data.error.message);
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
     ss('zrs_cycles', parsed);
     ss('zrs_cycle_key', entries.length+'');
     document.getElementById('cy-water').textContent = parsed.water || '--';
     document.getElementById('cy-fert').textContent  = parsed.fert  || '--';
     document.getElementById('cy-trim').textContent  = parsed.trim  || '--';
     ['water','fert','trim'].forEach(t => document.getElementById('cy-'+t+'-sub').textContent = '✨ AI 根據記錄分析');
-  } catch(e) {}
+  } catch(e) { console.error('Cycles AI error:', e); }
 }
 
 // ═══════════════════════════════
@@ -997,25 +1020,45 @@ async function handlePhoto(e) {
 async function analyzePhoto(dataUrl) {
   document.getElementById('ai-ld-wrap').style.display = 'block';
   document.getElementById('ai-res-wrap').style.display = 'none';
+
+  const apiKey = sg('zrs_gemini_key');
+  if (!apiKey) {
+    document.getElementById('ai-ld-wrap').style.display = 'none';
+    aiResult = {score:'ok', reason:'請先到統計頁設定 Gemini API Key', suggestions:['前往「統計」頁輸入 API Key'], needs:[{level:'warn',text:'尚未設定 API Key'}]};
+    showAIResult(aiResult);
+    return;
+  }
+
   try {
     const base64 = dataUrl.split(',')[1];
-    const mtype  = dataUrl.split(';')[0].split(':')[1];
+    const mtype  = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
     const hist = entries.slice(0,5).map(e => `${e.date} ${e.score} [${(e.tags||[]).join(',')}] ${e.note||''}`).join('\n');
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514', max_tokens:500,
-        messages:[{role:'user', content:[
-          {type:'image', source:{type:'base64', media_type: mtype||'image/jpeg', data: base64}},
-          {type:'text', text:`你是專業植物健康評估師。分析這張植物照片${hist?'，結合過去記錄':''}。只回傳JSON：{"score":"great|ok|bad","reason":"繁體中文25字內","suggestions":["建議1","建議2"],"needs":[{"level":"good|warn|bad","text":"需求說明"}]}${hist?'\n\n過去記錄：\n'+hist:''}`}
-        ]}]
-      })
-    });
+    const prompt = `你是專業植物健康評估師。分析這張植物照片${hist?'，結合過去記錄':''}。只回傳JSON不要其他文字：{"score":"great|ok|bad","reason":"繁體中文25字內描述健康狀況","suggestions":["繁體中文建議1","繁體中文建議2"],"needs":[{"level":"good|warn|bad","text":"繁體中文需求說明"}]}${hist?'\n\n過去記錄：\n'+hist:''}`;
+
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { inline_data: { mime_type: mtype, data: base64 } },
+              { text: prompt }
+            ]
+          }],
+          generationConfig: { maxOutputTokens: 500, temperature: 0.3 }
+        })
+      }
+    );
     const data = await resp.json();
-    const parsed = JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());
+    if (data.error) throw new Error(data.error.message);
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
     aiResult = parsed; showAIResult(parsed);
   } catch(err) {
-    aiResult = {score:'ok', reason:'照片已記錄，AI 分析暫時無法使用', suggestions:['保持定期觀察'], needs:[{level:'good',text:'保持目前照顧習慣'}]};
+    console.error('Gemini error:', err);
+    aiResult = {score:'ok', reason:'AI 分析暫時無法使用，照片已儲存', suggestions:['確認 API Key 是否正確','檢查網路連線'], needs:[{level:'good',text:'照片已成功儲存'}]};
     showAIResult(aiResult);
   }
   document.getElementById('ai-ld-wrap').style.display = 'none';
@@ -1149,8 +1192,39 @@ function deletePlant() {
 }
 
 // ═══════════════════════════════
-// BACKUP & RESTORE
+// API KEY
 // ═══════════════════════════════
+function updateApiKeyStatus() {
+  const key = sg('zrs_gemini_key');
+  const status = document.getElementById('api-key-status');
+  const clearBtn = document.getElementById('clear-key-btn');
+  const input = document.getElementById('gemini-key-input');
+  if (!status) return;
+  if (key) {
+    status.innerHTML = '<span style="color:var(--g600);font-weight:500;">✅ API Key 已設定，AI 功能已啟用</span>';
+    input.value = '';
+    input.placeholder = '已設定（重新貼上可更換）';
+    if (clearBtn) clearBtn.style.display = 'block';
+  } else {
+    status.innerHTML = '<span style="color:var(--a600);">⚠️ 尚未設定，AI 分析功能暫停</span>';
+    if (clearBtn) clearBtn.style.display = 'none';
+  }
+}
+
+function saveApiKey() {
+  const val = document.getElementById('gemini-key-input').value.trim();
+  if (!val) { alert('請先貼上 API Key'); return; }
+  if (!val.startsWith('AIza')) { alert('API Key 格式不對，應該以「AIza」開頭，請重新確認。'); return; }
+  ss('zrs_gemini_key', val);
+  updateApiKeyStatus();
+  alert('✅ API Key 儲存成功！下次新增日記拍照時 AI 就會自動分析了。');
+}
+
+function clearApiKey() {
+  if (!confirm('確定要清除 API Key 嗎？清除後 AI 功能將停用。')) return;
+  localStorage.removeItem('zrs_gemini_key');
+  updateApiKeyStatus();
+}
 function updateLastBackupText() {
   const last = sg('zrs_last_backup');
   const el = document.getElementById('last-backup-txt');
