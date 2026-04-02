@@ -254,27 +254,12 @@ textarea.finput{resize:none;}
       <div class="wc-icon" id="wc-icon">🌿</div>
     </div>
 
-    <div class="ai-card">
-      <div class="ctitle">AI 植物評估 · 今日</div>
-      <div class="ai-row">
-        <div id="home-badge"><span class="badge" style="background:#f0f0ec;color:var(--t3);">尚無評估</span></div>
-        <div class="ai-desc" id="home-desc">新增第一筆日記並拍照，AI 就會自動評估植物狀況！</div>
-      </div>
-      <div class="ai-foot">
-        <div class="ai-foot-t">AI 建議</div>
-        <div class="ai-chips" id="home-chips"><span class="ai-chip">📸 先拍一張植物照片吧</span></div>
-      </div>
-    </div>
+    <div id="home-plant-cards"></div>
 
     <div class="care-row">
       <div class="care-btn" id="btn-water" onclick="toggleCare('water')"><span class="ci">💧</span><span class="cl" id="cl-water">澆水</span><span class="ct" id="ct-water">點擊記錄</span></div>
       <div class="care-btn" id="btn-fert" onclick="toggleCare('fert')"><span class="ci">🌿</span><span class="cl" id="cl-fert">施肥</span><span class="ct" id="ct-fert">點擊記錄</span></div>
       <div class="care-btn" id="btn-trim" onclick="toggleCare('trim')"><span class="ci">✂️</span><span class="cl" id="cl-trim">整理</span><span class="ct" id="ct-trim">點擊記錄</span></div>
-    </div>
-
-    <div class="card">
-      <div class="ctitle">目前植物需求</div>
-      <div id="needs-list"><div class="need-item"><div class="ndot d-good"></div><div class="need-text">新增日記後 AI 會分析植物需求</div></div></div>
     </div>
 
     <div class="streak">
@@ -591,7 +576,7 @@ function setupUI() {
   initCareButtons();
   loadWeather();
   renderPlants();
-  if (entries.length > 0 && entries[0].ai) updateHomeAI(entries[0].ai);
+  renderHomePlantCards();
   updateLastBackupText();
   checkBackupReminder();
 }
@@ -668,18 +653,81 @@ function toggleCare(type) {
 // ═══════════════════════════════
 // HOME AI
 // ═══════════════════════════════
-function updateHomeAI(ai) {
-  const sMap = { great:{cls:'b-great',txt:'🌿 極好'}, ok:{cls:'b-ok',txt:'🌤 普通'}, bad:{cls:'b-bad',txt:'🥀 不好'} };
-  const s = sMap[ai.score] || sMap.ok;
-  document.getElementById('home-badge').innerHTML = `<span class="badge ${s.cls}">${s.txt}</span>`;
-  document.getElementById('home-desc').textContent = ai.reason || '';
-  document.getElementById('home-chips').innerHTML = (ai.suggestions||[]).map(sg => `<span class="ai-chip">${sg}</span>`).join('');
-  if (ai.needs && ai.needs.length) {
-    document.getElementById('needs-list').innerHTML = ai.needs.map(n =>
+function renderHomePlantCards() {
+  const container = document.getElementById('home-plant-cards');
+  if (!container) return;
+
+  const sMap = {
+    great: {cls:'b-great', txt:'🌿 極好'},
+    ok:    {cls:'b-ok',    txt:'🌤 普通'},
+    bad:   {cls:'b-bad',   txt:'🥀 不好'}
+  };
+
+  if (plants.length === 0) {
+    container.innerHTML = `<div class="ai-card">
+      <div class="ctitle">AI 植物評估 · 今日</div>
+      <div class="ai-row">
+        <div><span class="badge" style="background:#f0f0ec;color:var(--t3);">尚無評估</span></div>
+        <div class="ai-desc">請先到「植物」頁新增你的植物，再新增日記拍照！</div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = plants.map(plant => {
+    // 找這株植物最新的日記
+    const latestEntry = entries
+      .filter(e => e.plantId === plant.id)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+    if (!latestEntry || !latestEntry.ai) {
+      return `<div class="ai-card" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:20px;">${plant.emoji}</span>
+          <span style="font-size:14px;font-weight:600;color:var(--t1);">${plant.name}</span>
+          <span style="font-size:11px;color:var(--t3);margin-left:auto;">${plant.type}</span>
+        </div>
+        <div class="ai-row">
+          <div><span class="badge" style="background:#f0f0ec;color:var(--t3);">尚無評估</span></div>
+          <div class="ai-desc">尚未有日記記錄，新增日記並拍照讓 AI 評估！</div>
+        </div>
+      </div>`;
+    }
+
+    const ai = latestEntry.ai;
+    const s = sMap[ai.score] || sMap.ok;
+    const d = new Date(latestEntry.date + 'T00:00:00');
+    const dateStr = `${d.getMonth()+1}/${d.getDate()} 評估`;
+
+    const needsHTML = (ai.needs || []).map(n =>
       `<div class="need-item"><div class="ndot ${n.level==='good'?'d-good':n.level==='warn'?'d-warn':'d-bad'}"></div><div class="need-text">${n.text}</div></div>`
     ).join('');
-  }
+
+    const sugsHTML = (ai.suggestions || []).map(sg =>
+      `<span class="ai-chip">${sg}</span>`
+    ).join('');
+
+    return `<div class="ai-card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:.5px solid var(--bd);">
+        <span style="font-size:22px;">${plant.emoji}</span>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:600;color:var(--t1);">${plant.name}</div>
+          <div style="font-size:11px;color:var(--t3);">${plant.type} · 養護 ${calcDays(plant.startDate)} 天</div>
+        </div>
+        <div style="text-align:right;">
+          <span class="badge ${s.cls}">${s.txt}</span>
+          <div style="font-size:10px;color:var(--t3);margin-top:3px;">${dateStr}</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:${needsHTML?'10px':'0'}">${ai.reason || ''}</div>
+      ${needsHTML ? `<div style="margin-bottom:${sugsHTML?'10px':'0'}">${needsHTML}</div>` : ''}
+      ${sugsHTML ? `<div style="padding-top:8px;border-top:.5px solid var(--bd);"><div style="font-size:11px;color:var(--t3);font-weight:600;margin-bottom:6px;">AI 建議</div><div class="ai-chips">${sugsHTML}</div></div>` : ''}
+    </div>`;
+  }).join('');
 }
+
+// 保留舊函數名稱相容性
+function updateHomeAI(ai) { renderHomePlantCards(); }
 
 // ═══════════════════════════════
 // DIARY
