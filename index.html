@@ -1087,17 +1087,25 @@ async function analyzePhoto(dataUrl) {
     const base64 = dataUrl.split(',')[1];
     const mtype  = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
     const hist = entries.slice(0,5).map(e => `${e.date} ${e.score} [${(e.tags||[]).join(',')}] ${e.note||''}`).join('\n');
-    const prompt = `你是專業植物健康評估師，請非常仔細分析這張照片中的植物本體。
 
-重要注意事項：
-- 只分析植物的葉片、莖部、根部等植物本身，完全忽略背景、花盆、木板、牆壁等非植物部分
-- 鹿角蕨、蕨類植物的葉片本來就是淺綠或銀綠色，這是正常的，不代表不健康
-- 多肉植物、仙人掌的葉片顏色偏灰綠是正常的
-- 只有真正看到葉片變黃、褐斑、枯萎、下垂才判斷為不健康
-- 如果整體葉片是綠色且飽滿，應該給 great
+    // 取得這株植物的資訊
+    const plant = plants.find(p => p.id === selectedPlantId);
+    const plantInfo = plant
+      ? `這株植物的資訊：\n- 名稱：${plant.name}\n- 種類：${plant.type}\n- 已養護：${calcDays(plant.startDate)} 天\n`
+      : '';
 
-${hist ? '過去記錄供參考：\n'+hist+'\n\n' : ''}請分析植物健康狀況，只回傳JSON不要其他文字：
-{"score":"great|ok|bad","reason":"繁體中文25字內，只描述植物本身的狀態","suggestions":["具體建議1","具體建議2"],"needs":[{"level":"good|warn|bad","text":"具體需求說明"}]}`;
+    const prompt = `你是一位有溫度、專業的植物照顧師，請仔細分析這張照片中的植物本體健康狀況。
+
+${plantInfo ? plantInfo + '\n' : ''}評估重點：
+- 只分析植物本身（葉片、莖部、根部），完全忽略背景、花盆、木板、牆壁
+- 根據「${plant?.type || '這種植物'}」的天然習性來評估，而非通用標準
+- 例如鹿角蕨天生銀綠色是正常的；仙人掌偏灰是正常的；多肉葉片飽滿才健康
+- 只有真正看到葉片變黃、褐斑、枯萎、下垂才給差評
+- 葉片綠色飽滿、整體狀態良好就給 great
+- 回饋語氣要有溫度，像在跟朋友聊天，偶爾可以誇獎植物長得好或給予鼓勵
+${hist ? '\n過去照顧記錄供參考：\n'+hist+'\n' : ''}
+只回傳JSON不要其他文字：
+{"score":"great|ok|bad","reason":"繁體中文30字內，描述這株植物目前的狀態，語氣溫暖自然","suggestions":["針對${plant?.type || '這種植物'}習性的具體建議1","具體建議2"],"needs":[{"level":"good|warn|bad","text":"這株植物目前的具體需求"}]}`;
 
     const isGroq = apiKey.startsWith('gsk_');
     let text = '';
