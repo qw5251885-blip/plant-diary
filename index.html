@@ -1039,7 +1039,17 @@ async function analyzePhoto(dataUrl) {
     const base64 = dataUrl.split(',')[1];
     const mtype  = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
     const hist = entries.slice(0,5).map(e => `${e.date} ${e.score} [${(e.tags||[]).join(',')}] ${e.note||''}`).join('\n');
-    const prompt = `你是專業植物健康評估師。仔細分析這張植物照片的葉色、葉片狀態、土壤濕度等。${hist?'結合過去記錄給出更準確評估。':''}只回傳JSON不要其他文字：{"score":"great|ok|bad","reason":"繁體中文25字內描述健康狀況","suggestions":["繁體中文建議1","繁體中文建議2"],"needs":[{"level":"good|warn|bad","text":"繁體中文需求說明"}]}${hist?'\n\n過去記錄：\n'+hist:''}`;
+    const prompt = `你是專業植物健康評估師，請非常仔細分析這張照片中的植物本體。
+
+重要注意事項：
+- 只分析植物的葉片、莖部、根部等植物本身，完全忽略背景、花盆、木板、牆壁等非植物部分
+- 鹿角蕨、蕨類植物的葉片本來就是淺綠或銀綠色，這是正常的，不代表不健康
+- 多肉植物、仙人掌的葉片顏色偏灰綠是正常的
+- 只有真正看到葉片變黃、褐斑、枯萎、下垂才判斷為不健康
+- 如果整體葉片是綠色且飽滿，應該給 great
+
+${hist ? '過去記錄供參考：\n'+hist+'\n\n' : ''}請分析植物健康狀況，只回傳JSON不要其他文字：
+{"score":"great|ok|bad","reason":"繁體中文25字內，只描述植物本身的狀態","suggestions":["具體建議1","具體建議2"],"needs":[{"level":"good|warn|bad","text":"具體需求說明"}]}`;
 
     const isGroq = apiKey.startsWith('gsk_');
     let text = '';
