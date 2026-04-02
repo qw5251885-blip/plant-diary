@@ -332,7 +332,9 @@ textarea.finput{resize:none;}
       </div>
       <div id="api-key-status" style="font-size:12px;margin-bottom:10px;"></div>
       <input class="finput" id="gemini-key-input" type="password" placeholder="貼上 API Key（AIza...）" style="margin-bottom:8px;font-family:monospace;font-size:13px;">
-      <button onclick="saveApiKey()" style="width:100%;padding:12px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">儲存 API Key</button>
+      <button onclick="saveApiKey()" style="width:100%;padding:12px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;">儲存 API Key</button>
+      <button onclick="testApiKey()" style="width:100%;padding:11px;background:var(--g50);color:var(--g800);border:.5px solid var(--g100);border-radius:var(--rads);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">🧪 測試連線是否正常</button>
+      <div id="test-result" style="display:none;margin-top:10px;padding:10px 12px;border-radius:var(--rads);font-size:12px;line-height:1.6;"></div>
       <button onclick="clearApiKey()" id="clear-key-btn" style="display:none;width:100%;padding:11px;background:transparent;color:var(--r400);border:.5px solid #f5c1c1;border-radius:var(--rads);font-size:13px;cursor:pointer;font-family:inherit;margin-top:6px;">清除 API Key</button>
     </div>
 
@@ -1208,6 +1210,51 @@ function updateApiKeyStatus() {
   } else {
     status.innerHTML = '<span style="color:var(--a600);">⚠️ 尚未設定，AI 分析功能暫停</span>';
     if (clearBtn) clearBtn.style.display = 'none';
+  }
+}
+
+async function testApiKey() {
+  const key = sg('zrs_gemini_key');
+  const resultEl = document.getElementById('test-result');
+  resultEl.style.display = 'block';
+  resultEl.style.background = '#f5f5f0';
+  resultEl.style.color = 'var(--t2)';
+  resultEl.textContent = '測試中...';
+
+  if (!key) {
+    resultEl.style.background = '#faeeda';
+    resultEl.style.color = 'var(--a800)';
+    resultEl.textContent = '⚠️ 尚未儲存 API Key，請先貼上並儲存。';
+    return;
+  }
+
+  try {
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: '請用繁體中文回覆：你好' }] }],
+          generationConfig: { maxOutputTokens: 20 }
+        })
+      }
+    );
+    const data = await resp.json();
+    if (data.error) {
+      resultEl.style.background = 'var(--r50)';
+      resultEl.style.color = 'var(--r400)';
+      resultEl.textContent = `❌ 錯誤：${data.error.message}\n\n可能原因：API Key 不正確，或該 Key 尚未啟用 Gemini API。`;
+    } else {
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      resultEl.style.background = 'var(--g50)';
+      resultEl.style.color = 'var(--g800)';
+      resultEl.textContent = `✅ 連線成功！AI 回覆：${reply}\n\nAPI Key 正常，可以分析植物照片了。`;
+    }
+  } catch(err) {
+    resultEl.style.background = 'var(--r50)';
+    resultEl.style.color = 'var(--r400)';
+    resultEl.textContent = `❌ 連線失敗：${err.message}\n\n可能是網路問題或 CORS 限制。`;
   }
 }
 
