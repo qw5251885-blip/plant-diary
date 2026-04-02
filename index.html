@@ -325,16 +325,16 @@ textarea.finput{resize:none;}
 
     <!-- API KEY CARD -->
     <div class="card" style="border-color:var(--g100);">
-      <div class="ctitle" style="color:var(--g600);">🤖 Gemini AI 設定</div>
+      <div class="ctitle" style="color:var(--g600);">🤖 AI 設定（Groq）</div>
       <div style="font-size:12px;color:var(--t3);line-height:1.7;margin-bottom:10px;">
-        貼上你的 Gemini API Key，即可免費使用 AI 分析植物照片。<br>
-        申請網址：<span style="color:var(--g600);font-weight:500;">aistudio.google.com</span>
+        貼上你的 Groq API Key，即可免費使用 AI 分析植物照片。<br>
+        申請網址：<span style="color:var(--g600);font-weight:500;">console.groq.com</span>（完全免費）
       </div>
       <div id="api-key-status" style="font-size:12px;margin-bottom:10px;"></div>
-      <input class="finput" id="gemini-key-input" type="password" placeholder="貼上 API Key（AIza...）" style="margin-bottom:8px;font-family:monospace;font-size:13px;">
+      <input class="finput" id="gemini-key-input" type="password" placeholder="貼上 Groq API Key（gsk_...）" style="margin-bottom:8px;font-family:monospace;font-size:13px;">
       <button onclick="saveApiKey()" style="width:100%;padding:12px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;">儲存 API Key</button>
       <button onclick="testApiKey()" style="width:100%;padding:11px;background:var(--g50);color:var(--g800);border:.5px solid var(--g100);border-radius:var(--rads);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">🧪 測試連線是否正常</button>
-      <div id="test-result" style="display:none;margin-top:10px;padding:10px 12px;border-radius:var(--rads);font-size:12px;line-height:1.6;"></div>
+      <div id="test-result" style="display:none;margin-top:10px;padding:10px 12px;border-radius:var(--rads);font-size:12px;line-height:1.6;white-space:pre-wrap;"></div>
       <button onclick="clearApiKey()" id="clear-key-btn" style="display:none;width:100%;padding:11px;background:transparent;color:var(--r400);border:.5px solid #f5c1c1;border-radius:var(--rads);font-size:13px;cursor:pointer;font-family:inherit;margin-top:6px;">清除 API Key</button>
     </div>
 
@@ -824,20 +824,19 @@ async function analyzeCycles() {
   if (!apiKey) return;
   const summary = entries.slice(0,15).map(e => `日期:${e.date} 健康:${e.score} 護理:[${(e.tags||[]).join(',')}]`).join('\n');
   try {
-    const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: `根據以下植物照顧記錄，分析最適護理週期，只回傳JSON不要其他文字：{"water":"每X天","fert":"每X天","trim":"每X天"}\n${summary}` }] }],
-          generationConfig: { maxOutputTokens: 150, temperature: 0.2 }
-        })
-      }
-    );
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 150,
+        temperature: 0.2,
+        messages: [{ role: 'user', content: `根據以下植物照顧記錄，分析最適護理週期，只回傳JSON不要其他文字：{"water":"每X天","fert":"每X天","trim":"每X天"}\n${summary}` }]
+      })
+    });
     const data = await resp.json();
     if (data.error) throw new Error(data.error.message);
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const text = data.choices?.[0]?.message?.content || '';
     const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
     ss('zrs_cycles', parsed);
     ss('zrs_cycle_key', entries.length+'');
@@ -1026,7 +1025,7 @@ async function analyzePhoto(dataUrl) {
   const apiKey = sg('zrs_gemini_key');
   if (!apiKey) {
     document.getElementById('ai-ld-wrap').style.display = 'none';
-    aiResult = {score:'ok', reason:'請先到統計頁設定 Gemini API Key', suggestions:['前往「統計」頁輸入 API Key'], needs:[{level:'warn',text:'尚未設定 API Key'}]};
+    aiResult = {score:'ok', reason:'請先到統計頁設定 API Key', suggestions:['前往「統計」頁輸入 API Key'], needs:[{level:'warn',text:'尚未設定 API Key'}]};
     showAIResult(aiResult);
     return;
   }
@@ -1037,29 +1036,32 @@ async function analyzePhoto(dataUrl) {
     const hist = entries.slice(0,5).map(e => `${e.date} ${e.score} [${(e.tags||[]).join(',')}] ${e.note||''}`).join('\n');
     const prompt = `你是專業植物健康評估師。分析這張植物照片${hist?'，結合過去記錄':''}。只回傳JSON不要其他文字：{"score":"great|ok|bad","reason":"繁體中文25字內描述健康狀況","suggestions":["繁體中文建議1","繁體中文建議2"],"needs":[{"level":"good|warn|bad","text":"繁體中文需求說明"}]}${hist?'\n\n過去記錄：\n'+hist:''}`;
 
-    const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              { inline_data: { mime_type: mtype, data: base64 } },
-              { text: prompt }
-            ]
-          }],
-          generationConfig: { maxOutputTokens: 500, temperature: 0.3 }
-        })
-      }
-    );
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+        max_tokens: 500,
+        temperature: 0.3,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image_url', image_url: { url: `data:${mtype};base64,${base64}` } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      })
+    });
     const data = await resp.json();
     if (data.error) throw new Error(data.error.message);
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const text = data.choices?.[0]?.message?.content || '';
     const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
     aiResult = parsed; showAIResult(parsed);
   } catch(err) {
-    console.error('Gemini error:', err);
+    console.error('Groq error:', err);
     aiResult = {score:'ok', reason:'AI 分析暫時無法使用，照片已儲存', suggestions:['確認 API Key 是否正確','檢查網路連線'], needs:[{level:'good',text:'照片已成功儲存'}]};
     showAIResult(aiResult);
   }
@@ -1229,39 +1231,37 @@ async function testApiKey() {
   }
 
   try {
-    const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: '請用繁體中文回覆：你好' }] }],
-          generationConfig: { maxOutputTokens: 20 }
-        })
-      }
-    );
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 30,
+        messages: [{ role: 'user', content: '請用繁體中文說：你好，AI 連線成功！' }]
+      })
+    });
     const data = await resp.json();
     if (data.error) {
-      resultEl.style.background = 'var(--r50)';
-      resultEl.style.color = 'var(--r400)';
-      resultEl.textContent = `❌ 錯誤：${data.error.message}\n\n可能原因：API Key 不正確，或該 Key 尚未啟用 Gemini API。`;
+      resultEl.style.background = '#fcebeb';
+      resultEl.style.color = '#e24b4a';
+      resultEl.textContent = `❌ 錯誤：${data.error.message}`;
     } else {
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      resultEl.style.background = 'var(--g50)';
-      resultEl.style.color = 'var(--g800)';
-      resultEl.textContent = `✅ 連線成功！AI 回覆：${reply}\n\nAPI Key 正常，可以分析植物照片了。`;
+      const reply = data.choices?.[0]?.message?.content || '';
+      resultEl.style.background = '#EAF3DE';
+      resultEl.style.color = '#27500A';
+      resultEl.textContent = `✅ 連線成功！\nAI 回覆：${reply}\n\nAPI Key 正常，可以分析植物照片了 🌱`;
     }
   } catch(err) {
-    resultEl.style.background = 'var(--r50)';
-    resultEl.style.color = 'var(--r400)';
-    resultEl.textContent = `❌ 連線失敗：${err.message}\n\n可能是網路問題或 CORS 限制。`;
+    resultEl.style.background = '#fcebeb';
+    resultEl.style.color = '#e24b4a';
+    resultEl.textContent = `❌ 連線失敗：${err.message}`;
   }
 }
 
 function saveApiKey() {
   const val = document.getElementById('gemini-key-input').value.trim();
   if (!val) { alert('請先貼上 API Key'); return; }
-  if (!val.startsWith('AIza')) { alert('API Key 格式不對，應該以「AIza」開頭，請重新確認。'); return; }
+  if (!val.startsWith('gsk_')) { alert('Groq API Key 格式不對，應該以「gsk_」開頭，請重新確認。'); return; }
   ss('zrs_gemini_key', val);
   updateApiKeyStatus();
   alert('✅ API Key 儲存成功！下次新增日記拍照時 AI 就會自動分析了。');
