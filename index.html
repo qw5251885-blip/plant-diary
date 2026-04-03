@@ -1,1543 +1,430 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="植日苼">
-<meta name="theme-color" content="#3B6D11">
-<title>植日苼</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS5 Store 台灣</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --g50:#EAF3DE;--g100:#C0DD97;--g200:#97C459;--g400:#639922;--g600:#3B6D11;--g800:#27500A;
-  --a50:#FAEEDA;--a400:#EF9F27;--a600:#BA7517;--a800:#633806;
-  --r50:#FCEBEB;--r400:#E24B4A;
-  --bg:#F4F7F0;--card:#fff;--bd:rgba(0,0,0,0.08);--t1:#1a1a1a;--t2:#555;--t3:#999;
-  --rad:16px;--rads:10px;
+  --accent:#00aaff;--sale:#e63946;--gold:#f4c430;--rogue:#a855f7;
+  --bg:#0a0f1e;--surface:#111827;--surface2:#1a2235;
+  --border:rgba(0,170,255,0.15);--text:#e8eaf0;--muted:#7a8599;--radius:10px;
 }
-html,body{height:100%;background:var(--bg);}
-body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC',sans-serif;color:var(--t1);max-width:430px;margin:0 auto;}
-.app{display:flex;flex-direction:column;height:100dvh;overflow:hidden;}
-
-.hdr{background:var(--card);padding:calc(env(safe-area-inset-top,0px)+14px) 20px 12px;border-bottom:.5px solid var(--bd);flex-shrink:0;}
-.hdr-row{display:flex;justify-content:space-between;align-items:flex-start;}
-.app-title{font-size:22px;font-weight:700;color:var(--g800);letter-spacing:.08em;}
-.app-date{font-size:11px;color:var(--t3);margin-top:1px;}
-.w-mini{display:flex;align-items:center;gap:5px;justify-content:flex-end;}
-.w-temp{font-size:20px;font-weight:500;color:var(--g600);}
-.w-sub{font-size:11px;color:var(--t3);margin-top:2px;text-align:right;}
-
-.screen{flex:1;overflow-y:auto;padding:14px 16px 90px;-webkit-overflow-scrolling:touch;}
-.screen.hidden{display:none;}
-
-.card{background:var(--card);border-radius:var(--rad);border:.5px solid var(--bd);padding:14px 16px;margin-bottom:12px;}
-.ctitle{font-size:11px;color:var(--t3);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;}
-
-.badge{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:500;}
-.b-great{background:var(--g50);color:var(--g800);}
-.b-ok{background:var(--a50);color:var(--a800);}
-.b-bad{background:var(--r50);color:var(--r400);}
-
-.wcard{background:linear-gradient(135deg,#d4edba,#a8d870);border-radius:var(--rad);padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
-.wc-temp{font-size:32px;font-weight:500;color:#173404;}
-.wc-desc{font-size:13px;color:var(--g800);margin-top:3px;}
-.wc-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-.wc-chip{font-size:11px;background:rgba(255,255,255,.45);color:var(--g800);padding:3px 8px;border-radius:20px;}
-.wc-icon{font-size:52px;}
-
-.care-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.care-btn{background:var(--card);border:.5px solid var(--bd);border-radius:var(--rads);padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;user-select:none;}
-.care-btn:active{transform:scale(.95);}
-.care-btn.done{background:var(--g50);border-color:var(--g100);}
-.ci{font-size:22px;display:block;margin-bottom:5px;}
-.cl{font-size:12px;color:var(--t2);font-weight:500;display:block;}
-.care-btn.done .cl{color:var(--g800);}
-.ct{font-size:10px;color:var(--t3);display:block;margin-top:3px;}
-
-.need-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:.5px solid var(--bd);}
-.need-item:last-child{border:none;padding-bottom:0;}
-.ndot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
-.d-good{background:var(--g400);}
-.d-warn{background:var(--a400);}
-.d-bad{background:var(--r400);}
-.need-text{font-size:13px;line-height:1.5;}
-
-.streak{background:linear-gradient(135deg,#fff9ee,#fef3d0);border:.5px solid #fad87a;border-radius:var(--rad);padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:12px;}
-.sk-num{font-size:32px;font-weight:700;color:var(--a600);}
-.sk-lbl{font-size:14px;font-weight:500;color:var(--a800);}
-.sk-sub{font-size:11px;color:var(--a600);margin-top:3px;}
-
-.ai-card{background:var(--card);border-radius:var(--rad);border:.5px solid var(--bd);padding:14px 16px;margin-bottom:12px;}
-.ai-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
-.ai-desc{font-size:13px;color:var(--t2);line-height:1.6;flex:1;}
-.ai-foot{padding-top:10px;border-top:.5px solid var(--bd);}
-.ai-foot-t{font-size:11px;color:var(--t3);margin-bottom:6px;font-weight:600;}
-.ai-chips{display:flex;flex-wrap:wrap;gap:6px;}
-.ai-chip{font-size:12px;background:var(--g50);color:var(--g600);padding:4px 10px;border-radius:20px;}
-
-/* FILTER BAR */
-.filter-bar{display:flex;gap:8px;margin-bottom:12px;}
-.fsel{flex:1;padding:9px 28px 9px 12px;border:.5px solid var(--bd);border-radius:var(--rads);font-size:13px;color:var(--t1);background:var(--card);outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23aaa' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
-
-/* TIMELINE */
-.tl-item{display:flex;gap:12px;margin-bottom:16px;}
-.tl-date-col{width:42px;text-align:center;flex-shrink:0;padding-top:4px;}
-.tl-day{font-size:20px;font-weight:600;}
-.tl-mon{font-size:10px;color:var(--t3);}
-.tl-box{flex:1;background:var(--card);border-radius:var(--rad);border:.5px solid var(--bd);overflow:hidden;}
-.tl-plant-tag{position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(255,255,255,0.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:20px;font-size:12px;font-weight:500;color:var(--t1);box-shadow:0 1px 6px rgba(0,0,0,0.12);z-index:2;pointer-events:none;}
-.tl-ph{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:64px;cursor:pointer;overflow:hidden;}
-.tl-ph img{width:100%;height:100%;object-fit:cover;}
-.tl-bg1{background:linear-gradient(135deg,#d4edba,#a8d870);}
-.tl-bg2{background:linear-gradient(135deg,#fef3d0,#fad87a);}
-.tl-bg3{background:linear-gradient(135deg,#daf0e8,#9fe1cb);}
-.tl-scroll-wrap{position:relative;}
-.tl-ph-scroll{display:flex;overflow-x:auto;height:220px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;cursor:pointer;}
-.tl-ph-scroll::-webkit-scrollbar{display:none;}
-.tl-ph-scroll img{flex-shrink:0;width:100%;height:220px;object-fit:cover;scroll-snap-align:start;}
-.tl-ph-count{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:3px 8px;border-radius:20px;pointer-events:none;}
-.tl-meta{padding:10px 12px;}
-.tl-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center;}
-.tl-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:#f0f0ec;color:var(--t3);}
-.tl-note{font-size:12px;color:var(--t2);line-height:1.5;}
-
-.add-diary-btn{width:100%;padding:16px;background:var(--g50);border:1.5px dashed var(--g100);border-radius:var(--rad);text-align:center;font-size:14px;color:var(--g600);cursor:pointer;margin-bottom:12px;font-weight:500;}
-.add-diary-btn:active{transform:scale(.98);}
-
-/* STATS */
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
-.stat-card{background:var(--card);border-radius:var(--rads);border:.5px solid var(--bd);padding:14px;}
-.sv{font-size:28px;font-weight:600;}
-.sl{font-size:11px;color:var(--t3);margin-top:3px;}
-.c-g{color:var(--g600);}
-.c-a{color:var(--a600);}
-.c-r{color:var(--r400);}
-.bar-chart{display:flex;align-items:flex-end;justify-content:space-between;height:100px;gap:4px;margin-top:8px;}
-.bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.br{width:100%;border-radius:4px 4px 0 0;min-height:6px;}
-.br-g{background:var(--g200);}
-.br-a{background:var(--a400);}
-.br-r{background:var(--r400);}
-.bl{font-size:9px;color:var(--t3);}
-.cycle-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:.5px solid var(--bd);}
-.cycle-item:last-child{border:none;}
-.cycle-icon{font-size:16px;width:34px;height:34px;background:var(--g50);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.cycle-info{flex:1;}
-.cycle-text{font-size:13px;}
-.cycle-sub{font-size:10px;color:var(--g400);margin-top:2px;}
-.cycle-val{font-size:13px;font-weight:600;color:var(--t2);}
-
-/* PLANTS */
-.plant-item{display:flex;align-items:center;gap:12px;background:var(--card);border:.5px solid var(--bd);border-radius:var(--rad);padding:14px 16px;margin-bottom:10px;}
-.pa{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
-.pa-g{background:linear-gradient(135deg,#d4edba,#a8d870);}
-.pa-p{background:linear-gradient(135deg,#fbeaf0,#f4c0d1);}
-.pa-a{background:linear-gradient(135deg,#fef3d0,#fad87a);}
-.pa-t{background:linear-gradient(135deg,#e1f5ee,#9fe1cb);}
-.plant-name{font-size:15px;font-weight:600;}
-.plant-type{font-size:12px;color:var(--t3);margin-top:2px;}
-.plant-days{font-size:11px;color:var(--g400);margin-top:3px;font-weight:500;}
-.pa-edit{font-size:11px;padding:6px 12px;border-radius:8px;border:.5px solid var(--bd);background:var(--bg);color:var(--t2);cursor:pointer;white-space:nowrap;margin-left:auto;}
-.add-plant-btn{width:100%;padding:16px;background:var(--card);border:1.5px dashed var(--bd);border-radius:var(--rad);text-align:center;font-size:14px;color:var(--t3);cursor:pointer;}
-.add-plant-btn:active{transform:scale(.98);}
-
-/* PLANT SELECTOR IN MODAL */
-.plant-sel-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;}
-.plant-sel-row::-webkit-scrollbar{display:none;}
-.plant-sel-item{flex-shrink:0;padding:8px 14px;border:.5px solid var(--bd);border-radius:20px;font-size:13px;color:var(--t2);cursor:pointer;background:var(--bg);white-space:nowrap;transition:all .15s;}
-.plant-sel-item.active{background:var(--g50);border-color:var(--g200);color:var(--g800);font-weight:500;}
-
-.tab-bar{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:.5px solid var(--bd);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);}
-.tab{flex:1;padding:10px 4px;text-align:center;cursor:pointer;transition:all .15s;user-select:none;}
-.tab:active{transform:scale(.92);}
-.tab-icon{font-size:22px;display:block;margin-bottom:2px;}
-.tab-lbl{font-size:10px;color:var(--t3);font-weight:500;}
-.tab.active .tab-lbl{color:var(--g600);}
-
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
-.overlay.hidden{display:none;}
-.modal{background:var(--card);border-radius:24px 24px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom,0px)+20px);width:100%;max-width:430px;max-height:92dvh;overflow-y:auto;}
-.mhandle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 18px;}
-.mtitle{font-size:18px;font-weight:700;margin-bottom:16px;}
-.flabel{font-size:12px;color:var(--t3);margin-bottom:6px;display:block;font-weight:600;letter-spacing:.04em;}
-.finput{width:100%;padding:11px 14px;border:.5px solid var(--bd);border-radius:var(--rads);font-size:14px;color:var(--t1);background:var(--bg);margin-bottom:12px;outline:none;font-family:inherit;-webkit-appearance:none;}
-.finput:focus{border-color:var(--g400);background:#fff;}
-textarea.finput{resize:none;}
-.frow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.ctog{padding:11px 6px;border:.5px solid var(--bd);border-radius:var(--rads);text-align:center;cursor:pointer;font-size:12px;color:var(--t2);transition:all .15s;user-select:none;}
-.ctog:active{transform:scale(.95);}
-.ctog.on{background:var(--g50);border-color:var(--g100);color:var(--g800);}
-.ctog-icon{font-size:20px;display:block;margin-bottom:4px;}
-.sbtn{width:100%;padding:15px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;}
-.sbtn:active{transform:scale(.97);}
-.cbtn{width:100%;padding:12px;background:transparent;color:var(--t3);border:none;font-size:14px;cursor:pointer;margin-top:6px;font-family:inherit;}
-.dbtn{width:100%;padding:13px;background:var(--r50);color:var(--r400);border:.5px solid #f5c1c1;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;}
-
-.pup-area{width:100%;height:160px;background:var(--g50);border:1.5px dashed var(--g100);border-radius:var(--rads);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px;overflow:hidden;}
-.pup-icon{font-size:30px;margin-bottom:6px;}
-.pup-text{font-size:12px;color:var(--g400);font-weight:500;}
-.pup-sub{font-size:11px;color:var(--t3);margin-top:4px;}
-.preview-row{display:none;flex-wrap:nowrap;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;}
-
-.ai-ld{display:flex;align-items:center;gap:8px;padding:8px 0;}
-.ald{width:7px;height:7px;border-radius:50%;background:var(--g400);animation:bounce 1s infinite;}
-.ald:nth-child(2){animation-delay:.15s;}
-.ald:nth-child(3){animation-delay:.3s;}
-@keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.5;}40%{transform:scale(1.2);opacity:1;}}
-.ai-res-box{background:var(--g50);border-radius:var(--rads);padding:12px;margin-bottom:12px;}
-.ai-res-box .badge{margin-bottom:8px;}
-.ai-res-desc{font-size:13px;color:var(--g800);line-height:1.5;}
-.ai-sugs{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;}
-.ai-sug{font-size:11px;background:#fff;color:var(--g600);padding:3px 9px;border-radius:20px;border:.5px solid var(--g100);}
-
-.emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px;}
-.emj{width:100%;aspect-ratio:1;border:.5px solid var(--bd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;}
-.emj:active{transform:scale(.9);}
-.emj.sel{background:var(--g50);border-color:var(--g200);}
-
-.empty{text-align:center;padding:50px 20px;color:var(--t3);}
-.empty-icon{font-size:48px;margin-bottom:12px;}
-.empty-text{font-size:14px;line-height:1.6;}
-
-/* LOADING OVERLAY */
-.loading-cover{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
-.loading-cover.hidden{display:none;}
-.loading-cover .ld-text{font-size:14px;color:var(--t2);}
-
-/* LIGHTBOX */
-.lightbox{position:fixed;inset:0;background:#000;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.lightbox.hidden{display:none;}
-.lb-close{position:absolute;top:calc(env(safe-area-inset-top,0px)+16px);right:16px;color:#fff;font-size:24px;cursor:pointer;z-index:10;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.15);border-radius:50%;}
-.lb-wrap{width:100%;height:100%;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
-.lb-wrap::-webkit-scrollbar{display:none;}
-.lb-wrap img{flex-shrink:0;width:100%;height:100%;object-fit:contain;scroll-snap-align:start;}
-.lb-dots{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px)+20px);left:50%;transform:translateX(-50%);display:flex;gap:6px;}
-.lb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);}
-.lb-dot.on{background:#fff;}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;}
+.shell{max-width:1200px;margin:0 auto;padding:0 16px 64px}
+header{display:flex;align-items:center;justify-content:space-between;padding:24px 0 20px;border-bottom:1px solid var(--border);margin-bottom:28px;gap:12px;flex-wrap:wrap}
+.logo{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;letter-spacing:3px;color:#fff}
+.logo span{color:var(--accent)}
+.logo small{font-size:12px;letter-spacing:1px;color:var(--muted);display:block;margin-top:-4px}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:8px 16px;width:260px}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:100%;font-family:'Noto Sans TC',sans-serif}
+.search-bar input::placeholder{color:var(--muted)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.stat-val{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#fff}
+.stat-val.blue{color:var(--accent)}.stat-val.red{color:var(--sale)}.stat-val.gold{color:var(--gold)}
+.sale-strip{background:linear-gradient(90deg,#1a0a0a,#2d1515,#1a0a0a);border:1px solid rgba(230,57,70,0.3);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.sale-label{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--sale)}
+.sale-desc{font-size:13px;color:var(--muted)}
+.sale-timer{margin-left:auto;font-family:'Rajdhani',sans-serif;font-size:22px;color:var(--sale);white-space:nowrap}
+.rogue-banner{background:linear-gradient(90deg,#0d0a1a,#1a0d2e,#0d0a1a);border:1px solid rgba(168,85,247,0.3);border-radius:var(--radius);padding:14px 20px;margin-bottom:20px}
+.rogue-label{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--rogue)}
+.rogue-desc{font-size:13px;color:var(--muted);margin-top:2px}
+.tag-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tag{border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:12px;cursor:pointer;transition:all 0.15s;color:var(--muted);background:var(--surface);font-family:'Noto Sans TC',sans-serif;user-select:none}
+.tag:hover{background:var(--surface2);color:var(--text)}
+.tag.active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:500}
+.tag.rogue.active{background:var(--rogue);border-color:var(--rogue);color:#fff}
+.tag.sale-tag.active{background:var(--sale);border-color:var(--sale);color:#fff}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:1px;color:#fff;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0}
+.dot.gold{background:var(--gold)}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:40px}
+.game-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform 0.18s,border-color 0.18s;position:relative}
+.game-card:hover{transform:translateY(-5px);border-color:var(--accent)}
+.cover{width:100%;aspect-ratio:3/4;position:relative;overflow:hidden;background:var(--surface2)}
+.cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;position:absolute;inset:0}
+.game-card:hover .cover img{transform:scale(1.04)}
+.cover-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,#1a1a2e,#0f3460);position:absolute;inset:0}
+.badge{position:absolute;z-index:2;font-size:10px;font-weight:500;border-radius:4px;padding:3px 8px}
+.badge-sale{top:8px;right:8px;background:var(--sale);color:#fff}
+.badge-hot{top:8px;left:8px;background:var(--gold);color:#000}
+.badge-new{top:8px;left:8px;background:var(--accent);color:#000}
+.badge-rogue{top:8px;left:8px;background:var(--rogue);color:#fff}
+.card-info{padding:10px 12px 14px}
+.game-title-en{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.game-title-zh{font-size:11px;color:var(--muted);margin-bottom:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.genre-tag{font-size:10px;border-radius:3px;padding:2px 7px;display:inline-block;margin-bottom:8px;color:var(--accent);background:rgba(0,170,255,0.1)}
+.genre-tag.rogue{color:var(--rogue);background:rgba(168,85,247,0.12)}
+.genre-tag.rpg{color:#f97316;background:rgba(249,115,22,0.12)}
+.genre-tag.sport,.genre-tag.racing{color:#eab308;background:rgba(234,179,8,0.12)}
+.genre-tag.adventure{color:#06b6d4;background:rgba(6,182,212,0.12)}
+.genre-tag.shooter{color:#ef4444;background:rgba(239,68,68,0.12)}
+.price-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.price-now{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fff}
+.price-orig{font-size:11px;color:var(--muted);text-decoration:line-through}
+.discount{font-size:11px;color:var(--sale);font-weight:500;margin-left:auto}
+.stars{font-size:11px;color:var(--gold);margin-bottom:5px}
+.hot-section{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:48px}
+.hot-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color 0.15s}
+.hot-item:hover{border-color:var(--gold)}
+.hot-rank{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--muted);min-width:34px;text-align:center}
+.hot-rank.top{color:var(--gold)}
+.hot-cover{width:44px;height:58px;border-radius:6px;flex-shrink:0;overflow:hidden;background:var(--surface2);position:relative}
+.hot-cover img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.hot-cover-fb{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:22px;position:absolute;inset:0}
+.hot-meta{flex:1;min-width:0}
+.hot-name-en{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hot-name-zh{font-size:11px;color:var(--muted);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hot-genre{font-size:11px;color:var(--muted);margin-bottom:3px}
+.hot-price{font-family:'Rajdhani',sans-serif;font-size:15px;color:#fff;font-weight:700}
+.empty-state{text-align:center;padding:64px 0;color:var(--muted);font-size:14px;grid-column:1/-1}
+footer{text-align:center;padding:24px 0;border-top:1px solid var(--border);color:var(--muted);font-size:12px;line-height:1.8}
+footer a{color:var(--accent);text-decoration:none}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:32px 16px}
+.modal-overlay.open{display:flex}
+.modal{background:#0d1626;border:1px solid rgba(0,170,255,0.25);border-radius:16px;width:100%;max-width:760px;overflow:hidden;margin:auto;position:relative;animation:slideUp 0.22s ease}
+@keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-close{position:absolute;top:14px;right:16px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;z-index:10;transition:background 0.15s}
+.modal-close:hover{background:rgba(255,255,255,0.15)}
+.modal-hero{width:100%;background:#000}
+.modal-hero iframe{width:100%;aspect-ratio:16/9;display:block;border:none}
+.modal-hero-thumb{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden}
+.modal-hero-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform 0.3s}
+.modal-hero-thumb:hover img{transform:scale(1.03)}
+.play-btn{width:68px;height:68px;border-radius:50%;background:rgba(0,0,0,0.7);border:2px solid rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;transition:transform 0.15s,background 0.15s}
+.play-btn:hover{transform:scale(1.1);background:rgba(0,170,255,0.5)}
+.play-triangle{width:0;height:0;border-left:24px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:5px}
+.modal-body{padding:22px 26px 30px}
+.modal-title-en{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:3px}
+.modal-title-zh{font-size:15px;color:var(--muted);margin-bottom:16px}
+.modal-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.modal-genre-badge{font-size:12px;border-radius:4px;padding:4px 12px}
+.modal-rating{font-size:13px;color:var(--gold)}
+.modal-players{font-size:12px;color:var(--muted);background:var(--surface2);border-radius:4px;padding:4px 12px}
+.modal-desc{font-size:14px;color:#b0b8cc;line-height:1.85;margin-bottom:22px;border-left:3px solid var(--accent);padding-left:14px}
+.modal-screenshots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.screenshot-box{aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:28px}
+.modal-price-row{display:flex;align-items:center;gap:14px;padding:18px 20px;background:var(--surface);border-radius:12px;margin-bottom:14px;flex-wrap:wrap}
+.modal-price-now{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:#fff}
+.modal-price-orig{font-size:13px;color:var(--muted);text-decoration:line-through;margin-top:2px}
+.modal-discount{font-size:13px;color:var(--sale);font-weight:500;background:rgba(230,57,70,0.12);padding:5px 12px;border-radius:6px}
+.modal-buy-btn{margin-left:auto;background:var(--accent);color:#000;border:none;border-radius:8px;padding:13px 26px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;transition:opacity 0.15s}
+.modal-buy-btn:hover{opacity:0.85}
+.modal-note{font-size:11px;color:var(--muted);text-align:center;line-height:1.7}
+.modal-note a{color:var(--accent);text-decoration:none}
+@media(max-width:640px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .hot-section{grid-template-columns:1fr}
+  .games-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}
+  .modal-screenshots{grid-template-columns:repeat(2,1fr)}
+  .modal-body{padding:16px 16px 24px}
+  .modal-buy-btn{width:100%;margin-left:0;margin-top:8px;text-align:center}
+  .search-bar{width:180px}
+}
 </style>
 </head>
 <body>
-
-<div class="loading-cover" id="loading-cover">
-  <div style="font-size:36px;">🌱</div>
-  <div class="ld-text">植日苼啟動中...</div>
+<div class="shell">
+  <header>
+    <div class="logo">PS<span>5</span> STORE <small>台灣 Taiwan · NT$</small></div>
+    <div class="search-bar">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="#7a8599" stroke-width="1.5"/><path d="M11 11l3 3" stroke="#7a8599" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input id="searchInput" type="text" placeholder="搜尋遊戲 / Search..." oninput="filterGames()">
+    </div>
+  </header>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-label">總遊戲數</div><div class="stat-val blue" id="totalCount">0</div></div>
+    <div class="stat-card"><div class="stat-label">特價中</div><div class="stat-val red" id="saleCount">0</div></div>
+    <div class="stat-card"><div class="stat-label">Roguelike</div><div class="stat-val" style="color:var(--rogue)" id="rogueCount">0</div></div>
+    <div class="stat-card"><div class="stat-label">最高折扣</div><div class="stat-val gold">75%</div></div>
+  </div>
+  <div class="sale-strip">
+    <div>
+      <div class="sale-label">🔥 限時特賣 Flash Sale</div>
+      <div class="sale-desc">精選遊戲最高75折優惠，數量有限</div>
+    </div>
+    <div class="sale-timer" id="timer">23:47:12</div>
+  </div>
+  <div class="rogue-banner">
+    <div class="rogue-label">🎲 Roguelike 類別上線！</div>
+    <div class="rogue-desc">每次遊玩都是全新體驗，程序生成地圖與永久死亡機制 — 挑戰無止境</div>
+  </div>
+  <div class="tag-filters">
+    <div class="tag active" onclick="setFilter('all',this)">全部 All</div>
+    <div class="tag" onclick="setFilter('action',this)">動作 Action</div>
+    <div class="tag" onclick="setFilter('rpg',this)">角色扮演 RPG</div>
+    <div class="tag" onclick="setFilter('sport',this)">運動 Sports</div>
+    <div class="tag" onclick="setFilter('adventure',this)">冒險 Adventure</div>
+    <div class="tag" onclick="setFilter('shooter',this)">射擊 Shooter</div>
+    <div class="tag" onclick="setFilter('racing',this)">賽車 Racing</div>
+    <div class="tag rogue" onclick="setFilter('roguelike',this)">🎲 Roguelike</div>
+    <div class="tag sale-tag" onclick="setFilter('sale',this)">特價 On Sale</div>
+  </div>
+  <div class="section-header">
+    <div class="section-title"><span class="dot"></span>遊戲目錄 Game Library</div>
+    <div style="font-size:12px;color:var(--muted)" id="countLabel">顯示 0 款</div>
+  </div>
+  <div class="games-grid" id="gamesGrid"></div>
+  <div class="section-header">
+    <div class="section-title"><span class="dot gold"></span>熱門排行 Top Charts</div>
+  </div>
+  <div class="hot-section" id="hotSection"></div>
+  <footer>
+    ⚠️ 此網站為個人示範作品，非 Sony 官方網站。價格僅供參考，實際售價請至
+    <a href="https://store.playstation.com/zh-hant-tw" target="_blank">PlayStation Store 台灣官方</a> 確認。<br>
+    PlayStation、PS5 為 Sony Interactive Entertainment 之商標。
+  </footer>
 </div>
 
-<div class="app">
-  <div class="hdr">
-    <div class="hdr-row">
-      <div>
-        <div class="app-title">植日苼</div>
-        <div class="app-date" id="today-date"></div>
-      </div>
-      <div>
-        <div class="w-mini"><span id="h-icon" style="font-size:20px;">🌿</span><span class="w-temp" id="h-temp">--°</span></div>
-        <div class="w-sub" id="h-desc">取得天氣中...</div>
-      </div>
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-hero" id="modalHero"></div>
+    <div class="modal-body">
+      <div class="modal-title-en" id="modalTitleEn"></div>
+      <div class="modal-title-zh" id="modalTitleZh"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-screenshots" id="modalScreenshots"></div>
+      <div class="modal-price-row" id="modalPriceRow"></div>
+      <div class="modal-note" id="modalNote"></div>
     </div>
   </div>
-
-  <!-- HOME -->
-  <div class="screen" id="screen-home">
-    <div class="wcard">
-      <div>
-        <div class="wc-temp" id="wc-temp">--°C</div>
-        <div class="wc-desc" id="wc-desc">取得天氣中...</div>
-        <div class="wc-chips">
-          <span class="wc-chip" id="wc-hum">💧 --%</span>
-          <span class="wc-chip" id="wc-wind">💨 --</span>
-          <span class="wc-chip" id="wc-uv">☀️ UV --</span>
-        </div>
-      </div>
-      <div class="wc-icon" id="wc-icon">🌿</div>
-    </div>
-
-    <div id="home-plant-cards"></div>
-
-    <div class="care-row">
-      <div class="care-btn" id="btn-water" onclick="toggleCare('water')"><span class="ci">💧</span><span class="cl" id="cl-water">澆水</span><span class="ct" id="ct-water">點擊記錄</span></div>
-      <div class="care-btn" id="btn-fert" onclick="toggleCare('fert')"><span class="ci">🌿</span><span class="cl" id="cl-fert">施肥</span><span class="ct" id="ct-fert">點擊記錄</span></div>
-      <div class="care-btn" id="btn-trim" onclick="toggleCare('trim')"><span class="ci">✂️</span><span class="cl" id="cl-trim">整理</span><span class="ct" id="ct-trim">點擊記錄</span></div>
-    </div>
-
-    <div class="streak">
-      <div class="sk-num" id="sk-num">🔥 0</div>
-      <div><div class="sk-lbl">連續照顧天數</div><div class="sk-sub" id="sk-sub">開始你的第一筆記錄吧！</div></div>
-    </div>
-
-    <!-- BACKUP REMINDER (shows when needed) -->
-    <div id="backup-reminder" style="display:none;background:#fff8e1;border:.5px solid #fad87a;border-radius:var(--rad);padding:14px 16px;margin-bottom:12px;">
-      <div style="font-size:13px;font-weight:600;color:var(--a800);margin-bottom:6px;">⚠️ 建議備份資料</div>
-      <div style="font-size:12px;color:var(--a600);margin-bottom:10px;">已超過 7 天未備份，建議到「統計」頁匯出備份，防止資料丟失。</div>
-      <div style="display:flex;gap:8px;">
-        <button onclick="goBackup()" style="flex:1;padding:9px;background:var(--a600);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">立即備份</button>
-        <button onclick="dismissReminder()" style="padding:9px 14px;background:transparent;color:var(--t3);border:.5px solid var(--bd);border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;">稍後</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DIARY -->
-  <div class="screen hidden" id="screen-diary">
-    <div class="add-diary-btn" onclick="openAddEntry()">📸　新增日記</div>
-    <div class="filter-bar">
-      <select class="fsel" id="filter-plant" onchange="renderDiary()"><option value="">全部植物</option></select>
-      <select class="fsel" id="filter-year" onchange="renderDiary()"><option value="">全部年份</option></select>
-      <select class="fsel" id="filter-month" onchange="renderDiary()"><option value="">月份</option></select>
-    </div>
-    <div id="timeline-list"></div>
-  </div>
-
-  <!-- STATS -->
-  <div class="screen hidden" id="screen-stats">
-    <div class="stat-grid">
-      <div class="stat-card"><div class="sv c-g" id="s-water">0</div><div class="sl">本月澆水次數</div></div>
-      <div class="stat-card"><div class="sv c-a" id="s-fert">0</div><div class="sl">本月施肥次數</div></div>
-      <div class="stat-card"><div class="sv c-g" id="s-avg">--</div><div class="sl">平均健康評分</div></div>
-      <div class="stat-card"><div class="sv c-r" id="s-days">0</div><div class="sl">日記記錄天數</div></div>
-    </div>
-    <div class="card">
-      <div class="ctitle">近期健康趨勢</div>
-      <div class="bar-chart" id="bar-chart"><div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--t3);font-size:13px;">新增日記後顯示</div></div>
-    </div>
-    <div class="card">
-      <div class="ctitle">護理週期 · AI 智慧判斷</div>
-      <div class="cycle-item"><div class="cycle-icon">💧</div><div class="cycle-info"><div class="cycle-text">澆水週期</div><div class="cycle-sub" id="cy-water-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-water">--</div></div>
-      <div class="cycle-item"><div class="cycle-icon">🌿</div><div class="cycle-info"><div class="cycle-text">施肥週期</div><div class="cycle-sub" id="cy-fert-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-fert">--</div></div>
-      <div class="cycle-item"><div class="cycle-icon">✂️</div><div class="cycle-info"><div class="cycle-text">整理週期</div><div class="cycle-sub" id="cy-trim-sub">累積 3 筆日記後 AI 分析</div></div><div class="cycle-val" id="cy-trim">--</div></div>
-    </div>
-
-    <!-- API KEY CARD -->
-    <div class="card" style="border-color:var(--g100);">
-      <div class="ctitle" style="color:var(--g600);">🤖 AI 設定</div>
-      <div style="font-size:12px;color:var(--t3);line-height:1.7;margin-bottom:10px;">
-        支援 <strong style="color:var(--t2);">Gemini</strong>（aistudio.google.com）或 <strong style="color:var(--t2);">Groq</strong>（console.groq.com）的 API Key，兩個都免費。<br>
-        Gemini Key 以 <code style="background:#f0f0ec;padding:1px 5px;border-radius:4px;">AIza</code> 開頭，Groq Key 以 <code style="background:#f0f0ec;padding:1px 5px;border-radius:4px;">gsk_</code> 開頭。
-      </div>
-      <div id="api-key-status" style="font-size:12px;margin-bottom:10px;"></div>
-      <input class="finput" id="gemini-key-input" type="password" placeholder="貼上 API Key（AIza... 或 gsk_...）" style="margin-bottom:8px;font-family:monospace;font-size:13px;">
-      <button onclick="saveApiKey()" style="width:100%;padding:12px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;">儲存 API Key</button>
-      <button onclick="testApiKey()" style="width:100%;padding:11px;background:var(--g50);color:var(--g800);border:.5px solid var(--g100);border-radius:var(--rads);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">🧪 測試連線是否正常</button>
-      <div id="test-result" style="display:none;margin-top:10px;padding:10px 12px;border-radius:var(--rads);font-size:12px;line-height:1.6;white-space:pre-wrap;"></div>
-      <button onclick="clearApiKey()" id="clear-key-btn" style="display:none;width:100%;padding:11px;background:transparent;color:var(--r400);border:.5px solid #f5c1c1;border-radius:var(--rads);font-size:13px;cursor:pointer;font-family:inherit;margin-top:6px;">清除 API Key</button>
-    </div>
-
-    <!-- BACKUP CARD -->
-    <div class="card" style="border-color:var(--g100);">
-      <div class="ctitle" style="color:var(--g600);">📦 資料備份與還原</div>
-      <div style="font-size:12px;color:var(--t3);line-height:1.7;margin-bottom:14px;">
-        建議每週備份一次，防止 Safari 自動清除資料。<br>備份檔包含所有日記、照片、植物資料。
-      </div>
-      <div id="last-backup-txt" style="font-size:12px;color:var(--t3);margin-bottom:14px;">上次備份：從未備份</div>
-      <button onclick="exportBackup()" style="width:100%;padding:13px;background:var(--g600);color:#fff;border:none;border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px;font-family:inherit;">
-        ⬇️ 匯出備份檔
-      </button>
-      <button onclick="document.getElementById('restore-input').click()" style="width:100%;padding:13px;background:var(--g50);color:var(--g800);border:.5px solid var(--g100);border-radius:var(--rads);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">
-        ⬆️ 載入備份還原
-      </button>
-      <input type="file" id="restore-input" accept=".json" style="display:none" onchange="importBackup(event)">
-      <div style="font-size:11px;color:var(--t3);margin-top:10px;text-align:center;">備份後請儲存到 iCloud 或 Google Drive</div>
-    </div>
-  </div>
-
-  <!-- PLANTS -->
-  <div class="screen hidden" id="screen-plants">
-    <div style="font-size:16px;font-weight:600;margin-bottom:12px;">我的植物</div>
-    <div id="plants-list"></div>
-    <div class="add-plant-btn" onclick="openPlantModal(null)">＋ 新增植物</div>
-  </div>
-
-  <div class="tab-bar">
-    <div class="tab active" onclick="showScreen('home',this)"><span class="tab-icon">🏠</span><span class="tab-lbl">首頁</span></div>
-    <div class="tab" onclick="showScreen('diary',this)"><span class="tab-icon">📸</span><span class="tab-lbl">日記</span></div>
-    <div class="tab" onclick="showScreen('stats',this)"><span class="tab-icon">📊</span><span class="tab-lbl">統計</span></div>
-    <div class="tab" onclick="showScreen('plants',this)"><span class="tab-icon">🌿</span><span class="tab-lbl">植物</span></div>
-  </div>
-</div>
-
-<!-- ENTRY MODAL -->
-<div class="overlay hidden" id="modal-entry">
-  <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mtitle" id="entry-modal-title">📸 新增日記</div>
-
-    <label class="flabel">這是哪株植物的日記？</label>
-    <div class="plant-sel-row" id="plant-sel-row"></div>
-
-    <label class="flabel">日記日期</label>
-    <input type="date" class="finput" id="entry-date">
-
-    <label class="flabel">植物照片（可選多張）</label>
-    <div class="pup-area" id="photo-area" onclick="document.getElementById('photo-input').click()">
-      <div class="pup-icon">📷</div>
-      <div class="pup-text">點擊從相簿選取或拍照</div>
-      <div class="pup-sub">支援多張照片 · 可重新選取取代</div>
-    </div>
-    <div class="preview-row" id="preview-row"></div>
-    <button id="reselect-photo-btn" onclick="reselectPhoto()" style="display:none;width:100%;padding:9px;background:var(--bg);border:.5px solid var(--bd);border-radius:var(--rads);font-size:12px;color:var(--t2);cursor:pointer;margin-bottom:12px;font-family:inherit;">🔄 重新選取照片</button>
-    <input type="file" accept="image/*" multiple id="photo-input" style="display:none" onchange="handlePhoto(event)">
-
-    <div id="ai-ld-wrap" style="display:none">
-      <div class="ctitle" style="margin-bottom:6px">AI 分析照片中</div>
-      <div class="ai-ld"><div class="ald"></div><div class="ald"></div><div class="ald"></div></div>
-    </div>
-    <div id="ai-res-wrap" style="display:none">
-      <label class="flabel">AI 評估結果</label>
-      <div class="ai-res-box"><div id="modal-badge"></div><div class="ai-res-desc" id="modal-desc"></div><div class="ai-sugs" id="modal-sugs"></div></div>
-    </div>
-
-    <label class="flabel">今日護理記錄</label>
-    <div class="frow">
-      <div class="ctog" id="t-water" onclick="toggleModal('water')"><span class="ctog-icon">💧</span>澆水</div>
-      <div class="ctog" id="t-fert" onclick="toggleModal('fert')"><span class="ctog-icon">🌿</span>施肥</div>
-      <div class="ctog" id="t-trim" onclick="toggleModal('trim')"><span class="ctog-icon">✂️</span>整理</div>
-    </div>
-    <label class="flabel">備註</label>
-    <textarea class="finput" id="entry-note" rows="2" placeholder="今天植物的狀況..."></textarea>
-    <button class="sbtn" onclick="saveEntry()">儲存 ✓</button>
-    <button class="dbtn" id="entry-del-btn" style="display:none" onclick="deleteEntryFromModal()">🗑 刪除這筆日記</button>
-    <button class="cbtn" onclick="closeOverlay('modal-entry')">取消</button>
-  </div>
-</div>
-
-<!-- PLANT MODAL -->
-<div class="overlay hidden" id="modal-plant">
-  <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mtitle" id="plant-mtitle">🌱 新增植物</div>
-    <label class="flabel">植物暱稱</label>
-    <input class="finput" id="p-name" placeholder="例如：小翠、我的薄荷">
-    <label class="flabel">植物種類</label>
-    <input class="finput" id="p-type" placeholder="例如：薄荷、仙人掌、海棠花">
-    <label class="flabel">開始養護日期</label>
-    <input type="date" class="finput" id="p-start-date">
-    <label class="flabel">選擇圖示</label>
-    <div class="emoji-grid">
-      <div class="emj sel" onclick="pickEmoji(this,'🌱')">🌱</div>
-      <div class="emj" onclick="pickEmoji(this,'🌸')">🌸</div>
-      <div class="emj" onclick="pickEmoji(this,'🌵')">🌵</div>
-      <div class="emj" onclick="pickEmoji(this,'🌿')">🌿</div>
-      <div class="emj" onclick="pickEmoji(this,'🍀')">🍀</div>
-      <div class="emj" onclick="pickEmoji(this,'🌺')">🌺</div>
-      <div class="emj" onclick="pickEmoji(this,'🎋')">🎋</div>
-      <div class="emj" onclick="pickEmoji(this,'🌻')">🌻</div>
-      <div class="emj" onclick="pickEmoji(this,'🍃')">🍃</div>
-      <div class="emj" onclick="pickEmoji(this,'🪴')">🪴</div>
-      <div class="emj" onclick="pickEmoji(this,'🌾')">🌾</div>
-      <div class="emj" onclick="pickEmoji(this,'🍁')">🍁</div>
-    </div>
-    <button class="sbtn" onclick="savePlant()">儲存 ✓</button>
-    <button class="dbtn" id="del-btn" style="display:none" onclick="deletePlant()">🗑 刪除這株植物</button>
-    <button class="cbtn" onclick="closeOverlay('modal-plant')">取消</button>
-  </div>
-</div>
-
-<!-- LIGHTBOX -->
-<div class="lightbox hidden" id="lightbox">
-  <div class="lb-close" onclick="closeLightbox()">✕</div>
-  <div class="lb-wrap" id="lb-imgs" onscroll="updateDots()"></div>
-  <div class="lb-dots" id="lb-dots"></div>
 </div>
 
 <script>
-// ═══════════════════════════════
-// IndexedDB — 照片專用，空間大
-// ═══════════════════════════════
-let db = null;
+// 真實遊戲封面圖：使用 RAWG / OpenCritic / 各遊戲官方媒體包的公開圖片
+// 這些 URL 是各大遊戲媒體/維基常用的公開封面圖
+var COVERS = {
+  spiderman2:    'https://upload.wikimedia.org/wikipedia/en/thumb/7/70/Marvel%27s_Spider-Man_2_cover.jpg/220px-Marvel%27s_Spider-Man_2_cover.jpg',
+  gow:           'https://upload.wikimedia.org/wikipedia/en/thumb/d/d7/God_of_War_Ragnar%C3%B6k_cover.jpg/220px-God_of_War_Ragnar%C3%B6k_cover.jpg',
+  horizon:       'https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/Horizon_Forbidden_West_cover.jpg/220px-Horizon_Forbidden_West_cover.jpg',
+  eldenring:     'https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/Elden_Ring_Box_art.jpg/220px-Elden_Ring_Box_art.jpg',
+  gt7:           'https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/Gran_Turismo_7_cover.jpg/220px-Gran_Turismo_7_cover.jpg',
+  returnal:      'https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Returnal_cover_art.jpg/220px-Returnal_cover_art.jpg',
+  ghost:         'https://upload.wikimedia.org/wikipedia/en/thumb/2/21/Ghost_of_Tsushima_cover_art.jpg/220px-Ghost_of_Tsushima_cover_art.jpg',
+  stellar:       'https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Stellar_Blade_cover_art.jpg/220px-Stellar_Blade_cover_art.jpg',
+  tekken8:       'https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Tekken8_key_art.jpg/220px-Tekken8_key_art.jpg',
+  ratchet:       'https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Ratchet_%26_Clank_Rift_Apart_cover.jpg/220px-Ratchet_%26_Clank_Rift_Apart_cover.jpg',
+  demons:        'https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Demon%27s_Souls_2020_cover.jpg/220px-Demon%27s_Souls_2020_cover.jpg',
+  hades2:        'https://upload.wikimedia.org/wikipedia/en/thumb/6/6c/Hades_II_cover_art.jpg/220px-Hades_II_cover_art.jpg',
+  deadcells:     'https://upload.wikimedia.org/wikipedia/en/thumb/4/44/Dead_Cells_cover_art.jpg/220px-Dead_Cells_cover_art.jpg',
+  ror2:          'https://upload.wikimedia.org/wikipedia/en/thumb/e/ee/Risk_of_Rain_2.jpg/220px-Risk_of_Rain_2.jpg',
+  hades1:        'https://upload.wikimedia.org/wikipedia/en/thumb/c/cc/Hades_cover_art.jpg/220px-Hades_cover_art.jpg',
+  isaac:         'https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/The_Binding_of_Isaac_Repentance.jpg/220px-The_Binding_of_Isaac_Repentance.jpg',
+  gungeon:       'https://upload.wikimedia.org/wikipedia/en/thumb/d/d9/Enterthegungeon_cover.jpg/220px-Enterthegungeon_cover.jpg',
+  ff16:          'https://upload.wikimedia.org/wikipedia/en/thumb/3/32/Final_Fantasy_XVI_cover_art.jpg/220px-Final_Fantasy_XVI_cover_art.jpg',
+  ff7rebirth:    'https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Final_Fantasy_VII_Rebirth_cover_art.jpg/220px-Final_Fantasy_VII_Rebirth_cover_art.jpg',
+  p3reload:      'https://upload.wikimedia.org/wikipedia/en/thumb/a/a1/Persona_3_Reload_cover_art.jpg/220px-Persona_3_Reload_cover_art.jpg',
+  liesofp:       'https://upload.wikimedia.org/wikipedia/en/thumb/2/2c/Lies_of_P_cover_art.jpg/220px-Lies_of_P_cover_art.jpg',
+  wukong:        'https://upload.wikimedia.org/wikipedia/en/thumb/1/10/Black_Myth_Wukong_cover.jpg/220px-Black_Myth_Wukong_cover.jpg',
+  ea_fc25:       'https://upload.wikimedia.org/wikipedia/en/thumb/b/b7/EA_Sports_FC_25_cover_art.jpg/220px-EA_Sports_FC_25_cover_art.jpg',
+  nba2k25:       'https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/NBA_2K25_Cover_Art.jpg/220px-NBA_2K25_Cover_Art.jpg',
+  callofduty:    'https://upload.wikimedia.org/wikipedia/en/thumb/1/18/Call_of_Duty_Black_Ops_6_cover_art.jpg/220px-Call_of_Duty_Black_Ops_6_cover_art.jpg',
+  hogwarts:      'https://upload.wikimedia.org/wikipedia/en/thumb/0/0f/Hogwarts_Legacy_cover.jpg/220px-Hogwarts_Legacy_cover.jpg',
+  deathstranding2:'https://upload.wikimedia.org/wikipedia/en/thumb/7/74/Death_Stranding_2_cover.jpg/220px-Death_Stranding_2_cover.jpg',
+  astrobot:      'https://upload.wikimedia.org/wikipedia/en/thumb/3/31/Astro_Bot_cover_art.jpg/220px-Astro_Bot_cover_art.jpg',
+  kcd2:          'https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Kingdom_Come-_Deliverance_II_cover_art.jpg/220px-Kingdom_Come-_Deliverance_II_cover_art.jpg',
+  avatar:        'https://upload.wikimedia.org/wikipedia/en/thumb/3/32/Avatar_Frontiers_of_Pandora.jpg/220px-Avatar_Frontiers_of_Pandora.jpg',
+  vampire:       'https://upload.wikimedia.org/wikipedia/en/thumb/2/27/Vampire_Survivors_cover_art.jpg/220px-Vampire_Survivors_cover_art.jpg',
+};
 
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open('ZhiRiSheng', 2);
-    req.onupgradeneeded = e => {
-      const d = e.target.result;
-      if (!d.objectStoreNames.contains('photos')) d.createObjectStore('photos');
-    };
-    req.onsuccess = e => { db = e.target.result; resolve(db); };
-    req.onerror = () => reject(req.error);
+var genreLabel={action:'動作 Action',rpg:'角色扮演 RPG',adventure:'冒險 Adventure',sport:'運動 Sports',shooter:'射擊 Shooter',racing:'賽車 Racing',roguelike:'Roguelike'};
+var genreClass={action:'',rpg:'rpg',adventure:'adventure',sport:'sport',shooter:'shooter',racing:'racing sport',roguelike:'rogue'};
+
+var games=[
+  // ACTION (8款)
+  {id:1, en:"Marvel's Spider-Man 2",       zh:"漫威蜘蛛人2",            g:'action',    c:'spiderman2', fb:'🕷️',p:1790,o:null, r:4.9,hot:1,nw:0,s:0, yt:'O0-yoR1mCBM', desc:'操控彼得帕克與邁爾斯莫拉雷斯，在廣闊的紐約市展開雙主角冒險。面對最強宿敵毒液的威脅，兩位蜘蛛人必須攜手並進，保衛摯愛的城市。充分發揮PS5硬體效能，帶來前所未有的蜘蛛人體驗。',sc:['🗽','🌃','🕸️'],pl:'1人遊玩',dev:'Insomniac Games'},
+  {id:2, en:"God of War Ragnarök",          zh:"戰神：諸神黃昏",          g:'action',    c:'gow',        fb:'⚔️',p:990, o:1790,r:5.0,hot:1,nw:0,s:1, yt:'EE-4GvjKcfs', desc:'克雷多斯與阿特柔斯踏上跨越九大國度的史詩旅程，揭開諸神黃昏的最終命運。全新戰鬥深度、豐富神話生物，情感張力與動作刺激達到全新高峰。',sc:['❄️','⚡','🌊'],pl:'1人遊玩',dev:'Santa Monica Studio'},
+  {id:3, en:"Ghost of Tsushima DC",         zh:"對馬戰鬼：導演剪輯版",   g:'action',    c:'ghost',      fb:'🌸',p:1290,o:null, r:4.9,hot:1,nw:0,s:0, yt:'Ej-3seTbZjg', desc:'1274年蒙古大軍入侵對馬島，武士境井仁拋棄榮耀成為幽靈。導演剪輯版新增壹岐島DLC，帶來全新劇情與地圖，支援PS5觸覺回饋。',sc:['⛩️','🎋','🌺'],pl:'1-2人',dev:'Sucker Punch'},
+  {id:4, en:"Stellar Blade",                zh:"星刃",                    g:'action',    c:'stellar',    fb:'⚡',p:1790,o:null, r:4.7,hot:0,nw:1,s:0, yt:'vLbMgOiWBCs', desc:'韓國Shift Up開發，玩家扮演伊芙重返被Naytiba佔領的廢棄地球。精準的防反與連擊系統帶來絲滑戰鬥體驗，2024年最受矚目的PS5獨佔作品。',sc:['🌆','⚡','🤖'],pl:'1人遊玩',dev:'Shift Up'},
+  {id:5, en:"Tekken 8",                     zh:"鐵拳8",                   g:'action',    c:'tekken8',    fb:'👊',p:990, o:1490,r:4.5,hot:0,nw:0,s:1, yt:'9Q1p0tJqo0E', desc:'鐵拳系列最新作，全新Heat系統讓對戰更加激烈。超過30位個性鮮明角色以及令人歎為觀止的破壞環境效果，是格鬥遊戲的新標竿。',sc:['🥊','🔥','🏙️'],pl:'1-2人',dev:'Bandai Namco'},
+  {id:6, en:"Ratchet & Clank: Rift Apart",  zh:"拉捷特與克拉克：次元裂縫",g:'action',   c:'ratchet',    fb:'🔧',p:890, o:1190,r:4.7,hot:0,nw:0,s:1, yt:'mus7u0o2zE4', desc:'充分發揮PS5 SSD效能，在不同次元間瞬間切換。繽紛視覺表現與流暢動作玩法，是最能展現PS5硬體實力的平台動作遊戲。',sc:['🌈','🔫','⚙️'],pl:'1人遊玩',dev:'Insomniac Games'},
+  {id:7, en:"Hogwarts Legacy",              zh:"霍格華茲的傳承",          g:'action',    c:'hogwarts',   fb:'🧙',p:790, o:1790,r:4.6,hot:0,nw:0,s:1, yt:'1O6Qstncxnc', desc:'在霍格華茲魔法學校展開全新冒險，體驗1800年代的巫師世界。探索廣大的開放世界，學習魔法咒語，揭開古老的黑暗秘密。',sc:['🏰','🪄','🦉'],pl:'1人遊玩',dev:'Avalanche Software'},
+  {id:8, en:"Avatar: Frontiers of Pandora", zh:"阿凡達：潘朵拉邊境",     g:'action',    c:'avatar',     fb:'🌿',p:990, o:1790,r:4.0,hot:0,nw:0,s:1, yt:'XNDl5adOq6Y',  desc:'在壯觀的潘朵拉星球中扮演納美人，對抗RDA的入侵。以第一人稱視角探索廣大熱帶叢林，與原生生物建立連結，保護家園。',sc:['🌴','🔵','🦋'],pl:'1-2人',dev:'Massive Entertainment'},
+  // RPG (8款)
+  {id:9, en:"Elden Ring",                   zh:"艾爾登法環",              g:'rpg',       c:'eldenring',  fb:'🐉',p:1190,o:1590,r:4.8,hot:1,nw:0,s:1, yt:'E3Huy2cdih0', desc:'宮崎英高與喬治·R·R·馬丁共同打造的開放世界暗黑奇幻RPG。在交界地探索，面對無數強大守護者，鍛造屬於自己的傳說。',sc:['🏰','⚔️','🌙'],pl:'1-4人',dev:'FromSoftware'},
+  {id:10,en:"Final Fantasy XVI",            zh:"最終幻想XVI",             g:'rpg',       c:'ff16',       fb:'⚡',p:990, o:1990,r:4.6,hot:0,nw:0,s:1, yt:'2gMkHKNJoiA', desc:'系列最新正統續作，以中世紀歐洲風格的世界觀展開史詩動作RPG冒險。克萊夫·羅茲菲爾德的復仇之旅，伴隨震撼人心的召喚獸對決。',sc:['🌋','⚡','🏰'],pl:'1人遊玩',dev:'Square Enix'},
+  {id:11,en:"Final Fantasy VII Rebirth",    zh:"最終幻想VII重生",         g:'rpg',       c:'ff7rebirth', fb:'🌸',p:1490,o:null, r:4.8,hot:1,nw:0,s:0, yt:'Rk7MPdyWqJw', desc:'最終幻想VII重製計畫第二部，克勞德與夥伴們離開米德加，展開對抗神羅與西弗斯的廣大世界冒險，是系列粉絲必玩的史詩巨作。',sc:['🌸','⚔️','🌍'],pl:'1人遊玩',dev:'Square Enix'},
+  {id:12,en:"Persona 3 Reload",             zh:"女神異聞錄3 Reload",      g:'rpg',       c:'p3reload',   fb:'🎭',p:1290,o:1790,r:4.8,hot:0,nw:0,s:1, yt:'HQFx7pJJnuQ', desc:'女神異聞錄3的完整重製版，以現代畫面與全新配音重現這部經典RPG。在月影塔探索，與魅影討伐隊並肩作戰，面對生命與死亡的深刻主題。',sc:['🎭','🌙','⚡'],pl:'1人遊玩',dev:'Atlus'},
+  {id:13,en:"Lies of P",                    zh:"匹諾曹的謊言",            g:'rpg',       c:'liesofp',    fb:'🎭',p:890, o:1490,r:4.5,hot:0,nw:0,s:1, yt:'tST6JHZC1tI', desc:'以《木偶奇遇記》為基底的韓國黑暗動作RPG。精緻的維多利亞時代美學、嚴謹的防守機制，被譽為最優秀的魂類遊戲之一。',sc:['🎪','🌹','⚙️'],pl:'1人遊玩',dev:'NEOWIZ'},
+  {id:14,en:"Black Myth: Wukong",           zh:"黑神話：悟空",            g:'rpg',       c:'wukong',     fb:'🐒',p:1390,o:null, r:4.7,hot:1,nw:1,s:0, yt:'doSGMEj6GBk', desc:'中國Game Science打造的動作RPG，改編自《西遊記》。操控天命人踏上尋根之旅，以震撼的畫面與流暢的棍法戰鬥征服妖魔。',sc:['🐒','🏯','🌸'],pl:'1人遊玩',dev:'Game Science'},
+  {id:15,en:"Demon's Souls",                zh:"惡魔靈魂：重製版",        g:'rpg',       c:'demons',     fb:'💀',p:590, o:1390,r:4.6,hot:0,nw:0,s:1, yt:'qPNiIeKMHyg', desc:'FromSoftware傳說級作品的高清重製版。在波萊提亞王國對抗惡魔，體驗奠定魂類遊戲基礎的硬核動作RPG，以PS5規格全新呈現。',sc:['🏯','👹','🗡️'],pl:'1-4人',dev:'Bluepoint Games'},
+  {id:16,en:"Kingdom Come: Deliverance 2",  zh:"天國的救恩2",             g:'rpg',       c:'kcd2',       fb:'⚔️',p:1590,o:null, r:4.7,hot:0,nw:1,s:0, yt:'hHgWvj4JFlo', desc:'高度寫實的中世紀捷克開放世界RPG續作，無魔法設定卻充滿歷史厚度。改良的戰鬥系統與豐富的支線故事讓沉浸感大幅提升。',sc:['🏰','🌾','⚔️'],pl:'1人遊玩',dev:'Warhorse Studios'},
+  // ADVENTURE (4款)
+  {id:17,en:"Horizon Forbidden West",       zh:"地平線：西域禁地",        g:'adventure', c:'horizon',    fb:'🏹',p:790, o:1490,r:4.7,hot:1,nw:0,s:1, yt:'Lq594XmpPBg', desc:'艾洛依前往美國西岸的禁地探索新威脅——神秘疾病吞噬大地，更強大的敵人悄然逼近。在機械肆虐的廣大世界中，發掘古代人類的秘密。',sc:['🌿','🦕','🏔️'],pl:'1人遊玩',dev:'Guerrilla Games'},
+  {id:18,en:"Death Stranding 2",            zh:"死亡擱淺2：海灘上",       g:'adventure', c:'deathstranding2',fb:'📦',p:1790,o:null,r:4.5,hot:0,nw:1,s:0, yt:'n4oN-UfSFLU', desc:'小島秀夫最新傑作，山姆·布里奇斯再度踏上送貨之旅。全新的故事、機制與連線要素，繼續探索末日後的美麗廢墟世界。',sc:['🌊','📦','🌈'],pl:'1人遊玩',dev:'Kojima Productions'},
+  {id:19,en:"Astro Bot",                    zh:"太空機器人",              g:'adventure', c:'astrobot',   fb:'🤖',p:1290,o:null, r:4.9,hot:1,nw:1,s:0, yt:'WoMr8Zn-8bg', desc:'2024年度遊戲！充分運用DualSense控制器的所有功能，帶來充滿驚喜的3D平台跳躍冒險，是PS5玩家絕對不能錯過的獨佔大作。',sc:['🤖','🌌','⭐'],pl:'1人遊玩',dev:'Team Asobi'},
+  // SPORT (3款)
+  {id:20,en:"EA Sports FC 25",              zh:"EA SPORTS FC 25",        g:'sport',     c:'ea_fc25',    fb:'⚽',p:1390,o:1790,r:4.2,hot:0,nw:0,s:1, yt:'RLjGT_NTfoc', desc:'全新FC智慧系統帶來更真實的球員AI行為，讓每場比賽充滿不可預測的精彩時刻。支援終極隊伍、職業生涯、VOLTA等多元模式。',sc:['🏟️','🥅','🏆'],pl:'1-4人',dev:'EA Sports'},
+  {id:21,en:"NBA 2K25",                     zh:"NBA 2K25",               g:'sport',     c:'nba2k25',    fb:'🏀',p:1290,o:1590,r:4.1,hot:0,nw:0,s:1, yt:'xHVLBg-i8hs', desc:'最逼真的籃球遊戲體驗，全新ProPLAY技術直接將真實NBA比賽動作轉化為遊戲內容。MyCareer、MyTeam等豐富模式持續更新。',sc:['🏀','🏟️','⭐'],pl:'1-4人',dev:'2K Sports'},
+  // RACING (1款)
+  {id:22,en:"Gran Turismo 7",               zh:"跑車浪漫旅7",            g:'racing',    c:'gt7',        fb:'🏎️',p:1490,o:null, r:4.6,hot:0,nw:0,s:0, yt:'0NNGnLQHVfg', desc:'系列最完整的汽車文化體驗，收錄超過420款真實授權車輛。結合GT模式的豐富內容與DualSense自適應扳機帶來的真實駕駛手感，重現賽道速度激情。',sc:['🏁','🌅','🚀'],pl:'1-2人',dev:'Polyphony Digital'},
+  // SHOOTER (2款)
+  {id:23,en:"Call of Duty: Black Ops 6",    zh:"決勝時刻：黑色行動6",   g:'shooter',   c:'callofduty', fb:'🔫',p:1790,o:null, r:4.3,hot:0,nw:1,s:0, yt:'Hv3pKxqG03k', desc:'最新一代決勝時刻，引入全向運動系統讓多人對戰更加靈活。全新殭屍模式與扣人心弦的單人戰役，是FPS迷不可錯過的年度大作。',sc:['🔫','💣','🌆'],pl:'1-4人',dev:'Treyarch / Raven'},
+  // ROGUELIKE (8款)
+  {id:24,en:"Returnal",                     zh:"死亡迴歸",               g:'roguelike', c:'returnal',   fb:'🌀',p:690, o:1490,r:4.5,hot:0,nw:0,s:1, yt:'3SKjjGaLMmk', desc:'塞蕾娜墜毀在外星星球，被困在無限死亡迴圈之中。每次死亡重置世界，但帶來新的謎題碎片。結合第三人射擊與Roguelike，是PS5最具挑戰性的獨佔作品。',sc:['👾','🔴','🌌'],pl:'1-2人',dev:'Housemarque'},
+  {id:25,en:"Hades II",                     zh:"黑帝斯II",               g:'roguelike', c:'hades2',     fb:'🔱',p:690, o:null, r:4.9,hot:1,nw:1,s:0, yt:'cCkpCr2SPUI', desc:'SuperGiant Games備受讚譽的冥界Roguelike續作。操控美露諾踏上對抗克洛諾斯的旅程。全新工藝系統、豐富武器選擇，以及更深邃的希臘神話故事。',sc:['🌙','🔥','⚗️'],pl:'1人遊玩',dev:'Supergiant Games'},
+  {id:26,en:"Hades",                        zh:"黑帝斯",                 g:'roguelike', c:'hades1',     fb:'⚔️',p:390, o:690,  r:4.9,hot:0,nw:0,s:1, yt:'bGli5N_9gew', desc:'Roguelike神作，在冥界中操控冥王之子薩格瑞斯一次次向外逃脫。精煉的戰鬥系統、豐富的角色互動、令人上癮的循環玩法，獲獎無數。',sc:['⚔️','💜','🏺'],pl:'1人遊玩',dev:'Supergiant Games'},
+  {id:27,en:"Dead Cells",                   zh:"死亡細胞",               g:'roguelike', c:'deadcells',  fb:'🧟',p:390, o:790,  r:4.7,hot:0,nw:0,s:1, yt:'m_iEnLCaFDI', desc:'融合Metroidvania探索與Roguelike隨機性的動作遊戲。在不斷變化的城堡中，每次死亡都是重新開始，但每次嘗試都能解鎖新的永久強化。',sc:['🗺️','⚔️','💎'],pl:'1人遊玩',dev:'Motion Twin'},
+  {id:28,en:"Risk of Rain 2",               zh:"雨中冒險2",              g:'roguelike', c:'ror2',       fb:'☄️',p:490, o:790,  r:4.6,hot:0,nw:0,s:1, yt:'S79TyUZ3sUI', desc:'在外星星球與無盡怪物大軍對抗，隨著時間流逝敵人難度不斷攀升。支援最多4人合作，隨機地圖與物品組合確保每局都有新鮮感。',sc:['🌧️','👾','🚀'],pl:'1-4人',dev:'Hopoo Games'},
+  {id:29,en:"The Binding of Isaac: Repentance",zh:"以撒的結合：懺悔",   g:'roguelike', c:'isaac',      fb:'😢',p:340, o:590,  r:4.7,hot:0,nw:0,s:1, yt:'xjGRSKkLtKo', desc:'超高重玩性的地牢冒險Roguelike，每次遊玩都有截然不同的物品組合與隨機地圖。超過600種物品、極深的Combo系統，是Roguelike愛好者的必玩之作。',sc:['😢','🗝️','💀'],pl:'1-2人',dev:'Edmund McMillen'},
+  {id:30,en:"Enter the Gungeon",            zh:"進入槍獄",               g:'roguelike', c:'gungeon',    fb:'🔫',p:290, o:490,  r:4.6,hot:0,nw:0,s:1, yt:'ZtP5wPqtOrE', desc:'彈幕射擊與Roguelike的絕妙結合，探索由槍組成的地牢。超過500把獨特武器、精心設計的彈幕圖案，支援2人合作，新手也能快速上手。',sc:['🔫','🗝️','💣'],pl:'1-2人',dev:'Dodge Roll'},
+  {id:31,en:"Vampire Survivors",            zh:"吸血鬼倖存者",           g:'roguelike', c:'vampire',    fb:'🧛',p:150, o:null, r:4.8,hot:0,nw:0,s:0, yt:'6OGXYSAK_bY', desc:'極簡操作帶來極度上癮的Roguelike體驗。只需移動，武器自動攻擊，在不斷升級強化中撐過夜晚的怪物浪潮。超高CP值，令人欲罷不能。',sc:['🧛','⭐','🔮'],pl:'1-4人',dev:'poncle'},
+];
+
+var hotGames=[
+  {rank:1,en:"God of War Ragnarök",        zh:"戰神：諸神黃昏",       genre:"動作",     price:"NT$990",  c:'gow',     fb:'⚔️',id:2},
+  {rank:2,en:"Astro Bot",                  zh:"太空機器人",           genre:"冒險",     price:"NT$1,290",c:'astrobot',fb:'🤖',id:19},
+  {rank:3,en:"Elden Ring",                 zh:"艾爾登法環",           genre:"RPG",      price:"NT$1,190",c:'eldenring',fb:'🐉',id:9},
+  {rank:4,en:"Hades II",                   zh:"黑帝斯II",             genre:"Roguelike",price:"NT$690",  c:'hades2',  fb:'🔱',id:25},
+  {rank:5,en:"Final Fantasy VII Rebirth",  zh:"最終幻想VII重生",      genre:"RPG",      price:"NT$1,490",c:'ff7rebirth',fb:'🌸',id:11},
+  {rank:6,en:"Ghost of Tsushima DC",       zh:"對馬戰鬼：導演剪輯版",genre:"動作",     price:"NT$1,290",c:'ghost',   fb:'🌸',id:3},
+  {rank:7,en:"Black Myth: Wukong",         zh:"黑神話：悟空",         genre:"RPG",      price:"NT$1,390",c:'wukong',  fb:'🐒',id:14},
+  {rank:8,en:"Horizon Forbidden West",     zh:"地平線：西域禁地",     genre:"冒險",     price:"NT$790",  c:'horizon', fb:'🏹',id:17},
+];
+
+var currentFilter='all', searchTerm='';
+
+function mkCover(key,fb){
+  var src=COVERS[key]||'';
+  if(!src) return '<div class="cover-fallback">'+fb+'</div>';
+  return '<img src="'+src+'" alt="cover" loading="lazy" onerror="this.style.display=\'none\';var f=this.parentNode.querySelector(\'.cover-fallback\');if(f)f.style.display=\'flex\'">'
+        +'<div class="cover-fallback" style="display:none">'+fb+'</div>';
+}
+
+function updateStats(){
+  document.getElementById('totalCount').textContent=games.length;
+  document.getElementById('saleCount').textContent=games.filter(function(g){return g.s;}).length;
+  document.getElementById('rogueCount').textContent=games.filter(function(g){return g.g==='roguelike';}).length;
+}
+
+function renderGames(){
+  var grid=document.getElementById('gamesGrid');
+  var filtered=games.filter(function(g){
+    var mf=currentFilter==='all'?true:currentFilter==='sale'?g.s:g.g===currentFilter;
+    var q=searchTerm.toLowerCase();
+    var ms=g.en.toLowerCase().indexOf(q)>=0||g.zh.indexOf(searchTerm)>=0;
+    return mf&&ms;
   });
-}
-
-function dbPut(key, value) {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('photos', 'readwrite');
-    tx.objectStore('photos').put(value, key);
-    tx.oncomplete = resolve;
-    tx.onerror = () => reject(tx.error);
-  });
-}
-
-function dbGet(key) {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('photos', 'readonly');
-    const req = tx.objectStore('photos').get(key);
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-function dbDelete(key) {
-  return new Promise(resolve => {
-    const tx = db.transaction('photos', 'readwrite');
-    tx.objectStore('photos').delete(key);
-    tx.oncomplete = resolve;
-  });
-}
-
-// ═══════════════════════════════
-// localStorage — 資料（不含照片）
-// ═══════════════════════════════
-const sg = k => { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } };
-const ss = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
-
-let plants = [], entries = [], care = {}, streak = 0;
-let selEmoji = '🌱', photoDatas = [], aiResult = null;
-let modalCare = { water: false, fert: false, trim: false };
-let editingPlantId = null, selectedPlantId = null, editingEntryId = null;
-
-// ═══════════════════════════════
-// INIT
-// ═══════════════════════════════
-async function init() {
-  await openDB();
-  plants  = sg('zrs_plants')  || [];
-  const rawEntries = sg('zrs_entries') || [];
-  care    = sg('zrs_care')    || {};
-  streak  = sg('zrs_streak')  || 0;
-
-  // 讀回每筆日記的照片（從 IndexedDB）
-  entries = await Promise.all(rawEntries.map(async e => {
-    const photoIds = e.photoIds || [];
-    const photos = await Promise.all(photoIds.map(pid => dbGet(pid)));
-    return { ...e, photos: photos.filter(Boolean) };
-  }));
-
-  document.getElementById('loading-cover').classList.add('hidden');
-  setupUI();
-}
-
-function saveData() {
-  // 只存 metadata，不存照片 blob
-  const meta = entries.map(e => ({
-    ...e,
-    photos: undefined,
-    photoIds: (e.photoIds || [])
-  }));
-  ss('zrs_plants', plants);
-  ss('zrs_entries', meta);
-  ss('zrs_care', care);
-  ss('zrs_streak', streak);
-}
-
-async function savePhotosForEntry(entry, newPhotos) {
-  // 刪除舊的照片
-  const oldIds = entry.photoIds || [];
-  for (const id of oldIds) await dbDelete(id);
-  // 存新照片
-  const newIds = newPhotos.map((_, i) => `photo_${entry.id}_${i}`);
-  for (let i = 0; i < newPhotos.length; i++) {
-    await dbPut(newIds[i], newPhotos[i]);
+  document.getElementById('countLabel').textContent='顯示 '+filtered.length+' 款';
+  if(!filtered.length){grid.innerHTML='<div class="empty-state">找不到符合的遊戲 / No games found</div>';return;}
+  var html='';
+  for(var i=0;i<filtered.length;i++){
+    var g=filtered[i];
+    var pct=g.o?Math.round((1-g.p/g.o)*100):0;
+    var isR=g.g==='roguelike';
+    var topBadge='';
+    if(g.s) topBadge='<div class="badge badge-sale">-'+pct+'%</div>';
+    else if(isR&&g.nw) topBadge='<div class="badge badge-rogue">NEW</div>';
+    else if(isR) topBadge='<div class="badge badge-rogue">Roguelike</div>';
+    else if(g.hot) topBadge='<div class="badge badge-hot">熱門</div>';
+    else if(g.nw) topBadge='<div class="badge badge-new">新作</div>';
+    var leftBadge=(g.s&&isR)?'<div class="badge badge-rogue" style="top:8px;left:8px">Roguelike</div>':'';
+    var gc=genreClass[g.g]||'';
+    html+='<div class="game-card" onclick="openModal('+g.id+')">'
+      +'<div class="cover">'+mkCover(g.c,g.fb)+topBadge+leftBadge+'</div>'
+      +'<div class="card-info">'
+      +'<div class="stars">'+'★'.repeat(Math.floor(g.r))+' <span style="color:var(--muted);font-size:10px">'+g.r+'</span></div>'
+      +'<div class="game-title-en">'+g.en+'</div>'
+      +'<div class="game-title-zh">'+g.zh+'</div>'
+      +'<div class="genre-tag '+gc+'">'+genreLabel[g.g]+'</div>'
+      +'<div class="price-row"><div class="price-now">NT$'+g.p.toLocaleString()+'</div>'
+      +(g.o?'<div class="price-orig">NT$'+g.o.toLocaleString()+'</div><div class="discount">-'+pct+'%</div>':'')
+      +'</div></div></div>';
   }
-  entry.photoIds = newIds;
-  entry.photos = newPhotos;
+  grid.innerHTML=html;
 }
 
-// ═══════════════════════════════
-// PHOTO COMPRESS
-// ═══════════════════════════════
-function compressPhoto(dataUrl, maxPx, quality) {
-  return new Promise(res => {
-    const img = new Image();
-    img.onload = () => {
-      let w = img.width, h = img.height;
-      const scale = Math.min(1, maxPx / Math.max(w, h));
-      w = Math.round(w * scale); h = Math.round(h * scale);
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      res(canvas.toDataURL('image/jpeg', quality));
-    };
-    img.src = dataUrl;
-  });
-}
-
-// ═══════════════════════════════
-// UI SETUP
-// ═══════════════════════════════
-const NOW = new Date();
-const DAYS = ['日','一','二','三','四','五','六'];
-const MONS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-const PA_BG = ['pa-g','pa-p','pa-a','pa-t'];
-
-function setupUI() {
-  document.getElementById('today-date').textContent =
-    `${NOW.getFullYear()}年${NOW.getMonth()+1}月${NOW.getDate()}日 · 星期${DAYS[NOW.getDay()]}`;
-  updateStreak();
-  initCareButtons();
-  loadWeather();
-  renderPlants();
-  renderHomePlantCards();
-  updateLastBackupText();
-  checkBackupReminder();
-}
-
-function updateStreak() {
-  document.getElementById('sk-num').textContent = '🔥 ' + streak;
-  document.getElementById('sk-sub').textContent =
-    streak === 0 ? '開始你的第一筆記錄吧！' :
-    streak >= 30 ? '恭喜達成「月月好植」成就！🏆' :
-    `再堅持 ${30 - (streak % 30)} 天達成「月月好植」成就`;
-}
-
-function initCareButtons() {
-  ['water','fert','trim'].forEach(t => {
-    if (care[t]) {
-      document.getElementById('btn-'+t).classList.add('done');
-      document.getElementById('cl-'+t).style.color = 'var(--g800)';
-      document.getElementById('ct-'+t).textContent = '今日完成 ✓';
-    }
-  });
-}
-
-// ═══════════════════════════════
-// WEATHER
-// ═══════════════════════════════
-async function loadWeather() {
-  try {
-    const pos = await new Promise((r, j) => navigator.geolocation.getCurrentPosition(r, j, {timeout:8000}));
-    const { latitude: lat, longitude: lon } = pos.coords;
-    const d = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,uv_index&timezone=auto`)).json();
-    const c = d.current;
-    const temp = Math.round(c.temperature_2m), hum = Math.round(c.relative_humidity_2m);
-    const wind = Math.round(c.wind_speed_10m), uv = Math.round(c.uv_index || 0), wc = c.weather_code;
-    const icon = wc<=1?'☀️':wc<=3?'⛅':wc<=48?'🌫️':wc<=67?'🌧️':wc<=77?'❄️':'⛈️';
-    const desc = wc<=1?'晴天，陽光充足':wc<=3?'多雲，適合照顧':wc<=48?'有霧，注意通風':wc<=67?'雨天，減少澆水':wc<=77?'降雪，保持溫暖':'雷雨，移至室內';
-    document.getElementById('wc-temp').textContent = temp+'°C';
-    document.getElementById('wc-desc').textContent = desc;
-    document.getElementById('wc-hum').textContent = '💧 '+hum+'%';
-    document.getElementById('wc-wind').textContent = '💨 '+wind+' km/h';
-    document.getElementById('wc-uv').textContent = '☀️ UV '+uv;
-    document.getElementById('wc-icon').textContent = icon;
-    document.getElementById('h-temp').textContent = temp+'°';
-    document.getElementById('h-icon').textContent = icon;
-    document.getElementById('h-desc').textContent = desc.split('，')[0];
-  } catch(e) {
-    document.getElementById('wc-desc').textContent = '請允許定位以取得天氣';
-    document.getElementById('h-desc').textContent = '請允許定位';
+function renderHot(){
+  var html='';
+  for(var i=0;i<hotGames.length;i++){
+    var g=hotGames[i];
+    var src=COVERS[g.c]||'';
+    html+='<div class="hot-item" onclick="openModal('+g.id+')"><div class="hot-rank '+(i<3?'top':'')+'">'
+      +g.rank+'</div><div class="hot-cover">'
+      +(src?'<img src="'+src+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" alt="">':'')
+      +'<div class="hot-cover-fb" style="'+(src?'display:none':'')+'">'+g.fb+'</div>'
+      +'</div><div class="hot-meta">'
+      +'<div class="hot-name-en">'+g.en+'</div>'
+      +'<div class="hot-name-zh">'+g.zh+'</div>'
+      +'<div class="hot-genre">'+g.genre+'</div>'
+      +'<div class="hot-price">'+g.price+'</div>'
+      +'</div></div>';
   }
+  document.getElementById('hotSection').innerHTML=html;
 }
 
-// ═══════════════════════════════
-// SCREENS
-// ═══════════════════════════════
-function showScreen(name, el) {
-  ['home','diary','stats','plants'].forEach(s =>
-    document.getElementById('screen-'+s).classList.toggle('hidden', s !== name));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  if (name === 'diary') renderDiary();
-  if (name === 'stats') renderStats();
-  if (name === 'plants') renderPlants();
+function openModal(id){
+  var g=null;
+  for(var i=0;i<games.length;i++){if(games[i].id===id){g=games[i];break;}}
+  if(!g)return;
+  var pct=g.o?Math.round((1-g.p/g.o)*100):0;
+  var isR=g.g==='roguelike';
+  document.getElementById('modalHero').innerHTML=
+    '<div class="modal-hero-thumb" onclick="loadVideo(\''+g.yt+'\',this)">'
+    +'<img src="https://img.youtube.com/vi/'+g.yt+'/maxresdefault.jpg" alt="預告片" onerror="this.src=\'https://img.youtube.com/vi/'+g.yt+'/hqdefault.jpg\'">'
+    +'<div class="play-btn"><div class="play-triangle"></div></div></div>';
+  document.getElementById('modalTitleEn').textContent=g.en;
+  document.getElementById('modalTitleZh').textContent=g.zh;
+  var gc=genreClass[g.g]||'';
+  var gcStyle=isR?'background:rgba(168,85,247,0.15);color:#a855f7'
+    :gc==='rpg'?'background:rgba(249,115,22,0.12);color:#f97316'
+    :gc==='adventure'?'background:rgba(6,182,212,0.12);color:#06b6d4'
+    :(gc==='sport'||gc==='racing')?'background:rgba(234,179,8,0.12);color:#eab308'
+    :gc==='shooter'?'background:rgba(239,68,68,0.12);color:#ef4444'
+    :'background:rgba(0,170,255,0.1);color:#00aaff';
+  document.getElementById('modalMeta').innerHTML=
+    '<div class="modal-genre-badge" style="'+gcStyle+'">'+genreLabel[g.g]+'</div>'
+    +'<div class="modal-rating">'+'★'.repeat(Math.floor(g.r))+' '+g.r+'</div>'
+    +'<div class="modal-players">'+g.pl+'</div>'
+    +'<div class="modal-players">'+g.dev+'</div>';
+  document.getElementById('modalDesc').textContent=g.desc;
+  var ssHtml='';
+  for(var j=0;j<g.sc.length;j++) ssHtml+='<div class="screenshot-box">'+g.sc[j]+'</div>';
+  document.getElementById('modalScreenshots').innerHTML=ssHtml;
+  document.getElementById('modalPriceRow').innerHTML=
+    '<div><div class="modal-price-now">NT$'+g.p.toLocaleString()+'</div>'
+    +(g.o?'<div class="modal-price-orig">原價 NT$'+g.o.toLocaleString()+'</div>':'')
+    +'</div>'+(g.o?'<div class="modal-discount">省 '+pct+'%</div>':'')
+    +'<button class="modal-buy-btn" onclick="goToStore(\''+g.en.replace(/'/g,"\\'")+'\')" >前往 PS Store 購買 →</button>';
+  document.getElementById('modalNote').innerHTML=
+    '⚠️ 此為個人示範網站，非 Sony 官方。實際售價請至 <a href="https://store.playstation.com/zh-hant-tw" target="_blank">PlayStation Store 台灣</a> 確認。';
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
-// ═══════════════════════════════
-// CARE TOGGLE
-// ═══════════════════════════════
-function toggleCare(type) {
-  const isDone = document.getElementById('btn-'+type).classList.toggle('done');
-  document.getElementById('cl-'+type).style.color = isDone ? 'var(--g800)' : '';
-  document.getElementById('ct-'+type).textContent = isDone ? '今日完成 ✓' : '點擊記錄';
-  care[type] = isDone; saveData();
+function loadVideo(ytId,thumb){
+  var iframe=document.createElement('iframe');
+  iframe.src='https://www.youtube.com/embed/'+ytId+'?autoplay=1&rel=0';
+  iframe.allow='autoplay;encrypted-media';
+  iframe.allowFullscreen=true;
+  thumb.parentNode.replaceChild(iframe,thumb);
 }
-
-// ═══════════════════════════════
-// HOME AI
-// ═══════════════════════════════
-function renderHomePlantCards() {
-  const container = document.getElementById('home-plant-cards');
-  if (!container) return;
-
-  const sMap = {
-    great: {cls:'b-great', txt:'🌿 極好'},
-    ok:    {cls:'b-ok',    txt:'🌤 普通'},
-    bad:   {cls:'b-bad',   txt:'🥀 不好'}
-  };
-
-  if (plants.length === 0) {
-    container.innerHTML = `<div class="ai-card">
-      <div class="ctitle">AI 植物評估 · 今日</div>
-      <div class="ai-row">
-        <div><span class="badge" style="background:#f0f0ec;color:var(--t3);">尚無評估</span></div>
-        <div class="ai-desc">請先到「植物」頁新增你的植物，再新增日記拍照！</div>
-      </div>
-    </div>`;
-    return;
-  }
-
-  container.innerHTML = plants.map(plant => {
-    // 找這株植物最新的日記
-    const latestEntry = entries
-      .filter(e => e.plantId === plant.id)
-      .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-    if (!latestEntry || !latestEntry.ai) {
-      return `<div class="ai-card" style="margin-bottom:12px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-          <span style="font-size:20px;">${plant.emoji}</span>
-          <span style="font-size:14px;font-weight:600;color:var(--t1);">${plant.name}</span>
-          <span style="font-size:11px;color:var(--t3);margin-left:auto;">${plant.type}</span>
-        </div>
-        <div class="ai-row">
-          <div><span class="badge" style="background:#f0f0ec;color:var(--t3);">尚無評估</span></div>
-          <div class="ai-desc">尚未有日記記錄，新增日記並拍照讓 AI 評估！</div>
-        </div>
-      </div>`;
-    }
-
-    const ai = latestEntry.ai;
-    const s = sMap[ai.score] || sMap.ok;
-    const d = new Date(latestEntry.date + 'T00:00:00');
-    const dateStr = `${d.getMonth()+1}/${d.getDate()} 評估`;
-
-    const needsHTML = (ai.needs || []).map(n =>
-      `<div class="need-item"><div class="ndot ${n.level==='good'?'d-good':n.level==='warn'?'d-warn':'d-bad'}"></div><div class="need-text">${n.text}</div></div>`
-    ).join('');
-
-    const sugsHTML = (ai.suggestions || []).map(sg =>
-      `<span class="ai-chip">${sg}</span>`
-    ).join('');
-
-    return `<div class="ai-card" style="margin-bottom:12px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:.5px solid var(--bd);">
-        <span style="font-size:22px;">${plant.emoji}</span>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:600;color:var(--t1);">${plant.name}</div>
-          <div style="font-size:11px;color:var(--t3);">${plant.type} · 養護 ${calcDays(plant.startDate)} 天</div>
-        </div>
-        <div style="text-align:right;">
-          <span class="badge ${s.cls}">${s.txt}</span>
-          <div style="font-size:10px;color:var(--t3);margin-top:3px;">${dateStr}</div>
-        </div>
-      </div>
-      <div style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:${needsHTML?'10px':'0'}">${ai.reason || ''}</div>
-      ${needsHTML ? `<div style="margin-bottom:${sugsHTML?'10px':'0'}">${needsHTML}</div>` : ''}
-      ${sugsHTML ? `<div style="padding-top:8px;border-top:.5px solid var(--bd);"><div style="font-size:11px;color:var(--t3);font-weight:600;margin-bottom:6px;">AI 建議</div><div class="ai-chips">${sugsHTML}</div></div>` : ''}
-    </div>`;
-  }).join('');
+function goToStore(name){window.open('https://store.playstation.com/zh-hant-tw/search/'+encodeURIComponent(name),'_blank');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.getElementById('modalHero').innerHTML='';document.body.style.overflow='';}
+function handleOverlayClick(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+function setFilter(f,el){currentFilter=f;document.querySelectorAll('.tag').forEach(function(t){t.classList.remove('active');});el.classList.add('active');renderGames();}
+function filterGames(){searchTerm=document.getElementById('searchInput').value;renderGames();}
+function startTimer(){
+  var t=23*3600+47*60+12;
+  setInterval(function(){
+    if(t<=0)t=86400;t--;
+    var h=String(Math.floor(t/3600)).padStart(2,'0');
+    var m=String(Math.floor((t%3600)/60)).padStart(2,'0');
+    var s=String(t%60).padStart(2,'0');
+    var el=document.getElementById('timer');
+    if(el)el.textContent=h+':'+m+':'+s;
+  },1000);
 }
-
-// 保留舊函數名稱相容性
-function updateHomeAI(ai) { renderHomePlantCards(); }
-
-// ═══════════════════════════════
-// DIARY
-// ═══════════════════════════════
-function updateFilterOptions() {
-  // plants filter
-  const pSel = document.getElementById('filter-plant');
-  const curP = pSel.value;
-  pSel.innerHTML = '<option value="">全部植物</option>' +
-    plants.map(p => `<option value="${p.id}"${String(p.id)===curP?' selected':''}>${p.emoji} ${p.name}</option>`).join('');
-
-  // year filter
-  const years = [...new Set(entries.map(e => e.date.slice(0,4)))].sort((a,b) => b-a);
-  const ySel = document.getElementById('filter-year');
-  const curY = ySel.value;
-  ySel.innerHTML = '<option value="">全部年份</option>' +
-    years.map(y => `<option value="${y}"${y===curY?' selected':''}>${y} 年</option>`).join('');
-
-  // month filter
-  const mSel = document.getElementById('filter-month');
-  const curM = mSel.value;
-  mSel.innerHTML = '<option value="">月份</option>' +
-    [1,2,3,4,5,6,7,8,9,10,11,12].map(m => {
-      const mv = String(m).padStart(2,'0');
-      return `<option value="${mv}"${mv===curM?' selected':''}>${m} 月</option>`;
-    }).join('');
-}
-
-function renderDiary() {
-  updateFilterOptions();
-  const list = document.getElementById('timeline-list');
-  const filterP = document.getElementById('filter-plant').value;
-  const filterY = document.getElementById('filter-year').value;
-  const filterM = document.getElementById('filter-month').value;
-
-  let filtered = [...entries].sort((a,b) => new Date(b.date) - new Date(a.date));
-  if (filterP) filtered = filtered.filter(e => String(e.plantId) === filterP);
-  if (filterY) filtered = filtered.filter(e => e.date.startsWith(filterY));
-  if (filterM) filtered = filtered.filter(e => e.date.slice(5,7) === filterM);
-
-  if (!filtered.length) {
-    list.innerHTML = entries.length === 0
-      ? '<div class="empty"><div class="empty-icon">🌱</div><div class="empty-text">還沒有日記記錄<br>點擊上方按鈕新增第一筆！</div></div>'
-      : '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">這個條件沒有日記記錄</div></div>';
-    return;
-  }
-
-  const bgs = ['tl-bg1','tl-bg2','tl-bg3'];
-  const sMap = { great:{cls:'b-great',txt:'🌿 極好'}, ok:{cls:'b-ok',txt:'🌤 普通'}, bad:{cls:'b-bad',txt:'🥀 不好'} };
-
-  list.innerHTML = filtered.map((e, i) => {
-    const d = new Date(e.date + 'T00:00:00');
-    const s = sMap[e.score] || sMap.ok;
-    const tags = (e.tags||[]).map(t => `<span class="tl-tag">${t}</span>`).join('');
-    const ph = e.photos || [];
-    const plant = plants.find(p => p.id === e.plantId);
-    const plantTag = plant ? `<div class="tl-plant-tag">${plant.emoji} ${plant.name}</div>` : '';
-    const pj = JSON.stringify(ph).replace(/\\/g,'\\\\').replace(/"/g,"'");
-
-    let phHTML = '';
-    if (!ph.length) {
-      phHTML = `<div class="tl-ph ${bgs[i%3]}" style="position:relative;">${plant?.emoji || e.emoji || '🌱'}${plantTag}</div>`;
-    } else if (ph.length === 1) {
-      phHTML = `<div class="tl-ph" style="position:relative;" onclick="openLB(${pj},0)"><img src="${ph[0]}" loading="lazy">${plantTag}</div>`;
-    } else {
-      const imgs = ph.map((p, pi) => `<img src="${p}" loading="lazy" onclick="openLB(${pj},${pi})">`).join('');
-      phHTML = `<div class="tl-scroll-wrap" style="position:relative;"><div class="tl-ph-scroll">${imgs}</div><div class="tl-ph-count">${ph.length} 張</div>${plantTag}</div>`;
-    }
-
-    return `<div class="tl-item">
-      <div class="tl-date-col"><div class="tl-day">${String(d.getDate()).padStart(2,'0')}</div><div class="tl-mon">${MONS[d.getMonth()]}</div><div class="tl-mon">${d.getFullYear()}</div></div>
-      <div class="tl-box">${phHTML}
-        <div class="tl-meta">
-          <div class="tl-tags"><span class="badge ${s.cls}" style="font-size:11px;padding:3px 9px;">${s.txt}</span>${tags}</div>
-          <div class="tl-note">${e.note||e.desc||''}</div>
-          <div style="display:flex;gap:8px;margin-top:10px;padding-top:8px;border-top:.5px solid var(--bd);">
-            <button onclick="openEditEntry(${e.id})" style="flex:1;padding:7px;background:var(--g50);color:var(--g800);border:.5px solid var(--g100);border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">✏️ 編輯</button>
-            <button onclick="deleteEntry(${e.id})" style="padding:7px 12px;background:var(--r50);color:var(--r400);border:.5px solid #f5c1c1;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">🗑</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ═══════════════════════════════
-// LIGHTBOX
-// ═══════════════════════════════
-function openLB(photos, start) {
-  if (!photos || !photos.length) return;
-  const wrap = document.getElementById('lb-imgs');
-  const dots = document.getElementById('lb-dots');
-  wrap.innerHTML = photos.map(p => `<img src="${p}">`).join('');
-  dots.innerHTML = photos.length > 1 ? photos.map((_,i) => `<div class="lb-dot${i===start?' on':''}"></div>`).join('') : '';
-  document.getElementById('lightbox').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-  if (start > 0) setTimeout(() => wrap.scrollTo({left: start * wrap.clientWidth, behavior:'instant'}), 20);
-}
-function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); document.body.style.overflow = ''; }
-function updateDots() {
-  const wrap = document.getElementById('lb-imgs');
-  const idx = Math.round(wrap.scrollLeft / wrap.clientWidth);
-  document.querySelectorAll('.lb-dot').forEach((d,i) => d.classList.toggle('on', i===idx));
-}
-
-// ═══════════════════════════════
-// STATS
-// ═══════════════════════════════
-async function renderStats() {
-  const water = entries.filter(e => (e.tags||[]).includes('澆水')).length;
-  const fert  = entries.filter(e => (e.tags||[]).includes('施肥')).length;
-  const scores = entries.map(e => e.score==='great'?100:e.score==='ok'?60:25);
-  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
-  document.getElementById('s-water').textContent = water;
-  document.getElementById('s-fert').textContent  = fert;
-  document.getElementById('s-avg').textContent   = avg !== null ? avg+'%' : '--';
-  document.getElementById('s-days').textContent  = entries.length;
-
-  const chart = document.getElementById('bar-chart');
-  if (!entries.length) { chart.innerHTML = '<div style="width:100%;display:flex;align-items:center;justify-content:center;height:80px;color:var(--t3);font-size:13px;">新增日記後顯示</div>'; return; }
-  const last7 = [...entries].sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0,7).reverse();
-  const hMap = {great:90,ok:55,bad:28}, cMap = {great:'br-g',ok:'br-a',bad:'br-r'};
-  chart.innerHTML = last7.map(e => {
-    const d = new Date(e.date+'T00:00:00');
-    return `<div class="bc"><div class="br ${cMap[e.score]||'br-g'}" style="height:${hMap[e.score]||55}px;"></div><div class="bl">${d.getMonth()+1}/${d.getDate()}</div></div>`;
-  }).join('');
-
-  // AI cycle analysis
-  const cached = sg('zrs_cycles');
-  if (cached) {
-    document.getElementById('cy-water').textContent = cached.water || '--';
-    document.getElementById('cy-fert').textContent  = cached.fert  || '--';
-    document.getElementById('cy-trim').textContent  = cached.trim  || '--';
-    ['water','fert','trim'].forEach(t => document.getElementById('cy-'+t+'-sub').textContent = '✨ AI 根據記錄分析');
-  }
-  if (entries.length >= 3 && sg('zrs_cycle_key') !== entries.length+'') analyzeCycles();
-  updateApiKeyStatus();
-}
-
-async function analyzeCycles() {
-  const apiKey = sg('zrs_gemini_key');
-  if (!apiKey) return;
-  const summary = entries.slice(0,15).map(e => `日期:${e.date} 健康:${e.score} 護理:[${(e.tags||[]).join(',')}]`).join('\n');
-  const models = ['gemini-1.5-flash','gemini-1.5-flash-latest','gemini-2.0-flash'];
-  for (const model of models) {
-    try {
-      const resp = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `根據以下植物照顧記錄，分析最適護理週期，只回傳JSON不要其他文字：{"water":"每X天","fert":"每X天","trim":"每X天"}\n${summary}` }] }],
-            generationConfig: { maxOutputTokens: 150, temperature: 0.2 }
-          })
-        }
-      );
-      const data = await resp.json();
-      if (data.error) continue;
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
-      ss('zrs_cycles', parsed);
-      ss('zrs_cycle_key', entries.length+'');
-      document.getElementById('cy-water').textContent = parsed.water || '--';
-      document.getElementById('cy-fert').textContent  = parsed.fert  || '--';
-      document.getElementById('cy-trim').textContent  = parsed.trim  || '--';
-      ['water','fert','trim'].forEach(t => document.getElementById('cy-'+t+'-sub').textContent = '✨ AI 根據記錄分析');
-      return;
-    } catch(e) { continue; }
-  }
-}
-
-// ═══════════════════════════════
-// PLANTS
-// ═══════════════════════════════
-function renderPlants() {
-  const list = document.getElementById('plants-list');
-  if (!plants.length) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">🪴</div><div class="empty-text">還沒有植物<br>點擊下方按鈕新增！</div></div>';
-    return;
-  }
-  const sMap = { great:{cls:'b-great',txt:'極好'}, ok:{cls:'b-ok',txt:'普通'}, bad:{cls:'b-bad',txt:'不好'} };
-  list.innerHTML = plants.map((p, i) => {
-    const s = sMap[p.score] || sMap.great;
-    return `<div class="plant-item">
-      <div class="pa ${PA_BG[i%4]}">${p.emoji||'🌱'}</div>
-      <div style="flex:1;min-width:0;">
-        <div class="plant-name">${p.name}</div>
-        <div class="plant-type">${p.type}</div>
-        <div class="plant-days">🌱 養護中 ${calcDays(p.startDate)} 天${p.startDate ? `　從 ${p.startDate.slice(0,4)}/${p.startDate.slice(5,7)}/${p.startDate.slice(8,10)} 開始` : ''}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:8px;">
-        <button class="pa-edit" onclick="openPlantModal(${p.id})">✏️ 編輯</button>
-        <span class="badge ${s.cls}" style="font-size:11px;">${s.txt}</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ═══════════════════════════════
-// ADD / EDIT ENTRY
-// ═══════════════════════════════
-function openAddEntry() { openEntryModal(null); }
-
-async function openEditEntry(id) {
-  openEntryModal(id);
-}
-
-async function openEntryModal(id) {
-  editingEntryId = id;
-  const existing = id ? entries.find(e => e.id === id) : null;
-
-  photoDatas = []; aiResult = null;
-  modalCare = { water:false, fert:false, trim:false };
-
-  // 標題
-  document.getElementById('entry-modal-title').textContent = existing ? '✏️ 編輯日記' : '📸 新增日記';
-
-  // 植物選擇
-  selectedPlantId = existing ? existing.plantId : (plants.length > 0 ? plants[0].id : null);
-  const row = document.getElementById('plant-sel-row');
-  if (plants.length === 0) {
-    row.innerHTML = '<div style="font-size:13px;color:var(--t3);padding:8px 0;">請先到「植物」頁新增你的植物</div>';
-  } else {
-    row.innerHTML = plants.map(p =>
-      `<div class="plant-sel-item${p.id===selectedPlantId?' active':''}" onclick="selectPlant(${p.id},this)">${p.emoji} ${p.name}</div>`
-    ).join('');
-  }
-
-  // 日期
-  document.getElementById('entry-date').value = existing ? existing.date : NOW.toISOString().split('T')[0];
-
-  // 照片：如果是編輯模式，把舊照片載入預覽
-  const pr = document.getElementById('preview-row');
-  pr.innerHTML = ''; pr.style.display = 'none';
-  document.getElementById('photo-area').style.display = 'flex';
-  document.getElementById('photo-input').value = '';
-
-  if (existing && existing.photos && existing.photos.length > 0) {
-    photoDatas = [...existing.photos];
-    existing.photos.forEach(p => {
-      const img = document.createElement('img');
-      img.src = p;
-      img.style.cssText = 'height:90px;width:auto;border-radius:8px;flex-shrink:0;object-fit:cover;';
-      pr.appendChild(img);
-    });
-    document.getElementById('photo-area').style.display = 'none';
-    pr.style.display = 'flex';
-    document.getElementById('reselect-photo-btn').style.display = 'block';
-  } else {
-    document.getElementById('reselect-photo-btn').style.display = 'none';
-  }
-
-  // 護理記錄
-  if (existing) {
-    ['water','fert','trim'].forEach(t => {
-      const label = t==='water'?'澆水':t==='fert'?'施肥':'整理';
-      modalCare[t] = (existing.tags||[]).includes(label);
-      document.getElementById('t-'+t).classList.toggle('on', modalCare[t]);
-    });
-  } else {
-    ['water','fert','trim'].forEach(t => document.getElementById('t-'+t).classList.remove('on'));
-  }
-
-  // 備註
-  document.getElementById('entry-note').value = existing ? (existing.note || '') : '';
-
-  // AI 結果：編輯時顯示舊的 AI 評估
-  document.getElementById('ai-ld-wrap').style.display = 'none';
-  if (existing && existing.ai) {
-    aiResult = existing.ai;
-    showAIResult(existing.ai);
-  } else {
-    document.getElementById('ai-res-wrap').style.display = 'none';
-  }
-
-  // 刪除按鈕：編輯時才顯示
-  document.getElementById('entry-del-btn').style.display = existing ? 'block' : 'none';
-
-  document.getElementById('modal-entry').classList.remove('hidden');
-}
-
-async function deleteEntry(id) {
-  const e = entries.find(x => x.id === id);
-  if (!e) return;
-  const d = new Date(e.date + 'T00:00:00');
-  if (!confirm(`確定要刪除 ${d.getMonth()+1}/${d.getDate()} 的日記嗎？\n此操作無法復原。`)) return;
-
-  // 刪除 IndexedDB 照片
-  const ids = e.photoIds || [];
-  for (const pid of ids) await dbDelete(pid);
-
-  entries = entries.filter(x => x.id !== id);
-  if (streak > 0) streak--;
-  updateStreak();
-  saveData();
-  renderDiary();
-}
-
-function reselectPhoto() {
-  document.getElementById('photo-input').click();
-}
-
-function deleteEntryFromModal() {
-  if (editingEntryId) deleteEntry(editingEntryId);
-  closeOverlay('modal-entry');
-}
-
-function selectPlant(id, el) {
-  selectedPlantId = id;
-  document.querySelectorAll('.plant-sel-item').forEach(e => e.classList.remove('active'));
-  el.classList.add('active');
-}
-
-async function handlePhoto(e) {
-  const files = Array.from(e.target.files);
-  if (!files.length) return;
-  photoDatas = [];
-  const pr = document.getElementById('preview-row');
-  pr.innerHTML = '';
-
-  for (let i = 0; i < files.length; i++) {
-    const dataUrl = await new Promise(res => {
-      const reader = new FileReader();
-      reader.onload = ev => res(ev.target.result);
-      reader.readAsDataURL(files[i]);
-    });
-    // 壓縮：最大 1000px，品質 0.72
-    const compressed = await compressPhoto(dataUrl, 1000, 0.72);
-    photoDatas.push(compressed);
-
-    const img = document.createElement('img');
-    img.src = compressed;
-    img.style.cssText = 'height:90px;width:auto;border-radius:8px;flex-shrink:0;object-fit:cover;';
-    pr.appendChild(img);
-  }
-
-  document.getElementById('photo-area').style.display = 'none';
-  pr.style.display = 'flex';
-  document.getElementById('reselect-photo-btn').style.display = 'block';
-  if (photoDatas.length > 0) analyzePhoto(photoDatas[0]);
-}
-
-async function analyzePhoto(dataUrl) {
-  document.getElementById('ai-ld-wrap').style.display = 'block';
-  document.getElementById('ai-res-wrap').style.display = 'none';
-
-  const apiKey = sg('zrs_gemini_key');
-  if (!apiKey) {
-    document.getElementById('ai-ld-wrap').style.display = 'none';
-    aiResult = {score:'ok', reason:'請先到統計頁設定 API Key', suggestions:['前往「統計」頁輸入 API Key'], needs:[{level:'warn',text:'尚未設定 API Key'}]};
-    showAIResult(aiResult);
-    return;
-  }
-
-  try {
-    const base64 = dataUrl.split(',')[1];
-    const mtype  = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
-    const hist = entries.slice(0,5).map(e => `${e.date} ${e.score} [${(e.tags||[]).join(',')}] ${e.note||''}`).join('\n');
-
-    // 取得這株植物的資訊
-    const plant = plants.find(p => p.id === selectedPlantId);
-    const plantInfo = plant
-      ? `這株植物的資訊：\n- 名稱：${plant.name}\n- 種類：${plant.type}\n- 已養護：${calcDays(plant.startDate)} 天\n`
-      : '';
-
-    const prompt = `你是一位有溫度、專業的植物照顧師，請仔細分析這張照片中的植物本體健康狀況。
-
-${plantInfo ? plantInfo + '\n' : ''}評估重點：
-- 只分析植物本身（葉片、莖部、根部），完全忽略背景、花盆、木板、牆壁
-- 根據「${plant?.type || '這種植物'}」的天然習性來評估，而非通用標準
-- 例如鹿角蕨天生銀綠色是正常的；仙人掌偏灰是正常的；多肉葉片飽滿才健康
-- 只有真正看到葉片變黃、褐斑、枯萎、下垂才給差評
-- 葉片綠色飽滿、整體狀態良好就給 great
-- 回饋語氣要有溫度，像在跟朋友聊天，偶爾可以誇獎植物長得好或給予鼓勵
-${hist ? '\n過去照顧記錄供參考：\n'+hist+'\n' : ''}
-只回傳JSON不要其他文字：
-{"score":"great|ok|bad","reason":"繁體中文30字內，描述這株植物目前的狀態，語氣溫暖自然","suggestions":["針對${plant?.type || '這種植物'}習性的具體建議1","具體建議2"],"needs":[{"level":"good|warn|bad","text":"這株植物目前的具體需求"}]}`;
-
-    const isGroq = apiKey.startsWith('gsk_');
-    let text = '';
-
-    if (isGroq) {
-      const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
-        body: JSON.stringify({
-          model:'meta-llama/llama-4-scout-17b-16e-instruct',
-          max_tokens:500, temperature:0.3,
-          messages:[{role:'user',content:[
-            {type:'image_url',image_url:{url:`data:${mtype};base64,${base64}`}},
-            {type:'text',text:prompt}
-          ]}]
-        })
-      });
-      const data = await resp.json();
-      if (data.error) throw new Error(data.error.message);
-      text = data.choices?.[0]?.message?.content || '';
-    } else {
-      // Gemini：依序嘗試不同模型
-      const models = ['gemini-1.5-flash','gemini-1.5-flash-latest','gemini-1.5-pro','gemini-2.0-flash'];
-      let lastError = null;
-      for (const model of models) {
-        const resp = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-          {
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({
-              contents:[{parts:[{inline_data:{mime_type:mtype,data:base64}},{text:prompt}]}],
-              generationConfig:{maxOutputTokens:500,temperature:0.2}
-            })
-          }
-        );
-        const data = await resp.json();
-        if (data.error) { lastError = data.error.message; continue; }
-        text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        break;
-      }
-      if (!text) throw new Error(lastError || '所有模型都無法使用');
-    }
-
-    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
-    aiResult = parsed; showAIResult(parsed);
-
-  } catch(err) {
-    console.error('Gemini error:', err);
-    aiResult = {score:'ok', reason:'AI 分析暫時無法使用，照片已儲存', suggestions:['確認 API Key 是否正確','檢查網路連線'], needs:[{level:'good',text:'照片已成功儲存'}]};
-    showAIResult(aiResult);
-  }
-  document.getElementById('ai-ld-wrap').style.display = 'none';
-}
-
-function showAIResult(r) {
-  document.getElementById('ai-res-wrap').style.display = 'block';
-  const sMap = { great:{cls:'b-great',txt:'🌿 極好'}, ok:{cls:'b-ok',txt:'🌤 普通'}, bad:{cls:'b-bad',txt:'🥀 不好'} };
-  const s = sMap[r.score] || sMap.ok;
-  document.getElementById('modal-badge').innerHTML = `<span class="badge ${s.cls}">${s.txt}</span>`;
-  document.getElementById('modal-desc').textContent = r.reason;
-  document.getElementById('modal-sugs').innerHTML = (r.suggestions||[]).map(sg => `<span class="ai-sug">${sg}</span>`).join('');
-}
-
-function toggleModal(type) {
-  modalCare[type] = !modalCare[type];
-  document.getElementById('t-'+type).classList.toggle('on', modalCare[type]);
-}
-
-async function saveEntry() {
-  const tags = Object.keys(modalCare).filter(k=>modalCare[k]).map(k=>k==='water'?'澆水':k==='fert'?'施肥':'整理');
-  const ai = aiResult || {score:'ok', reason:'今日植物記錄', suggestions:[], needs:[]};
-  const selectedDate = document.getElementById('entry-date').value || NOW.toISOString().split('T')[0];
-  const note = document.getElementById('entry-note').value.trim() || ai.reason;
-
-  if (editingEntryId) {
-    // ── 編輯模式 ──
-    const idx = entries.findIndex(e => e.id === editingEntryId);
-    if (idx < 0) return;
-    const existing = entries[idx];
-
-    // 如果照片有變動才重新存
-    const photosChanged = JSON.stringify(photoDatas) !== JSON.stringify(existing.photos || []);
-    if (photosChanged) {
-      await savePhotosForEntry(existing, photoDatas);
-    }
-
-    entries[idx] = {
-      ...existing,
-      date: selectedDate,
-      plantId: selectedPlantId,
-      tags,
-      note,
-      score: ai.score,
-      desc: ai.reason,
-      ai
-    };
-  } else {
-    // ── 新增模式 ──
-    const entry = {
-      id: Date.now(),
-      date: selectedDate,
-      plantId: selectedPlantId,
-      score: ai.score,
-      desc: ai.reason,
-      tags,
-      note,
-      photoIds: [],
-      photos: [],
-      emoji: '🌱',
-      ai
-    };
-    await savePhotosForEntry(entry, photoDatas);
-    entries.push(entry);
-    streak++;
-    updateStreak();
-
-    // 更新植物評分
-    if (selectedPlantId) {
-      const p = plants.find(x => x.id === selectedPlantId);
-      if (p) { p.score = ai.score; p.days = (p.days || 0) + 1; }
-    }
-  }
-
-  entries.sort((a,b) => new Date(b.date) - new Date(a.date));
-  updateHomeAI(ai);
-  saveData();
-  closeOverlay('modal-entry');
-  renderDiary();
-}
-
-// ═══════════════════════════════
-// PLANTS CRUD
-// ═══════════════════════════════
-function openPlantModal(id) {
-  editingPlantId = id;
-  const p = id ? plants.find(x => x.id === id) : null;
-  document.getElementById('plant-mtitle').textContent = p ? '✏️ 編輯植物' : '🌱 新增植物';
-  document.getElementById('p-name').value = p ? p.name : '';
-  document.getElementById('p-type').value = p ? p.type : '';
-  // 開始養護日期：有舊資料用舊的，新增預設今天
-  document.getElementById('p-start-date').value = p && p.startDate ? p.startDate : NOW.toISOString().split('T')[0];
-  selEmoji = p ? p.emoji : '🌱';
-  document.querySelectorAll('.emj').forEach(el => el.classList.toggle('sel', el.textContent === selEmoji));
-  document.getElementById('del-btn').style.display = p ? 'block' : 'none';
-  document.getElementById('modal-plant').classList.remove('hidden');
-}
-
-function pickEmoji(el, emoji) {
-  document.querySelectorAll('.emj').forEach(e => e.classList.remove('sel'));
-  el.classList.add('sel'); selEmoji = emoji;
-}
-
-function calcDays(startDate) {
-  if (!startDate) return 0;
-  const start = new Date(startDate + 'T00:00:00');
-  const diff = NOW - start;
-  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-}
-
-function savePlant() {
-  const name = document.getElementById('p-name').value.trim();
-  if (!name) { document.getElementById('p-name').focus(); return; }
-  const type = document.getElementById('p-type').value.trim() || '植物';
-  const startDate = document.getElementById('p-start-date').value || NOW.toISOString().split('T')[0];
-  if (editingPlantId) {
-    const idx = plants.findIndex(p => p.id === editingPlantId);
-    if (idx >= 0) plants[idx] = { ...plants[idx], name, type, emoji: selEmoji, startDate };
-  } else {
-    plants.push({ id: Date.now(), name, type, emoji: selEmoji, startDate, score: 'great', added: Date.now() });
-  }
-  saveData(); closeOverlay('modal-plant'); renderPlants();
-}
-
-function deletePlant() {
-  if (!editingPlantId) return;
-  const p = plants.find(x => x.id === editingPlantId);
-  if (!confirm(`確定要刪除「${p ? p.name : '這株植物'}」嗎？`)) return;
-  plants = plants.filter(x => x.id !== editingPlantId);
-  saveData(); closeOverlay('modal-plant'); renderPlants();
-}
-
-// ═══════════════════════════════
-// API KEY
-// ═══════════════════════════════
-function updateApiKeyStatus() {
-  const key = sg('zrs_gemini_key');
-  const status = document.getElementById('api-key-status');
-  const clearBtn = document.getElementById('clear-key-btn');
-  const input = document.getElementById('gemini-key-input');
-  if (!status) return;
-  if (key) {
-    status.innerHTML = '<span style="color:var(--g600);font-weight:500;">✅ API Key 已設定，AI 功能已啟用</span>';
-    input.value = '';
-    input.placeholder = '已設定（重新貼上可更換）';
-    if (clearBtn) clearBtn.style.display = 'block';
-  } else {
-    status.innerHTML = '<span style="color:var(--a600);">⚠️ 尚未設定，AI 分析功能暫停</span>';
-    if (clearBtn) clearBtn.style.display = 'none';
-  }
-}
-
-async function testApiKey() {
-  const key = sg('zrs_gemini_key');
-  const resultEl = document.getElementById('test-result');
-  resultEl.style.display = 'block';
-  resultEl.style.background = '#f5f5f0';
-  resultEl.style.color = 'var(--t2)';
-  resultEl.textContent = '測試中...';
-
-  if (!key) {
-    resultEl.style.background = '#faeeda';
-    resultEl.style.color = 'var(--a800)';
-    resultEl.textContent = '⚠️ 尚未儲存 API Key，請先貼上並儲存。';
-    return;
-  }
-
-  const isGroq = key.startsWith('gsk_');
-
-  try {
-    let resp, data, reply;
-    if (isGroq) {
-      resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
-        body: JSON.stringify({ model:'llama-3.3-70b-versatile', max_tokens:30, messages:[{role:'user',content:'請用繁體中文說：你好，AI 連線成功！'}] })
-      });
-      data = await resp.json();
-      if (data.error) throw new Error(data.error.message);
-      reply = data.choices?.[0]?.message?.content || '';
-    } else {
-      // 試 Gemini 多個模型
-      const models = ['gemini-1.5-flash','gemini-1.5-flash-latest','gemini-2.0-flash'];
-      let success = false;
-      for (const model of models) {
-        resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ contents:[{parts:[{text:'請用繁體中文說：你好，AI 連線成功！'}]}], generationConfig:{maxOutputTokens:30} })
-        });
-        data = await resp.json();
-        if (!data.error) {
-          reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          success = true;
-          break;
-        }
-      }
-      if (!success) throw new Error(data.error?.message || '所有模型都無法使用');
-    }
-    resultEl.style.background = '#EAF3DE';
-    resultEl.style.color = '#27500A';
-    resultEl.textContent = `✅ 連線成功！（${isGroq?'Groq':'Gemini'}）\nAI 回覆：${reply}\n\nAPI Key 正常，可以分析植物照片了 🌱`;
-  } catch(err) {
-    resultEl.style.background = '#fcebeb';
-    resultEl.style.color = '#e24b4a';
-    resultEl.textContent = `❌ 連線失敗：${err.message}`;
-  }
-}
-
-function saveApiKey() {
-  const val = document.getElementById('gemini-key-input').value.trim();
-  if (!val) { alert('請先貼上 API Key'); return; }
-  if (!val.startsWith('AIza') && !val.startsWith('gsk_')) {
-    alert('API Key 格式不對\nGemini Key 以「AIza」開頭\nGroq Key 以「gsk_」開頭');
-    return;
-  }
-  ss('zrs_gemini_key', val);
-  updateApiKeyStatus();
-  alert('✅ API Key 儲存成功！下次新增日記拍照時 AI 就會自動分析了。');
-}
-
-function clearApiKey() {
-  if (!confirm('確定要清除 API Key 嗎？清除後 AI 功能將停用。')) return;
-  localStorage.removeItem('zrs_gemini_key');
-  updateApiKeyStatus();
-}
-function updateLastBackupText() {
-  const last = sg('zrs_last_backup');
-  const el = document.getElementById('last-backup-txt');
-  if (!el) return;
-  if (!last) { el.textContent = '上次備份：從未備份'; return; }
-  const d = new Date(last);
-  el.textContent = `上次備份：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
-}
-
-function checkBackupReminder() {
-  const last = sg('zrs_last_backup');
-  const dismissed = sg('zrs_reminder_dismissed');
-  const reminder = document.getElementById('backup-reminder');
-  if (!reminder) return;
-  if (!last) {
-    // 有日記但從未備份才提醒
-    if (entries.length > 0) reminder.style.display = 'block';
-    return;
-  }
-  const daysSince = (Date.now() - last) / (1000 * 60 * 60 * 24);
-  if (daysSince >= 7 && dismissed !== new Date().toDateString()) {
-    reminder.style.display = 'block';
-  }
-}
-
-function dismissReminder() {
-  ss('zrs_reminder_dismissed', new Date().toDateString());
-  document.getElementById('backup-reminder').style.display = 'none';
-}
-
-function goBackup() {
-  dismissReminder();
-  // 切換到統計頁
-  const tabEl = document.querySelectorAll('.tab')[2];
-  showScreen('stats', tabEl);
-}
-
-async function exportBackup() {
-  if (entries.length === 0 && plants.length === 0) {
-    alert('還沒有資料可以備份！');
-    return;
-  }
-
-  const btn = document.querySelector('[onclick="exportBackup()"]');
-  const origText = btn.textContent;
-  btn.textContent = '準備中...';
-  btn.disabled = true;
-
-  try {
-    // 把所有照片從 IndexedDB 讀回來打包進 JSON
-    const entriesWithPhotos = await Promise.all(entries.map(async e => {
-      const photoIds = e.photoIds || [];
-      const photos = await Promise.all(photoIds.map(pid => dbGet(pid)));
-      return { ...e, photos: photos.filter(Boolean), photoIds };
-    }));
-
-    const backup = {
-      version: 2,
-      exportedAt: new Date().toISOString(),
-      appName: '植日苼',
-      plants,
-      entries: entriesWithPhotos,
-      care,
-      streak
-    };
-
-    const json = JSON.stringify(backup);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const dateStr = new Date().toISOString().slice(0,10);
-    a.href = url;
-    a.download = `植日苼備份_${dateStr}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-
-    ss('zrs_last_backup', Date.now());
-    updateLastBackupText();
-    document.getElementById('backup-reminder').style.display = 'none';
-    alert(`✅ 備份完成！\n共 ${entries.length} 筆日記、${plants.length} 株植物\n\n請將檔案儲存到 iCloud 或 Google Drive 保管。`);
-  } catch(err) {
-    alert('備份失敗，請再試一次。');
-  }
-
-  btn.textContent = origText;
-  btn.disabled = false;
-}
-
-async function importBackup(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = async ev => {
-    try {
-      const backup = JSON.parse(ev.target.result);
-      if (!backup.appName || backup.appName !== '植日苼') {
-        alert('這不是植日苼的備份檔，請選擇正確的檔案。');
-        return;
-      }
-      if (!confirm(`確定要還原備份嗎？\n備份時間：${new Date(backup.exportedAt).toLocaleString()}\n共 ${backup.entries?.length || 0} 筆日記、${backup.plants?.length || 0} 株植物\n\n⚠️ 目前的資料將被取代。`)) return;
-
-      const btn = document.querySelector('[onclick="document.getElementById(\'restore-input\').click()"]');
-      const origText = btn.textContent;
-      btn.textContent = '還原中...';
-      btn.disabled = true;
-
-      // 清除舊的 IndexedDB 照片
-      const tx = db.transaction('photos', 'readwrite');
-      tx.objectStore('photos').clear();
-      await new Promise(r => { tx.oncomplete = r; });
-
-      // 還原照片到 IndexedDB
-      const restoredEntries = await Promise.all((backup.entries || []).map(async e => {
-        const photos = e.photos || [];
-        const newIds = photos.map((_, i) => `photo_${e.id}_${i}`);
-        for (let i = 0; i < photos.length; i++) {
-          if (photos[i]) await dbPut(newIds[i], photos[i]);
-        }
-        return { ...e, photoIds: newIds, photos };
-      }));
-
-      // 還原其他資料
-      plants = backup.plants || [];
-      entries = restoredEntries;
-      care   = backup.care   || {};
-      streak = backup.streak || 0;
-
-      saveData();
-      ss('zrs_last_backup', Date.now());
-      updateLastBackupText();
-      updateStreak();
-      if (entries.length > 0 && entries[0].ai) updateHomeAI(entries[0].ai);
-      renderPlants();
-      renderDiary();
-
-      btn.textContent = origText;
-      btn.disabled = false;
-      document.getElementById('restore-input').value = '';
-
-      alert(`✅ 還原完成！\n共還原 ${entries.length} 筆日記、${plants.length} 株植物。`);
-    } catch(err) {
-      alert('還原失敗，備份檔可能已損壞。');
-    }
-  };
-  reader.readAsText(file);
-}
-
-// ═══════════════════════════════
-// UTILS
-// ═══════════════════════════════
-function closeOverlay(id) { document.getElementById(id).classList.add('hidden'); }
-document.querySelectorAll('.overlay').forEach(m =>
-  m.addEventListener('click', e => { if (e.target === m) m.classList.add('hidden'); })
-);
-
-// START
-init();
+updateStats();renderGames();renderHot();startTimer();
 </script>
 </body>
 </html>
